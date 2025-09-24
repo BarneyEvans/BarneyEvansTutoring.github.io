@@ -1,5 +1,5 @@
 ﻿:root {
-  --bg: #fafaf8;
+  --bg: #fff9eb;
   --text: #1a1a1a;
   --accent: #ff69b4;
   --accent-dark: #d45593;
@@ -93,7 +93,7 @@ main {
   flex: 0 0 280px;
   max-width: 320px;
   height: clamp(220px, 40vw, 300px);
-  border: 4px solid var(--border);
+  border: 4px solid var(--accent);
   border-radius: 32px;
   overflow: hidden;
   box-shadow: var(--shadow);
@@ -156,7 +156,7 @@ main {
 
 .card {
   background: var(--card-bg);
-  border: 4px solid var(--border);
+  border: 4px solid var(--accent);
   border-radius: 32px;
   padding: 2rem;
   box-shadow: var(--shadow);
@@ -220,7 +220,7 @@ main {
 
 .experience__card {
   background: var(--card-bg);
-  border: 4px solid var(--border);
+  border: 4px solid var(--accent);
   border-radius: 28px;
   padding: 1.75rem;
   box-shadow: var(--shadow);
@@ -263,18 +263,14 @@ main {
 
 .testimonial {
   background: var(--card-bg);
-  border: 4px solid var(--border);
+  border: 4px solid var(--accent);
   border-radius: 24px;
   padding: 1.75rem;
   box-shadow: var(--shadow);
   text-align: left;
 }
 
-.testimonial blockquote {
-  margin: 0 0 1rem;
-  font-size: 1.05rem;
-  line-height: 1.6;
-}
+.testimonial blockquote {`r`n  margin: 0 0 1rem;`r`n  font-size: 1.05rem;`r`n  line-height: 1.6;`r`n  background: var(--accent-soft);`r`n  border: 4px solid var(--accent);`r`n  border-radius: 18px;`r`n  padding: 1.25rem 1.5rem;`r`n  color: var(--text);`r`n}
 
 .testimonial figcaption {
   font-size: 0.9rem;
@@ -399,4 +395,6 @@ main {
     transform: none;
   }
 }
+
+
 
