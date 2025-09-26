@@ -76,7 +76,7 @@
           <article class="why__card why__card--highlight">
             <h3>&#11088; 5-star Rated Tutor</h3>
             <p>60+ MyTutor lessons, <strong>5-star reviews</strong>, <strong>enhanced DBS clearance</strong>, and trusted by schools for consistent, engaging support.</p>
-            <a class="why__cta" href="https://www.mytutor.co.uk/tutors/9468218/" target="_blank" rel="noopener">See reviews on MyTutor</a>
+            <a class="why__cta" href="https://www.mytutor.co.uk/tutors/9468218/" target="_blank" rel="noopener">MyTutor Reviews</a>
           </article>
           <article class="why__card">
             <h3>&#127891; Ritz Education Instructor</h3>
@@ -120,7 +120,8 @@
     </footer>
     <script>
       (function () {
-        const links = [...document.querySelectorAll('.topnav__link')];
+        // Only treat the real nav items as section links (exclude brand)
+        const links = [...document.querySelectorAll('.topnav__links .topnav__link')];
         const sections = links
           .map((link) => document.querySelector(link.getAttribute('href')))
           .filter((el) => el && el.id);
@@ -260,7 +261,6 @@
     </script>
   </body>
 </html>
-
 
 
 
