@@ -26,6 +26,11 @@ body {
   min-height: 100vh;
 }
 
+strong {
+  color: var(--accent);
+  font-weight: 700;
+}
+
 a {
   color: inherit;
 }
@@ -244,7 +249,7 @@ main {
 
 
 .why__card--highlight {
-  background: var(--accent-soft);
+  background: var(--card-bg);
   border-color: var(--accent-dark);
 }
 
