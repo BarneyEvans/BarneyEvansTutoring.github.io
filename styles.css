@@ -101,6 +101,16 @@ strong {
   outline: none;
 }
 
+.topnav__link.is-active {
+  background: var(--accent);
+  color: #ffffff;
+  border-color: var(--border);
+}
+
+.topnav__brand.is-active::before {
+  background: #ffffff;
+}
+
 
 .topnav__brand {
   gap: 0.5rem;
@@ -571,4 +581,3 @@ main {
 .contact__link:active span:last-child {
   color: var(--accent-dark);
 }
-

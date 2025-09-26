@@ -117,11 +117,148 @@
     <footer class="footer">
       <p>Helping students excel since 2023.</p>
     </footer>
+    <script>
+      (function () {
+        const links = [...document.querySelectorAll('.topnav__link')];
+        const sections = links
+          .map((link) => document.querySelector(link.getAttribute('href')))
+          .filter((el) => el && el.id);
+
+        if (!links.length || !sections.length) {
+          return;
+        }
+
+        const nav = document.querySelector('.topnav');
+        const isKnown = (hash) => links.some((link) => link.getAttribute('href') === hash);
+
+        const setActive = (targetId) => {
+          links.forEach((link) => {
+            const match = link.getAttribute('href') === targetId;
+            link.classList.toggle('is-active', match);
+            if (match) {
+              link.setAttribute('aria-current', 'location');
+            } else {
+              link.removeAttribute('aria-current');
+            }
+          });
+        };
+
+        let manualLockId = null;
+        let manualLockTimer = null;
+
+        const clearManualLock = () => {
+          if (manualLockTimer) {
+            clearTimeout(manualLockTimer);
+            manualLockTimer = null;
+          }
+          manualLockId = null;
+        };
+
+        const getViewportHeight = () => window.innerHeight || document.documentElement.clientHeight || 0;
+        const getNavHeight = () => (nav ? nav.offsetHeight : 0);
+
+        const findActiveSection = () => {
+          const offset = window.scrollY + getNavHeight() + 300;
+          const docHeight = Math.max(
+            document.body.scrollHeight,
+            document.documentElement.scrollHeight,
+            document.body.offsetHeight,
+            document.documentElement.offsetHeight,
+            document.body.clientHeight,
+            document.documentElement.clientHeight
+          );
+          const viewportBottom = window.scrollY + getViewportHeight();
+
+          if (docHeight - viewportBottom < 30) {
+            return sections[sections.length - 1];
+          }
+
+          for (let i = sections.length - 1; i >= 0; i -= 1) {
+            const section = sections[i];
+            const rect = section.getBoundingClientRect();
+            const sectionTop = rect.top + window.scrollY;
+            if (offset >= sectionTop) {
+              return section;
+            }
+          }
+
+          return sections[0];
+        };
+
+        const updateActive = () => {
+          const activeSection = findActiveSection();
+          if (!activeSection) {
+            return;
+          }
+          const targetId = `#${activeSection.id}`;
+          if (!isKnown(targetId)) {
+            return;
+          }
+          if (manualLockId) {
+            if (manualLockId !== targetId) {
+              return;
+            }
+            clearManualLock();
+          }
+          setActive(targetId);
+        };
+
+        let ticking = false;
+        const requestUpdate = () => {
+          if (ticking) {
+            return;
+          }
+          ticking = true;
+          window.requestAnimationFrame(() => {
+            updateActive();
+            ticking = false;
+          });
+        };
+
+        const holdManualLock = (targetId, duration = 1400) => {
+          manualLockId = targetId;
+          setActive(targetId);
+          if (manualLockTimer) {
+            clearTimeout(manualLockTimer);
+          }
+          manualLockTimer = setTimeout(() => {
+            clearManualLock();
+            requestUpdate();
+          }, duration);
+        };
+
+        const initialHash = window.location.hash;
+        if (isKnown(initialHash)) {
+          setActive(initialHash);
+        } else {
+          updateActive();
+        }
+
+        links.forEach((link) => {
+          link.addEventListener('click', () => {
+            const targetId = link.getAttribute('href');
+            if (isKnown(targetId)) {
+              holdManualLock(targetId);
+              requestUpdate();
+            }
+          });
+        });
+
+        window.addEventListener('scroll', requestUpdate, { passive: true });
+        window.addEventListener('resize', requestUpdate);
+        window.addEventListener('hashchange', () => {
+          const hash = window.location.hash;
+          if (isKnown(hash)) {
+            holdManualLock(hash);
+          }
+          requestUpdate();
+        });
+
+        requestUpdate();
+      })();
+    </script>
   </body>
 </html>
-
-
-
 
 
 
