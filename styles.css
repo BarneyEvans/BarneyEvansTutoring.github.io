@@ -138,7 +138,7 @@ main {
 .section-title {
   font-family: 'Poppins', 'DM Sans', sans-serif;
   font-size: clamp(2rem, 4vw, 2.5rem);
-  margin: 0 auto 2rem;
+  margin: 0 auto 1.5rem;
   max-width: var(--max-width);
   padding: 0 2rem;
 }
@@ -225,6 +225,8 @@ main {
   border: 4px solid var(--accent);
   border-radius: 28px;
   padding: 1.75rem;
+  display: flex;
+  flex-direction: column;
 }
 
 
@@ -250,7 +252,8 @@ main {
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
-  margin-top: 1.25rem;
+  margin: 1.25rem 0 0;
+  align-self: center;
   padding: 0.75rem 1.4rem;
   border: 3px solid var(--border);
   border-radius: 999px;
@@ -289,12 +292,20 @@ main {
 }
 
 
+.contact__summary {
+  max-width: 36rem;
+  margin: 0 auto 1.5rem;
+  font-size: 1.05rem;
+  line-height: 1.6;
+}
+
 .contact__links {
   display: flex;
   justify-content: center;
   flex-wrap: wrap;
   gap: 1rem 2rem;
 }
+
 
 .contact__link {
   display: inline-flex;
@@ -309,6 +320,10 @@ main {
   box-shadow: var(--shadow);
   transition: box-shadow 0.2s ease;
   text-decoration: none;
+}
+
+.contact__link .icon {
+  color: var(--border);
 }
 
 .contact__link:focus {
@@ -336,7 +351,6 @@ main {
   font-weight: 700;
   font-size: 0.9rem;
 }
-
 .icon--linkedin svg {
   width: 0.9rem;
   height: 0.9rem;
@@ -442,3 +456,9 @@ main {
 }
 
 
+
+.contact__link:hover span:last-child,
+.contact__link:focus span:last-child,
+.contact__link:active span:last-child {
+  color: var(--accent-dark);
+}
