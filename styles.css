@@ -237,6 +237,8 @@ main {
   line-height: 1.6;
 }
 
+
+
 .why__card--highlight {
   background: var(--accent-soft);
   border-color: var(--accent-dark);
@@ -257,11 +259,12 @@ main {
   text-transform: uppercase;
   box-shadow: var(--shadow);
   transition: transform 0.2s ease;
+  text-decoration: none;
 }
 
-.why__cta::after {
-  content: '\2197';
-  font-size: 1rem;
+.why__cta:focus {
+  outline: 3px solid var(--accent);
+  outline-offset: 4px;
 }
 
 .why__cta:focus,
