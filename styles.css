@@ -1,4 +1,4 @@
-﻿:root {
+:root {
   --bg: #fff9eb;
   --text: #1a1a1a;
   --accent: #ff69b4;
@@ -257,8 +257,8 @@ main {
   padding: 0.75rem 1.4rem;
   border: 3px solid var(--border);
   border-radius: 999px;
-  background: var(--accent);
-  color: #ffffff;
+  background: var(--card-bg);
+  color: var(--border);
   font-weight: 700;
   letter-spacing: 0.03em;
   text-transform: uppercase;
@@ -277,6 +277,7 @@ main {
 .why__cta:active {
   box-shadow: none;
   transform: translate(3px, 3px);
+  color: var(--accent-dark);
 }
 .contact {
   max-width: var(--max-width);
@@ -462,3 +463,6 @@ main {
 .contact__link:active span:last-child {
   color: var(--accent-dark);
 }
+
+
+
