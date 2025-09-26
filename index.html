@@ -11,10 +11,11 @@
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
+    <div id="page-top"></div>
     <a class="skip-link" href="#services">Skip to main content</a>
     <nav class="topnav" aria-label="Primary">
       <div class="topnav__wrap">
-        <a class="topnav__brand topnav__link" href="#top">Barney Evans</a>
+        <a class="topnav__brand topnav__link" href="#page-top">Barney Evans</a>
         <div class="topnav__links">
           <a class="topnav__link" href="#services">Services</a>
           <a class="topnav__link" href="#why">Why Me</a>
@@ -97,7 +98,7 @@
 
       <section class="contact" id="contact">
         <h2 class="section-title">Ready to get started?</h2>
-        <p class="contact__summary">Every new student gets a <strong>free 20 min discovery call</strong>, plus <strong>London in-person availability</strong> and <strong>online sessions</strong> via Zoom or Microsoft Teams.</p>
+        <p class="contact__summary">Every new student gets a <strong>free 20 min discovery call</strong>, plus <strong>South London in-person availability</strong> and <strong>online sessions</strong> via Zoom or Microsoft Teams.</p>
         <div class="contact__links">
           <a class="contact__link" href="mailto:evansba2701@gmail.com">
             <span class="icon icon--mail" aria-hidden="true">@</span>
@@ -120,8 +121,8 @@
     </footer>
     <script>
       (function () {
-        // Only treat the real nav items as section links (exclude brand)
-        const links = [...document.querySelectorAll('.topnav__links .topnav__link')];
+        // Track all nav links, including the brand, for active highlighting
+        const links = [...document.querySelectorAll('.topnav__link')];
         const sections = links
           .map((link) => document.querySelector(link.getAttribute('href')))
           .filter((el) => el && el.id);
@@ -261,8 +262,6 @@
     </script>
   </body>
 </html>
-
-
 
 
 
