@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <!-- Monochrome mask for Safari pinned tabs -->
+  <path fill="#000" d="M32 10L6 22l26 12 26-12-26-12zM21 34v7c0 4 22 4 22 0v-7l-11 5-11-5zM50.5 24v12a2 2 0 0 0 2 2H54v4h-3.5a4 4 0 0 1-4-4V24z"/>
+</svg>

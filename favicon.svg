@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <title>Mortarboard</title>
+  <g fill="#1a1a1a">
+    <!-- Board -->
+    <path d="M32 10L6 22l26 12 26-12-26-12z"/>
+    <!-- Cap (under board) -->
+    <path d="M21 34v7c0 4 22 4 22 0v-7l-11 5-11-5z"/>
+    <!-- Tassel -->
+    <circle cx="50.5" cy="22" r="2.2"/>
+    <path d="M50.5 24v12a2 2 0 0 0 2 2h1.5v4h-3.5a4 4 0 0 1-4-4V24z"/>
+  </g>
+</svg>
