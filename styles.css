@@ -369,6 +369,7 @@ main {
 .why__cta {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 0.5rem;
   margin: 1.25rem 0 0;
   align-self: center;
@@ -377,6 +378,7 @@ main {
   border-radius: 999px;
   background: var(--card-bg);
   color: var(--border);
+  text-align: center;
   font-weight: 700;
   letter-spacing: 0.03em;
   text-transform: uppercase;
