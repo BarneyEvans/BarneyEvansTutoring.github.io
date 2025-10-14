@@ -297,8 +297,8 @@ main {
 }
 
 .card__price {
-  background: var(--accent);
-  color: #ffffff;
+  background: var(--accent-soft);
+  color: #000000;
   border-radius: 999px;
   padding: 0.4rem 1rem;
   border: 3px solid var(--border);
