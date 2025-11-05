@@ -117,3 +117,183 @@
     });
   });
 })();
+
+// Mobile hamburger navigation
+(function () {
+  const hamburger = document.querySelector('.js-hamburger');
+  const mobileMenu = document.getElementById('mobile-menu');
+  if (!hamburger || !mobileMenu) return;
+
+  const coursesToggle = document.querySelector('.js-mobile-courses-toggle');
+  const coursesSub = document.getElementById('mobile-courses');
+  const motionQuery = typeof window !== 'undefined' && typeof window.matchMedia === 'function'
+    ? window.matchMedia('(prefers-reduced-motion: reduce)')
+    : null;
+  const prefersReducedMotion = motionQuery ? motionQuery.matches : false;
+  let subTransitionCleanup = null;
+  let subRaf = null;
+
+  const cancelSubTransition = () => {
+    if (typeof subTransitionCleanup === 'function') {
+      subTransitionCleanup();
+      subTransitionCleanup = null;
+    }
+  };
+
+  const cancelSubRaf = () => {
+    if (subRaf !== null && typeof cancelAnimationFrame === 'function') {
+      cancelAnimationFrame(subRaf);
+    }
+    subRaf = null;
+  };
+
+  const nextSubFrame = (callback) => {
+    cancelSubRaf();
+    if (typeof requestAnimationFrame !== 'function') {
+      callback();
+      return;
+    }
+    subRaf = requestAnimationFrame(() => {
+      subRaf = null;
+      callback();
+    });
+  };
+
+  const onSubTransitionEnd = (callback) => {
+    if (!coursesSub) return;
+    const handler = (event) => {
+      if (event.target !== coursesSub || event.propertyName !== 'max-height') return;
+      coursesSub.removeEventListener('transitionend', handler);
+      subTransitionCleanup = null;
+      callback();
+    };
+    coursesSub.addEventListener('transitionend', handler);
+    subTransitionCleanup = () => {
+      coursesSub.removeEventListener('transitionend', handler);
+      subTransitionCleanup = null;
+    };
+  };
+
+  const openCoursesSub = () => {
+    if (!coursesSub || coursesSub.classList.contains('is-open')) return;
+    cancelSubTransition();
+    cancelSubRaf();
+    coursesSub.removeAttribute('hidden');
+    coursesSub.setAttribute('aria-hidden', 'false');
+
+    if (prefersReducedMotion) {
+      coursesSub.classList.add('is-open');
+      coursesSub.style.removeProperty('--mobile-sub-height');
+      return;
+    }
+
+    coursesSub.style.setProperty('--mobile-sub-height', `${coursesSub.scrollHeight}px`);
+    void coursesSub.offsetHeight;
+    nextSubFrame(() => {
+      coursesSub.classList.add('is-open');
+    });
+    onSubTransitionEnd(() => {
+      coursesSub.style.removeProperty('--mobile-sub-height');
+    });
+  };
+
+  const closeCoursesSub = (animate = true) => {
+    if (!coursesSub || coursesSub.hasAttribute('hidden')) return;
+    cancelSubTransition();
+    cancelSubRaf();
+    coursesSub.setAttribute('aria-hidden', 'true');
+
+    const finish = () => {
+      coursesSub.classList.remove('is-open');
+      coursesSub.setAttribute('hidden', '');
+      coursesSub.style.removeProperty('--mobile-sub-height');
+    };
+
+    if (!animate || prefersReducedMotion) {
+      finish();
+      return;
+    }
+
+    coursesSub.style.setProperty('--mobile-sub-height', `${coursesSub.scrollHeight}px`);
+    void coursesSub.offsetHeight;
+    nextSubFrame(() => {
+      coursesSub.classList.remove('is-open');
+    });
+    onSubTransitionEnd(finish);
+  };
+
+  if (coursesSub) {
+    coursesSub.setAttribute('aria-hidden', coursesSub.hasAttribute('hidden') ? 'true' : 'false');
+  }
+
+  const openMobile = () => {
+    mobileMenu.classList.add('is-open');
+    hamburger.setAttribute('aria-expanded', 'true');
+    if (mobileMenu) mobileMenu.setAttribute('aria-hidden', 'false');
+    hamburger.classList.add('is-active');
+    hamburger.setAttribute('aria-label', 'Close menu');
+    document.body.classList.add('is-mobile-menu-open');
+    const first = mobileMenu.querySelector('a,button');
+    if (first) first.focus();
+  };
+  const closeMobile = () => {
+    mobileMenu.classList.remove('is-open');
+    hamburger.setAttribute('aria-expanded', 'false');
+    if (mobileMenu) mobileMenu.setAttribute('aria-hidden', 'true');
+    hamburger.classList.remove('is-active');
+    hamburger.setAttribute('aria-label', 'Open menu');
+    document.body.classList.remove('is-mobile-menu-open');
+    if (coursesToggle) {
+      coursesToggle.setAttribute('aria-expanded', 'false');
+    }
+    closeCoursesSub(false);
+  };
+
+  hamburger.addEventListener('click', () => {
+    if (mobileMenu.classList.contains('is-open')) {
+      closeMobile();
+    } else {
+      openMobile();
+    }
+  });
+
+  document.addEventListener('click', (e) => {
+    if (!mobileMenu.contains(e.target) && !hamburger.contains(e.target)) {
+      closeMobile();
+    }
+  });
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') closeMobile();
+  });
+
+  // Close the mobile menu if resizing to desktop
+  window.addEventListener('resize', () => {
+    if (window.innerWidth > 700) {
+      closeMobile();
+    }
+  });
+
+  if (coursesToggle && coursesSub) {
+    coursesToggle.addEventListener('click', () => {
+      const expanded = coursesToggle.getAttribute('aria-expanded') === 'true';
+      if (expanded) {
+        coursesToggle.setAttribute('aria-expanded', 'false');
+        closeCoursesSub(true);
+      } else {
+        coursesToggle.setAttribute('aria-expanded', 'true');
+        openCoursesSub();
+      }
+    });
+    // Keep parent highlighted while interacting inside submenu
+    const addParentHighlight = () => coursesToggle.classList.add('is-child-hover');
+    const removeParentHighlight = () => coursesToggle.classList.remove('is-child-hover');
+    coursesSub.addEventListener('pointerenter', addParentHighlight);
+    coursesSub.addEventListener('pointerleave', removeParentHighlight);
+    coursesSub.addEventListener('focusin', addParentHighlight);
+    coursesSub.addEventListener('focusout', (e) => {
+      // Remove when focus fully leaves submenu
+      if (!coursesSub.contains(e.relatedTarget)) removeParentHighlight();
+    });
+  }
+})();
