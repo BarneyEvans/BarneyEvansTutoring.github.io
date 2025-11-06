@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="utf-8" />
@@ -42,82 +42,140 @@
           <a class="topnav__link" href="#contact">Contact</a>
 </div>  <button class="topnav__hamburger js-hamburger" aria-label="Open menu" aria-controls="mobile-menu" aria-expanded="false"><span class="bar"></span><span class="bar"></span><span class="bar"></span></button></div><div id="mobile-menu" class="topnav__mobile" role="menu" aria-hidden="true"><a class="topnav__mobile-link" href="home.html">Home</a><a class="topnav__mobile-link" href="index.html" aria-current="page">Private Tutoring</a><button class="topnav__mobile-link topnav__mobile-toggle js-mobile-courses-toggle" aria-expanded="false" aria-controls="mobile-courses">Group Courses</button><div id="mobile-courses" class="topnav__mobile-sub" hidden><a class="topnav__mobile-sublink" href="group-courses-home.html">Overview</a><a class="topnav__mobile-sublink" href="group-courses-python.html">Python</a><a class="topnav__mobile-sublink" href="group-courses-machine-learning.html">Machine Learning</a></div><a class="topnav__mobile-link" href="about.html">About Me</a><a class="topnav__mobile-link" href="#contact">Contact</a></div></nav>
     <div class="site-content">
-    <header class="hero" id="top">
-      <div class="hero__content">
-        <h1 class="hero__name">Barney Evans</h1>
-        <p class="hero__subtitle">Computer Science &amp; GCSE Tutoring</p>
-        <p class="hero__tagline">Graduate Southampton MEng AI | 5-star MyTutor</p>
-        <ul class="hero__chips">
-          <li>60+ MyTutor lessons</li>
-          <li>Enhanced DBS</li>
-          <li>Trusted by schools</li>
-        </ul>
-      </div>
-      <figure class="hero__media hero__media--square">
-        <img src="grad_photo.jpg" alt="Barney Evans at Southampton graduation" />
-      </figure>
-    </header>
-
-    <main>
-      <section class="services" id="services">
-        <h2 class="section-title">How I Help</h2>
-        <div class="services__grid">
-                              <article class="card">
-            <div class="card__header">
-              <h3>Programming &amp; Computer Science</h3>
-              <span class="card__price">&pound;32/hour</span>
-            </div>
-                        <ul class="card__list">
-              <li>&#9989; Python (Beginner &rarr; Advanced)</li>
-              <li>&#128187; Web development (HTML/CSS/JS)</li>
-              <li>&#129302; Machine learning &amp; AI projects</li>
-              <li>&#129504; A-level &amp; IB Computer Science</li>
-              <li>&#127891; University Aid</li>
-            </ul>
-          </article>
-
-                                        <article class="card">
-            <div class="card__header">
-              <h3>GCSE Sciences &amp; Maths</h3>
-              <span class="card__price">&pound;29/hour</span>
-            </div>
-            <ul class="card__list">
-              <li>&#9989; GCSE Maths, Physics, Chemistry, Biology, Computer Science</li>
-              <li>&#128218; All exam boards (OCR, Edexcel, AQA, IB)</li>
-              <li>&#128197; Revision planning &amp; weekly feedback</li>
-              <li>&#129309; Confidence-building live collaboration</li>
-            </ul>
-          </article>
-        </div>
-      </section>
-      <section class="why" id="why">
-        <h2 class="section-title">Why Choose Me</h2>
-        <div class="why__grid">
-          <article class="why__card why__card--highlight">
-            <h3>&#11088; 5-star Rated Tutor</h3>
-            <p>75+ MyTutor lessons, <strong>5-star reviews</strong>, <strong>enhanced DBS clearance</strong>, and trusted by schools for consistent, engaging support.</p>
-            <a class="why__cta" href="https://www.mytutor.co.uk/tutors/9468218/" target="_blank" rel="noopener">MyTutor Reviews</a>
-          </article>
-          <article class="why__card">
-            <h3>&#127891; Ritz Education Instructor</h3>
-            <p><strong>Weekly 90-min online classes</strong> for ages 8&ndash;15 (~14 per class) in Python, web development and AI basics, with <strong>Bebras/Olympiad practice</strong> and projects (2024&ndash;25).</p>
-          </article>
-          <article class="why__card">
-            <h3>&#127774; Code Kids Camps</h3>
-            <p><strong>In-person summer camps</strong> for ages 8&ndash;13 (week-long, school-hosted) with <strong>daily hands-on projects</strong>.</p>
-
-          </article>
-          <article class="why__card">
-            <h3>&#128218; Academic Credentials</h3>
-            <p><strong>University of Southampton</strong>: Computer Science with Artificial Intelligence, four year integrated master's.</p>
-            <p>A-levels: <strong>A*, A*, A</strong> in Computer Science, Chemistry, Mathematics.</p>
-          </article>
-        </div>
+      <main>
+      <section class="pt-intro" aria-label="Page introduction">
+        <h1 class="pt-intro__title" id="page-title">1-to-1 Private Tutoring</h1>
+        <p class="pt-intro__sub">Choose the option that best fits you.</p>
       </section>
 
+      <!-- Two main service cards -->
+      <section class="service-cards" aria-labelledby="page-title" id="services">
+        <article class="service-card" id="card-cs">
+          <div class="service-card__head">
+            <h2 class="service-card__title">Programming &amp; Computer Science</h2>
+            <span class="service-card__price">&pound;32/hour</span>
+          </div>
+          <button class="service-card__cta" type="button" aria-controls="details-cs" aria-expanded="false">
+            View Programming &amp; CS details
+          </button>
+        </article>
+
+        <article class="service-card" id="card-gcse">
+          <div class="service-card__head">
+            <h2 class="service-card__title">GCSE Sciences &amp; Maths</h2>
+            <span class="service-card__price">&pound;29/hour</span>
+          </div>
+          <button class="service-card__cta" type="button" aria-controls="details-gcse" aria-expanded="false">
+            View GCSE details
+          </button>
+        </article>
+      </section>
+
+      <!-- Dynamic detail panels -->
+      <section class="service-details" id="details">
+        <!-- Programming & CS detail panel (hidden by default) -->
+        <section id="details-cs" class="service-panel" role="region" aria-labelledby="card-cs-title" aria-hidden="true" hidden>
+          <h3 id="card-cs-title" class="service-panel__title">🧠 Programming &amp; Computer Science &ndash; &pound;32/hour</h3>
+          <div class="service-panel__body">
+            <h4>At a glance</h4>
+            <dl class="service-panel__meta">
+              <div>
+                <dt>Level</dt>
+                <dd>KS3, GCSE &amp; A‑Level plus early university support</dd>
+              </div>
+              <div>
+                <dt>Topics</dt>
+                <dd>Python (incl. GCSE Computer Science), machine learning, web development and CS theory</dd>
+              </div>
+              <div>
+                <dt>Format</dt>
+                <dd>Online worldwide or South London in‑person</dd>
+              </div>
+            </dl>
+            <h4>Who this is for</h4>
+            <p>GCSE, A‑Level, IB and early‑university students who want structured help with programming, Computer Science theory or coursework.</p>
+
+            <h4>What we can cover</h4>
+            <ul class="service-panel__list">
+              <li>Python from beginner to advanced (including exam‑board style questions)</li>
+              <li>Web development: HTML, CSS, JavaScript</li>
+              <li>Coursework support and project planning</li>
+              <li>Machine learning &amp; AI fundamentals (simple models in Python)</li>
+              <li>A‑Level &amp; IB Computer Science topics and past papers</li>
+              <li>University CS modules: debugging code, understanding algorithms, exam revision</li>
+            </ul>
+
+            <h4>Ideal for</h4>
+            <p>Students who want structured coding help or are curious about Artificial Intelligence and Python.</p>
+
+            <h4>Typical 1‑to‑1 lesson structure</h4>
+            <p>Each session follows a steady rhythm so progress feels clear and joined up.</p>
+            <div class="lesson-steps" aria-hidden="true">
+              <div class="lesson-step"><span class="lesson-step__num">1</span><span>Homework recap</span></div>
+              <div class="lesson-step"><span class="lesson-step__num">2</span><span>Interactive teaching &amp; small questions</span></div>
+              <div class="lesson-step"><span class="lesson-step__num">3</span><span>Guided practice</span></div>
+              <div class="lesson-step"><span class="lesson-step__num">4</span><span>Homework &amp; next steps</span></div>
+            </div>
+
+            <p class="service-panel__note">Ideal for students aiming for top grades or wanting to go beyond the school syllabus into real Computer Science.</p>
+          </div>
+        </section>
+
+        <!-- GCSE detail panel (hidden by default) -->
+        <section id="details-gcse" class="service-panel" role="region" aria-labelledby="card-gcse-title" aria-hidden="true" hidden>
+          <h3 id="card-gcse-title" class="service-panel__title">📚 GCSE Sciences &amp; Maths &ndash; &pound;29/hour</h3>
+          <div class="service-panel__body">
+            <h4>At a glance</h4>
+            <dl class="service-panel__meta">
+              <div>
+                <dt>Subjects</dt>
+                <dd>Maths, Physics, Chemistry, Biology &amp; Computer Science</dd>
+              </div>
+              <div>
+                <dt>Exam boards</dt>
+                <dd>AQA, Edexcel, OCR &amp; CIE</dd>
+              </div>
+              <div>
+                <dt>Year groups</dt>
+                <dd>Years 9–11 (GCSE / IGCSE)</dd>
+              </div>
+            </dl>
+            <h4>Who this is for</h4>
+            <p>GCSE and IGCSE students (Years 9–11), including triple and combined science, across AQA, Edexcel, OCR and IB.</p>
+
+            <h4>Subjects covered</h4>
+            <ul class="service-panel__list">
+              <li>Maths</li>
+              <li>Physics</li>
+              <li>Chemistry</li>
+              <li>Biology</li>
+              <li>GCSE Computer Science theory</li>
+            </ul>
+
+            <h4>What we focus on</h4>
+            <ul class="service-panel__list">
+              <li>Filling gaps in understanding from school lessons</li>
+              <li>Turning mark schemes into clear, step‑by‑step answers</li>
+              <li>Past paper practice and exam technique</li>
+              <li>Building a realistic revision plan for mocks and final exams</li>
+            </ul>
+
+            <h4>Typical 1‑to‑1 lesson structure</h4>
+            <p>Clear steps help build confidence and exam technique.</p>
+            <div class="lesson-steps" aria-hidden="true">
+              <div class="lesson-step"><span class="lesson-step__num">1</span><span>Homework recap</span></div>
+              <div class="lesson-step"><span class="lesson-step__num">2</span><span>Interactive teaching &amp; small questions</span></div>
+              <div class="lesson-step"><span class="lesson-step__num">3</span><span>Guided practice</span></div>
+              <div class="lesson-step"><span class="lesson-step__num">4</span><span>Homework &amp; next steps</span></div>
+            </div>
+          </div>
+        </section>
+      </section>
+
+      <!-- Bottom CTA (reuse contact style) -->
       <section class="contact" id="contact">
-        <h2 class="section-title">Ready to get started?</h2>
-        <p class="contact__summary">Every new student gets a <strong>free 20 min discovery call</strong>, plus <strong>South London in-person availability</strong> and <strong>online sessions</strong> via Zoom or Microsoft Teams.</p>
+        <h2 class="section-title">Ready to get started with 1-to-1 tutoring?</h2>
+        <p class="contact__summary">Book a <strong>free 20-minute discovery call</strong> to work out the best plan for you. Online worldwide or South London in-person.</p>
         <div class="contact__links">
           <a class="contact__link" href="mailto:ebarneytutoring@gmail.com">
             <span class="icon icon--mail" aria-hidden="true">@</span>
@@ -142,8 +200,6 @@
     <script src="scripts.js"></script>
   </body>
 </html>
-
-
 
 
 
