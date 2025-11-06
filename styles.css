@@ -842,7 +842,8 @@ button.contact__link {
 
   /* Home splash responsive */
   .home-splash { grid-template-columns: 1fr; text-align: center; padding: 2.5rem 1.5rem 1.5rem; }
-  .photo-card { width: min(85vw, 420px); justify-self: center; }
+  .hero-left { min-width: 0; }
+  .photo-card { width: min(100%, 420px); justify-self: center; }
   .feature-pills { max-width: 560px; margin: 0 auto; }
 }
 
