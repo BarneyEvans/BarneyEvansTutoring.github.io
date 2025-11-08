@@ -512,30 +512,4 @@
   }
 })();
 
-// Lesson Structure Toggle
-(function () {
-  const toggleButton = document.querySelector('.lesson-summary__toggle');
-  if (!toggleButton) return;
-
-  const details = document.querySelector('.lesson-details');
-
-  toggleButton.addEventListener('click', function() {
-    const isExpanded = details.classList.contains('is-expanded');
-
-    if (isExpanded) {
-      // Collapse
-      details.classList.remove('is-expanded');
-      toggleButton.setAttribute('aria-expanded', 'false');
-      toggleButton.textContent = 'See full details ▼';
-      details.setAttribute('hidden', '');
-    } else {
-      // Expand
-      details.classList.add('is-expanded');
-      toggleButton.setAttribute('aria-expanded', 'true');
-      toggleButton.textContent = 'Show less ▲';
-      details.removeAttribute('hidden');
-    }
-  });
-})();
-
  
