@@ -11,11 +11,35 @@
   const setHover = () => {};
 
   const openMenu = () => {
+    if (dropdown) dropdown.classList.remove('is-closing');
     menuItem.classList.add('is-open');
     if (trigger) trigger.setAttribute('aria-expanded', 'true');
+    // After opening, adjust alignment to keep within viewport
+    try {
+      if (!dropdown) return;
+      dropdown.classList.remove('is-align-right');
+      const adjust = () => {
+        const rect = dropdown.getBoundingClientRect();
+        const vw = window.innerWidth || document.documentElement.clientWidth;
+        const pad = 12;
+        if (rect.right > vw - pad) {
+          dropdown.classList.add('is-align-right');
+        }
+      };
+      // run on next frame to ensure dimensions are accurate
+      if (typeof requestAnimationFrame === 'function') requestAnimationFrame(adjust); else setTimeout(adjust, 0);
+    } catch (_) {}
   };
 
   const closeMenu = () => {
+    if (dropdown) {
+      dropdown.classList.add('is-closing');
+      const tidy = () => {
+        dropdown.removeEventListener('transitionend', tidy);
+        dropdown.classList.remove('is-closing');
+      };
+      dropdown.addEventListener('transitionend', tidy);
+    }
     menuItem.classList.remove('is-open');
     if (trigger) trigger.setAttribute('aria-expanded', 'false');
   };
@@ -464,3 +488,28 @@
   applyHash(true);
   window.addEventListener('hashchange', () => applyHash(true));
 })();
+
+// Nav link linger effect: slightly longer fade on hover-out
+(function () {
+  try {
+    const motionQuery = typeof window !== 'undefined' && typeof window.matchMedia === 'function'
+      ? window.matchMedia('(prefers-reduced-motion: reduce)')
+      : null;
+    const prefersReducedMotion = motionQuery ? motionQuery.matches : false;
+    if (prefersReducedMotion) return;
+
+    document.querySelectorAll('.topnav__link, .topnav__brand--icon, .topnav__mobile-link, .topnav__mobile-toggle').forEach((el) => {
+      el.addEventListener('pointerenter', () => {
+        el.classList.remove('is-leaving');
+      });
+      el.addEventListener('pointerleave', () => {
+        el.classList.add('is-leaving');
+        window.setTimeout(() => el.classList.remove('is-leaving'), 360);
+      });
+    });
+  } catch (_) {
+    // no-op if DOM not ready
+  }
+})();
+
+ 

@@ -81,24 +81,28 @@ strong {
   right: 0;
   margin: 0;
   z-index: 1100;
-  background: var(--card-bg);
-  border-bottom: 3px solid var(--border);
+  background: transparent;
+  border-bottom: none;
 }
 
 .topnav__wrap {
   max-width: var(--max-width);
-  margin: 0 auto;
-  padding: 0.85rem 2rem;
+  margin: 0.5rem auto;
+  padding: 0.5rem 1rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
   gap: 0.75rem;
+  background: var(--card-bg);
+  border: 3px solid var(--border);
+  border-radius: 999px;
+  box-shadow: none;
 }
 
 .topnav__links {
   display: flex;
   align-items: center;
-  gap: 1.1rem;
+  gap: 0.9rem;
 }
 
 .topnav__item {
@@ -112,20 +116,21 @@ strong {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 0.5rem 0.35rem;
+  padding: 0.35rem 0.6rem;
   border: none;
-  border-bottom: 3px solid transparent;
-  border-radius: 0;
+  border-radius: 10px; /* subtle rounding only for hover fill */
+  background: transparent;
+  box-shadow: none;
   font-weight: 600;
   color: var(--border);
   text-decoration: none;
-  transition: border-color 0.18s ease;
+  transition: background-color 0.22s ease, color 0.22s ease;
 }
 
 .topnav__link:hover,
 .topnav__link:focus-visible,
 .topnav__link:active {
-  border-bottom-color: var(--accent);
+  background: var(--accent-softer);
   outline: none;
 }
 
@@ -136,20 +141,20 @@ strong {
 }
 
 .topnav__link[aria-current="page"] {
-  border-bottom-color: var(--accent);
+  background: var(--accent-soft);
+  font-weight: 700;
 }
 
 .topnav__link.is-active {
-  background: transparent;
-  border-bottom-color: var(--accent);
+  background: var(--accent-soft);
 }
 
 .topnav__link--has-menu::after {
   content: '';
-  width: 6px;
-  height: 6px;
-  border-right: 1.5px solid currentColor;
-  border-bottom: 1.5px solid currentColor;
+  width: 8px;
+  height: 8px;
+  border-right: 2px solid currentColor;
+  border-bottom: 2px solid currentColor;
   transform: rotate(45deg);
   margin-left: 0.45rem;
   margin-top: -2px;
@@ -157,35 +162,66 @@ strong {
 }
 
 .topnav__brand {
-  padding: 0.5rem 0.35rem;
+  padding: 0.25rem 0;
   font-family: 'Poppins', 'DM Sans', sans-serif;
   font-weight: 700;
   color: var(--border);
   border: none;
-  border-bottom: 3px solid transparent;
+  border-bottom: none;
 }
 
 .topnav__brand::before { display: none; }
 
+/* Icon brand variant used for Home link */
+.topnav__brand--icon {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  text-decoration: none;
+  background: transparent;
+  padding: 0.35rem 0.6rem;
+  border-radius: 10px;
+  transition: background-color 0.22s ease, color 0.22s ease;
+}
+.topnav__brand--icon img {
+  display: block;
+  width: 20px;
+  height: 20px;
+}
+.topnav__brand-text { font-weight: 600; }
+.topnav__brand--icon[aria-current="page"] { background: var(--accent-soft); }
+.topnav__brand--icon[aria-current="page"] .topnav__brand-text { font-weight: 700; }
+
+.topnav__brand--icon:hover,
+.topnav__brand--icon:focus-visible,
+.topnav__brand--icon:active {
+  background: var(--accent-softer);
+  outline: none;
+}
+
+
 .topnav__dropdown {
   position: absolute;
-  left: 50%;
-  top: 100%;
-  transform: translate(-50%, 18px);
+  left: 0;
+  top: calc(100% + 10px);
+  transform: translateY(6px);
   min-width: clamp(240px, 45vw, 420px);
+  max-width: min(520px, calc(100vw - 24px));
   padding: 1.75rem 2rem;
   border-radius: 24px;
-  background: rgba(255, 255, 255, 0.96);
-  border: 1px solid rgba(26, 26, 26, 0.08);
+  background: var(--card-bg);
+  border: 3px solid var(--border);
   box-shadow: 0 22px 45px rgba(26, 26, 26, 0.12);
   display: grid;
   gap: 1rem;
   opacity: 0;
   visibility: hidden;
   pointer-events: none;
-  transition: opacity 0.2s ease, transform 0.2s ease;
+  transition: opacity 0.18s ease, transform 0.18s cubic-bezier(0.22, 1, 0.36, 1);
   z-index: 1200;
 }
+.topnav__dropdown.is-closing { transition-duration: 0.24s, 0.24s; }
+.topnav__dropdown.is-align-right { left: auto; right: 0; }
 
 .topnav__dropdown::before {
   content: '';
@@ -195,6 +231,24 @@ strong {
   right: 0;
   height: 18px;
 }
+
+/* Pointer notch linking dropdown to trigger */
+.topnav__dropdown::after {
+  content: '';
+  position: absolute;
+  top: -10px;
+  left: 28px;
+  width: 14px;
+  height: 14px;
+  background: var(--card-bg);
+  border-left: 3px solid var(--border);
+  border-top: 3px solid var(--border);
+  transform: rotate(45deg);
+  border-right: none;
+  border-bottom: none;
+  border-radius: 3px;
+}
+.topnav__dropdown.is-align-right::after { left: auto; right: 28px; }
 
 .topnav__dropdown-label {
   margin: 0;
@@ -209,22 +263,17 @@ strong {
   align-items: center;
   gap: 0.75rem;
   font-family: 'Poppins', 'DM Sans', sans-serif;
-  font-size: 1.4rem;
+  font-size: 1.25rem;
   font-weight: 600;
   color: var(--border);
   text-decoration: none;
-  padding: 0.45rem 0.6rem;
-  border-radius: 12px;
+  padding: 0.35rem 0.5rem;
+  border-radius: 10px;
   transition: color 0.2s ease, background-color 0.18s ease;
 }
 
-.topnav__dropdown-link:hover,
-.topnav__dropdown-link:focus-visible {
-  background: var(--accent-softer);
-  color: var(--border);
-  outline: 3px solid var(--accent);
-  outline-offset: 2px;
-}
+.topnav__dropdown-link:hover { background: var(--accent-softer); outline: none; }
+.topnav__dropdown-link:focus-visible { background: transparent; outline: 2px solid var(--accent); outline-offset: 3px; }
 
 .topnav__badge {
   font-family: 'DM Sans', sans-serif;
@@ -247,7 +296,7 @@ strong {
   opacity: 0;
   visibility: hidden;
   pointer-events: none;
-  transform: translate(-50%, 18px);
+  transform: translateY(6px);
 }
 
 .topnav__item--menu:hover .topnav__link--has-menu::after,
@@ -260,10 +309,7 @@ strong {
 .topnav__item--menu:hover .topnav__link--has-menu,
 .topnav__item--menu:focus-within .topnav__link--has-menu,
 .topnav__item--menu.is-open .topnav__link--has-menu {
-  background: var(--accent-soft);
-  border-radius: 12px;
-  padding-left: 0.6rem;
-  padding-right: 0.6rem;
+  background: transparent;
 }
 
 /* Also open dropdown when menu is toggled via click */
@@ -271,11 +317,16 @@ strong {
   opacity: 1;
   visibility: visible;
   pointer-events: auto;
-  transform: translate(-50%, 0);
+  transform: translateY(0);
 }
 
 .topnav__item--menu.is-open .topnav__link--has-menu::after {
   transform: rotate(225deg);
+}
+
+/* Subtle linger on hover-out for nav links */
+.topnav__link.is-leaving {
+  transition-duration: 0.34s, 0.34s, 0.34s, 0.22s; /* bg, color, shadow, transform */
 }
 
 /* Restore subtle blur/dim of page content when nav menu is active */
@@ -1180,9 +1231,9 @@ button.contact__link {
   transform-origin: top center;
   min-width: clamp(220px, 85vw, 420px);
   padding: 1rem 1.25rem;
-  border-radius: 18px;
-  background: rgba(255,255,255,0.98);
-  border: 1px solid rgba(26,26,26,0.1);
+  border-radius: 24px;
+  background: var(--card-bg);
+  border: 3px solid var(--border);
   box-shadow: 0 22px 45px rgba(26,26,26,0.12);
   display: grid;
   gap: 0.5rem;
@@ -1197,15 +1248,15 @@ button.contact__link {
 .topnav__mobile[aria-hidden="true"] { display: none; }
 .topnav__mobile.is-open { opacity: 1; visibility: visible; pointer-events: auto; transform: translateY(0); clip-path: inset(0 0 0 0); transition: clip-path 0.32s ease, transform 0.32s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.18s ease, visibility 0s linear 0s; }
 
-.topnav__mobile-link { display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; padding: 0.45rem 0.6rem; color: var(--border); font-weight: 700; text-decoration: none; border-radius: 12px; }
-.topnav__mobile-link:hover,
-.topnav__mobile-link:focus-visible { background: var(--accent-soft); box-shadow: inset 0 0 0 2px var(--accent); outline: none; }
+.topnav__mobile-link { display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; padding: 0.45rem 0.6rem; color: var(--border); font-weight: 700; text-decoration: none; border-radius: 12px; transition: background-color 0.22s ease, color 0.22s ease; }
+.topnav__mobile-link:hover { background: var(--accent-soft); outline: none; }
+.topnav__mobile-link:focus-visible { background: transparent; outline: 2px solid var(--accent); outline-offset: 3px; }
 .topnav__mobile-sublink { color: var(--border); text-decoration: none; font-weight: 600; padding: 0.35rem 0.45rem; border-radius: 10px; }
-.topnav__mobile-sublink:hover,
-.topnav__mobile-sublink:focus-visible { background: var(--accent-softer); box-shadow: inset 0 0 0 2px var(--accent); outline: none; }
+.topnav__mobile-sublink:hover { background: var(--accent-softer); outline: none; }
+.topnav__mobile-sublink:focus-visible { background: transparent; outline: 2px solid var(--accent); outline-offset: 3px; }
 .topnav__mobile-toggle { background: none; border: none; padding: 0.45rem 0.6rem; font: inherit; color: var(--border); font-weight: 700; display: flex; align-items: center; justify-content: space-between; cursor: pointer; border-radius: 12px; }
-.topnav__mobile-toggle:hover,
-.topnav__mobile-toggle:focus-visible { background: var(--accent-soft); box-shadow: inset 0 0 0 2px var(--accent); outline: none; }
+.topnav__mobile-toggle:hover { background: var(--accent-soft); outline: none; }
+.topnav__mobile-toggle:focus-visible { background: transparent; outline: 2px solid var(--accent); outline-offset: 3px; }
 /* Do not persist highlight when expanded; only hover/focus should highlight */
 .topnav__mobile-toggle::after { content: ''; width: 8px; height: 8px; border-right: 2px solid currentColor; border-bottom: 2px solid currentColor; transform: rotate(45deg); margin-left: 0.5rem; transition: transform 0.2s ease; }
 .topnav__mobile-toggle[aria-expanded="true"]::after { transform: rotate(225deg); }
@@ -1224,6 +1275,9 @@ body.is-mobile-menu-open::after { content: ''; position: fixed; inset: 0; z-inde
   .topnav__mobile.is-open { transition: none; }
   .topnav__mobile-sub { transition: none; will-change: auto; }
 }
+
+/* Linger on hover-out for mobile links */
+.topnav__mobile-link.is-leaving { transition-duration: 0.34s, 0.34s; }
 
 /* Highlight parent when interacting within the submenu (modern browsers) */
 .topnav__mobile:has(#mobile-courses:hover) .topnav__mobile-toggle,
