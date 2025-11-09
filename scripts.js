@@ -489,6 +489,199 @@
   window.addEventListener('hashchange', () => applyHash(true));
 })();
 
+// Python course roadmap interactivity
+(function () {
+  const container = document.getElementById('roadmap');
+  if (!container) return;
+
+  const lessons = [
+    {id:1,title:'Foundations',shortDescription:'Core Python building blocks: variables, data types and simple arithmetic.',keyPoints:[
+      'Introduce variables, constants and standard data types (integer, real, Boolean, character, string).',
+      'Use arithmetic expressions with the required operators to calculate and store results correctly.',
+      'Write and trace short sequential programs, identifying and fixing basic syntax and logic errors.'
+    ],codeSnippet:['score = 5','total = score + 10']},
+    {id:2,title:'Inputs & Strings',shortDescription:'Getting data into a program and working with text in an exam-style way.',keyPoints:[
+      'Read user input from the keyboard and store it in appropriately typed variables.',
+      'Convert between strings and numbers so input can be validated and used in calculations.',
+      'Use core string operations (length, index/position, substring/slicing, concatenation) that appear in exam questions.'
+    ],codeSnippet:['name = input("Name?")','print("Hello, " + name)']},
+    {id:3,title:'Selection & Logic',shortDescription:'Making decisions in code with if/elif/else and logical conditions.',keyPoints:[
+      'Use if, elif and else (including simple nesting) to control the flow of a program.',
+      'Apply relational and Boolean operators (> , < , == , != , <= , >= , AND, OR, NOT) to build conditions.',
+      'Trace and write branching algorithms in Python and exam-style pseudocode, predicting outputs for given inputs.'
+    ],codeSnippet:['if mark >= 50:','    print("Pass")']},
+    {id:4,title:'Loops (while)',shortDescription:'Condition-controlled loops that repeat while a condition is true.',keyPoints:[
+      'Use condition-controlled (indefinite) iteration with while loops to repeat code until a condition is met.',
+      'Understand exam reference forms such as WHILE…ENDWHILE and REPEAT…UNTIL, and how they match Python while loops.',
+      'Trace and write algorithms that use while loops for tasks like input validation and simple menus.'
+    ],codeSnippet:['while tries < 3:','    tries = tries + 1']},
+    {id:5,title:'Loops (for)',shortDescription:'Count-controlled iteration over ranges and data structures.',keyPoints:[
+      'Use count-controlled iteration with for loops to repeat code a fixed number of times.',
+      'Apply for loops to process each item in a data structure such as a string or 1D list/array.',
+      'Trace and construct algorithms with for loops, including simple nesting for tables and 2D structures.'
+    ],codeSnippet:['for i in range(5):','    print(i)']},
+    {id:6,title:'Functions',shortDescription:'Subroutines / functions to structure code and reuse logic.',keyPoints:[
+      'Understand subroutines (procedures/functions) as named blocks used to structure programs.',
+      'Define and call functions with parameters and return values, and distinguish them from procedures that do not return a value.',
+      'Use local variables, parameters and return values to pass data in and out of subroutines in line with exam expectations.'
+    ],codeSnippet:['def square(x):','    return x * x']},
+    {id:7,title:'Lists',shortDescription:'Storing and accessing collections of values.',keyPoints:[
+      'Declare and initialise 1D lists/arrays of a single data type, then read and update elements by index.',
+      'Use iteration over every item in a list/array to calculate totals, counts or other simple results.',
+      'Apply lists/arrays in typical exam tasks such as storing marks, names, menu options or other related values.'
+    ],codeSnippet:['scores = [10, 7, 9]','first = scores[0]']},
+    {id:8,title:'2D Lists',shortDescription:'Representing tables and grids of data.',keyPoints:[
+      'Model tables and grids with 2D lists/arrays using row and column indexes.',
+      'Read from and write to individual cells in a 2D structure (e.g. at [row][column]).',
+      'Use nested loops over rows and columns to process whole tables in exam-style problems.'
+    ],codeSnippet:['seats = [["A","B"],["C","D"]]','print(seats[1][0])']},
+    {id:9,title:'Dictionaries',shortDescription:'Grouping related fields and looking up data by key.',keyPoints:[
+      'Use records or key–value structures (e.g. Python dictionaries) to group related fields under one identifier.',
+      'Implement lookups by ID/key to retrieve or update associated data, as in authentication or scoreboards.',
+      'Decide when a look-up structure is more appropriate than a simple array based on how the problem describes the data.'
+    ],codeSnippet:['scores = {"Ali": 8, "Sam": 10}','print(scores["Sam"])']},
+    {id:10,title:'File Handling',shortDescription:'Saving and loading data from text files.',keyPoints:[
+      'Open and close text files correctly, storing the file handle in a variable.',
+      'Read from and write to files line by line, often using a loop to process all the data.',
+      'Trace and write small algorithms that use file I/O, such as reading scores, updating them and outputting results.'
+    ],codeSnippet:['file = open("scores.txt", "r")','line = file.readline()']},
+    {id:11,title:'Searching',shortDescription:'Standard searching algorithms for working with lists/arrays.',keyPoints:[
+      'Understand and explain how the linear search algorithm works and apply it step by step.',
+      'Understand and explain how the binary search algorithm works, including the need for sorted data.',
+      'Recognise, trace and compare linear and binary search from code or pseudocode, describing when each is suitable.'
+    ],codeSnippet:['if target in items:','    print("Found")']},
+    {id:12,title:'Sorting',shortDescription:'Standard sorting algorithms and how to reason about them in exams.',keyPoints:[
+      'Understand and explain the steps of bubble sort, including how passes and swaps move values into order.',
+      'Understand and explain the main idea of merge sort (and other listed standard sorts), following a given version.',
+      'Trace and compare sorting algorithms on small data sets, describing their behaviour and relative efficiency at GCSE level.'
+    ],codeSnippet:['if a > b:','    print(b, a)']}
+  ];
+
+  const viewport = document.querySelector('.py-info__viewport');
+  const pills = Array.from(document.querySelectorAll('.lesson-pill'));
+  const prefersReducedMotion = typeof window !== 'undefined' && typeof window.matchMedia === 'function' && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  const getEls = (slide) => ({
+    title: slide.querySelector('.py-info__title'),
+    desc: slide.querySelector('.py-info__desc'),
+    code: slide.querySelector('.py-info__code'),
+    meta: slide.querySelector('.py-info__meta'),
+    placeholder: slide.querySelector('.py-info__placeholder'),
+  });
+
+  let current = viewport ? viewport.querySelector('.py-info__slide.is-current') : null;
+  let next = viewport ? viewport.querySelector('.py-info__slide.is-next') : null;
+
+  const fillSlide = (slide, data) => {
+    const els = getEls(slide);
+    if (!data) {
+      // Placeholder mode
+      slide.classList.add('is-placeholder');
+      if (els.placeholder) els.placeholder.textContent = 'Please click a lesson to find out more.';
+      if (els.title) els.title.textContent = '';
+      if (els.desc) els.desc.textContent = '';
+      if (els.meta) els.meta.textContent = '';
+      if (els.code) els.code.textContent = '';
+      return;
+    }
+    // Content mode (one sentence + code)
+    slide.classList.remove('is-placeholder');
+    if (els.title) els.title.textContent = `${data.id}. ${data.title}`;
+    if (els.desc) els.desc.textContent = data.shortDescription || '';
+    if (els.meta) els.meta.textContent = `Lesson ${data.id} of 12`;
+    if (els.code) els.code.textContent = (data.codeSnippet || []).join('\n');
+  };
+
+  const swapSlides = () => {
+    if (!current || !next) return;
+    current.classList.remove('is-current');
+    current.setAttribute('aria-hidden', 'true');
+    next.classList.add('is-current');
+    next.removeAttribute('aria-hidden');
+    // swap refs
+    const tmp = current; current = next; next = tmp;
+    // ensure next is ready for subsequent renders
+    next.classList.remove('is-current');
+    next.setAttribute('aria-hidden', 'true');
+  };
+
+  const setActivePill = (btn) => {
+    pills.forEach(b => {
+      const active = b === btn;
+      b.classList.toggle('is-active', active);
+      b.setAttribute('aria-pressed', active ? 'true' : 'false');
+    });
+  };
+
+  const render = (lessonId) => {
+    const data = lessons.find(l => l.id === lessonId);
+    if (!viewport || !current || !next) return;
+    fillSlide(next, data);
+    if (!prefersReducedMotion) {
+      // allow CSS transition to cross-fade
+      requestAnimationFrame(swapSlides);
+    } else {
+      swapSlides();
+    }
+  };
+
+  pills.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const id = parseInt(btn.getAttribute('data-lesson'), 10);
+      const isAlreadyActive = btn.classList.contains('is-active');
+      if (isAlreadyActive) {
+        // Toggle off and show placeholder
+        setActivePill(null);
+        fillSlide(next, null);
+        swapSlides();
+        if (history.replaceState) {
+          history.replaceState(null, '', location.pathname + location.search);
+        }
+        return;
+      }
+      setActivePill(btn);
+      render(id);
+      if (history.replaceState) {
+        history.replaceState(null, '', `#lesson-${id}`);
+      }
+    });
+  });
+
+  const parseHashLesson = () => {
+    const h = (location.hash || '').replace('#','').toLowerCase();
+    let id = null;
+    if (/^lesson-\d+$/.test(h)) id = parseInt(h.split('-')[1], 10);
+    else if (/^\d+$/.test(h)) id = parseInt(h, 10);
+    return (id && id >= 1 && id <= 12) ? id : null;
+  };
+
+  const initDefault = () => {
+    const id = parseHashLesson();
+    if (id) {
+      const btn = pills.find(b => parseInt(b.getAttribute('data-lesson'), 10) === id);
+      if (btn) {
+        setActivePill(btn);
+        render(id);
+        return;
+      }
+    }
+    // placeholder
+    if (current) fillSlide(current, null);
+  };
+
+  window.addEventListener('hashchange', () => {
+    const id = parseHashLesson();
+    if (!id) return;
+    const btn = pills.find(b => parseInt(b.getAttribute('data-lesson'), 10) === id);
+    if (btn) {
+      setActivePill(btn);
+      render(id);
+    }
+  });
+
+  initDefault();
+})();
+
 // Nav link linger effect: slightly longer fade on hover-out
 (function () {
   try {
@@ -513,3 +706,6 @@
 })();
 
  
+
+
+

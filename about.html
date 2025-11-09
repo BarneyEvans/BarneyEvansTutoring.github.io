@@ -4,10 +4,10 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>About Barney | Barney Evans Tutoring</title>
-    <meta name="description" content="Meet Barney Evans, an MEng Artificial Intelligence graduate and experienced STEM tutor." />
+    <meta name="description" content="Meet Barney Evans, an MEng Computer Science with Artificial Intelligence graduate and experienced STEM tutor based in South London." />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=DM\+Sans:wght@400;500;600&family=Poppins:wght@600;700&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Poppins:wght@600;700&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="styles.css" />
     <link rel="icon" type="image/svg+xml" href="favicon.svg" />
     <link rel="mask-icon" href="safari-pinned-tab.svg" color="#ff69b4" />
@@ -19,101 +19,514 @@
 
       gtag('config', 'G-J3TRN1BENG');
     </script>
+    <style>
+      /* About page specific styles */
+      .about-hero {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 2.5rem;
+        align-items: start;
+        max-width: var(--max-width);
+        margin: 0 auto;
+        padding: 4rem 2rem 3rem;
+      }
+
+      .about-hero__left {
+        display: grid;
+        gap: 1.5rem;
+        align-content: start;
+      }
+
+      .about-hero__title {
+        margin: 0;
+        font-family: 'Poppins', 'DM Sans', sans-serif;
+        font-size: clamp(1.8rem, 4vw, 2.3rem);
+        font-weight: 700;
+        color: var(--text);
+      }
+
+      .about-hero__credentials {
+        background: var(--accent-soft);
+        border: 3px solid var(--border);
+        border-radius: 32px;
+        padding: 1.75rem 2rem;
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .about-hero__credentials::before {
+        content: '';
+        display: block;
+        width: 64px;
+        height: 4px;
+        border-radius: 999px;
+        background: var(--accent);
+        margin-bottom: 0.75rem;
+      }
+
+      .about-hero__name {
+        margin: 0 0 1rem 0;
+        font-family: 'Poppins', 'DM Sans', sans-serif;
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: var(--text);
+      }
+
+      .about-hero__credentials p {
+        margin: 0 0 0.75rem 0;
+        font-family: 'DM Sans', sans-serif;
+        font-size: 1rem;
+        font-weight: 500;
+        color: var(--text);
+        line-height: 1.5;
+      }
+
+      .about-hero__credentials p strong {
+        font-weight: 800;
+      }
+
+      .about-hero__credentials p:last-child {
+        margin-bottom: 0;
+      }
+
+      .about-hero__right {
+        display: grid;
+        gap: 1rem;
+        align-content: start;
+      }
+
+      .about-hero__photos {
+        background: var(--card-bg);
+        border: 4px solid var(--border);
+        border-radius: 32px;
+        padding: 0.75rem;
+        box-shadow: none;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0.75rem;
+      }
+
+      .about-hero__photo {
+        width: 100%;
+        height: auto;
+        border-radius: 24px;
+        display: block;
+        object-fit: cover;
+        aspect-ratio: 3 / 4;
+      }
+
+      .about-hero__stats {
+        font-family: 'DM Sans', sans-serif;
+        font-size: 1.05rem;
+        font-weight: 700;
+        color: var(--text);
+        text-align: center;
+        margin: 0;
+      }
+
+      /* Photo dropdown toggle */
+      .about-hero__photo-toggle {
+        display: none;
+        width: auto;
+        align-self: center;
+        padding: 0.6rem 1.2rem;
+        background: var(--card-bg);
+        border: 3px solid var(--border);
+        border-radius: 999px;
+        font-family: 'DM Sans', sans-serif;
+        font-size: 1rem;
+        font-weight: 700;
+        letter-spacing: 0.03em;
+        color: var(--text);
+        cursor: pointer;
+        box-shadow: var(--shadow);
+        transition: box-shadow 0.2s ease, transform 0.2s ease;
+        margin-top: 1rem;
+      }
+
+      .about-hero__photo-toggle:hover,
+      .about-hero__photo-toggle:active {
+        box-shadow: none;
+        transform: translate(3px, 3px);
+      }
+
+      .about-hero__photo-toggle:focus {
+        outline: none;
+      }
+
+      .about-hero__photo-toggle:focus-visible {
+        outline: 3px solid var(--accent);
+        outline-offset: 4px;
+      }
+
+      .about-hero__photo-toggle::after {
+        content: '';
+        display: inline-block;
+        width: 8px;
+        height: 8px;
+        border-right: 3px solid var(--border);
+        border-bottom: 3px solid var(--border);
+        transform: rotate(45deg);
+        margin-left: 0.5rem;
+        margin-bottom: 2px;
+        transition: transform 0.22s ease;
+      }
+
+      .about-hero__photo-toggle.is-open {
+        /* Ensure button styling remains the same when open */
+        background: var(--card-bg);
+        border: 3px solid var(--border);
+        box-shadow: var(--shadow);
+      }
+
+      .about-hero__photo-toggle.is-open::after {
+        transform: rotate(225deg);
+      }
+
+      .about-hero__photo-toggle.is-open:hover,
+      .about-hero__photo-toggle.is-open:active {
+        box-shadow: none;
+        transform: translate(3px, 3px);
+      }
+
+      /* Responsive */
+      @media (max-width: 900px) {
+        .about-hero {
+          grid-template-columns: 1fr;
+          padding: 3rem 1.5rem 2.5rem;
+          gap: 1.5rem;
+        }
+
+        .about-hero__photo-toggle {
+          display: block;
+        }
+
+        .about-hero__right {
+          order: 1;
+        }
+
+        .about-hero__photos {
+          display: none;
+          margin-top: 1rem;
+        }
+
+        .about-hero__photos.is-open {
+          display: grid;
+        }
+
+        .about-hero__stats {
+          display: none;
+        }
+
+        .about-hero__stats.is-open {
+          display: block;
+          margin-top: 1rem;
+        }
+      }
+
+      @media (max-width: 600px) {
+        .about-hero {
+          padding: 2.5rem 1rem 2rem;
+        }
+
+        .about-hero__credentials {
+          padding: 1.5rem;
+        }
+
+        .about-hero__photos {
+          padding: 0.5rem;
+          gap: 0.5rem;
+        }
+
+        .about-hero__stats {
+          font-size: 0.95rem;
+        }
+      }
+
+      /* Professional Experience Section */
+      .prof-experience {
+        max-width: var(--max-width);
+        margin: 0 auto;
+        padding: 3rem 2rem 4rem;
+      }
+
+      .prof-experience__title {
+        margin: 0 0 2rem 0;
+        font-family: 'Poppins', 'DM Sans', sans-serif;
+        font-size: clamp(1.8rem, 4vw, 2.3rem);
+        font-weight: 700;
+        color: var(--text);
+        text-align: center;
+      }
+
+      .prof-experience__grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 2rem;
+        align-items: start;
+      }
+
+      .prof-experience__left {
+        display: grid;
+        gap: 1.5rem;
+      }
+
+      .prof-experience__right {
+        display: grid;
+        gap: 1.25rem;
+      }
+
+      /* Experience card base styles */
+      .experience-card {
+        background: var(--card-bg);
+        border: 3px solid var(--border);
+        border-radius: 32px;
+        padding: 2rem;
+        display: flex;
+        flex-direction: column;
+        gap: 1.25rem;
+      }
+
+      .experience-card--accent {
+        padding: 1.5rem;
+        gap: 0.85rem;
+      }
+
+      .experience-card--accent::before {
+        content: '';
+        display: block;
+        width: 48px;
+        height: 3px;
+        border-radius: 999px;
+        background: var(--accent);
+        margin-bottom: 0.25rem;
+      }
+
+      .experience-card__title {
+        margin: 0;
+        font-family: 'Poppins', 'DM Sans', sans-serif;
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: var(--text);
+      }
+
+      .experience-card__date {
+        margin: -0.5rem 0 0 0;
+        font-family: 'DM Sans', sans-serif;
+        font-size: 0.88rem;
+        font-weight: 600;
+        color: var(--text);
+        opacity: 0.7;
+      }
+
+      .experience-card__desc {
+        margin: 0;
+        font-family: 'DM Sans', sans-serif;
+        font-size: 1rem;
+        font-weight: 500;
+        color: var(--text);
+        line-height: 1.6;
+      }
+
+      .experience-card__desc strong {
+        font-weight: 700;
+      }
+
+      /* Pink pill for experience info */
+      .experience-card__pill {
+        background: var(--accent-soft);
+        border: 3px solid var(--border);
+        border-radius: 32px;
+        padding: 1.5rem 2rem;
+        margin: 0;
+      }
+
+      .experience-card__pill p {
+        margin: 0;
+        font-family: 'DM Sans', sans-serif;
+        font-size: 1rem;
+        font-weight: 500;
+        color: var(--text);
+        line-height: 1.5;
+      }
+
+      .experience-card__pill p strong {
+        font-weight: 700;
+      }
+
+      .experience-card__btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        align-self: center;
+        padding: 0.7rem 1.5rem;
+        background: var(--card-bg);
+        border: 3px solid var(--border);
+        border-radius: 999px;
+        font-family: 'DM Sans', sans-serif;
+        font-size: 1rem;
+        font-weight: 700;
+        letter-spacing: 0.03em;
+        color: var(--text);
+        text-decoration: none;
+        cursor: pointer;
+        box-shadow: var(--shadow);
+        transition: box-shadow 0.2s ease, transform 0.2s ease;
+      }
+
+      .experience-card__btn:hover,
+      .experience-card__btn:active {
+        box-shadow: none;
+        transform: translate(3px, 3px);
+      }
+
+      .experience-card__btn:focus {
+        outline: none;
+      }
+
+      .experience-card__btn:focus-visible {
+        outline: 3px solid var(--accent);
+        outline-offset: 4px;
+      }
+
+      /* Testimonial box */
+      .testimonial-box {
+        background: var(--card-bg);
+        border: 3px solid var(--accent-soft);
+        border-radius: 16px;
+        padding: 1.25rem 1.5rem;
+        margin: 0;
+      }
+
+      .testimonial-box__quote {
+        margin: 0;
+        font-family: 'DM Sans', sans-serif;
+        font-size: 1rem;
+        font-weight: 500;
+        color: var(--text);
+        line-height: 1.6;
+        font-style: italic;
+      }
+
+      .testimonial-box__quote::before {
+        content: '"';
+        font-size: 1.3em;
+        color: var(--accent);
+        margin-right: 0.1em;
+      }
+
+      .testimonial-box__quote::after {
+        content: '"';
+        font-size: 1.3em;
+        color: var(--accent);
+        margin-left: 0.1em;
+      }
+
+      /* Responsive */
+      @media (max-width: 900px) {
+        .prof-experience {
+          padding: 2.5rem 1.5rem 3rem;
+        }
+
+        .prof-experience__grid {
+          grid-template-columns: 1fr;
+          gap: 1.5rem;
+        }
+
+        .prof-experience__title {
+          margin-bottom: 1.5rem;
+        }
+      }
+
+      @media (max-width: 600px) {
+        .prof-experience {
+          padding: 2rem 1rem 2.5rem;
+        }
+
+        .experience-card {
+          padding: 1.5rem;
+        }
+
+        .experience-card--accent {
+          padding: 1.25rem;
+        }
+
+        .experience-card__pill {
+          padding: 1.25rem 1.5rem;
+        }
+
+        .testimonial-box {
+          padding: 1rem 1.25rem;
+        }
+      }
+    </style>
   </head>
   <body>
     <div id="page-top"></div>
-    <a class="skip-link" href="#services">Skip to main content</a>
+    <a class="skip-link" href="#main-content">Skip to main content</a>
     <nav class="topnav" aria-label="Primary">
       <div class="topnav__wrap">
         <a class="topnav__brand topnav__brand--icon" href="home.html"><img src="favicon.svg" alt="" /><span class="topnav__brand-text">Home</span></a>
         <div class="topnav__links">
           <a class="topnav__link" href="index.html">Private Tutoring</a>
-          <a class="topnav__link" href="group-courses-home.html">Group Courses</a>
+          <a class="topnav__link" href="group-courses-python.html">Python Course</a>
           <a class="topnav__link" href="about.html" aria-current="page">About Me</a>
           <a class="topnav__link" href="#contact">Contact</a>
         </div>
-        <button class="topnav__hamburger js-hamburger" aria-label="Open menu" aria-controls="mobile-menu" aria-expanded="false"><span class="bar"></span><span class="bar"></span><span class="bar"></span></button></div><div id="mobile-menu" class="topnav__mobile" role="menu" aria-hidden="true"><a class="topnav__mobile-link" href="home.html">Home</a><a class="topnav__mobile-link" href="index.html">Private Tutoring</a><a class="topnav__mobile-link" href="group-courses-home.html">Group Courses</a><a class="topnav__mobile-link" href="about.html" aria-current="page">About Me</a><a class="topnav__mobile-link" href="#contact">Contact</a></div></nav>
+        <button class="topnav__hamburger js-hamburger" aria-label="Open menu" aria-controls="mobile-menu" aria-expanded="false"><span class="bar"></span><span class="bar"></span><span class="bar"></span></button></div><div id="mobile-menu" class="topnav__mobile" role="menu" aria-hidden="true"><a class="topnav__mobile-link" href="home.html">Home</a><a class="topnav__mobile-link" href="index.html">Private Tutoring</a><a class="topnav__mobile-link" href="group-courses-python.html">Python Course</a><a class="topnav__mobile-link" href="about.html" aria-current="page">About Me</a><a class="topnav__mobile-link" href="#contact">Contact</a></div></nav>
     <div class="site-content">
-      <header class="hero" id="top">
-        <div class="hero__content">
-          <h1 class="hero__name">Hi, I’m Barney Evans</h1>
-          <p class="hero__tagline">I’m a Computer Science with Artificial Intelligence graduate from the University of Southampton. I tutor GCSE and A‑Level students in Computer Science, Maths and Sciences in South London and online.</p>
-          <ul class="hero__chips" aria-label="Highlights">
-            <li>80+ five‑star online lessons</li>
-            <li>MEng Computer Science (AI)</li>
-            <li>Enhanced DBS</li>
-          </ul>
-        </div>
-        <figure class="hero__media">
-          <img src="grad_photo.jpg" alt="Barney Evans" />
-        </figure>
-      </header>
-
-      <main>
-        <section class="services" id="services">
-          <h2 class="section-title">At a glance</h2>
-          <div class="services__grid">
-            <article class="card" aria-label="Snapshot of experience and logistics">
-              <ul class="card__list">
-                <li><strong>Degree:</strong> MEng Computer Science (Artificial Intelligence), University of Southampton. A‑Levels in Maths, Physics and Computer Science.</li>
-                <li><strong>Subjects &amp; levels:</strong> Computer Science, Maths and Sciences — KS3, GCSE and A‑Level; early university support.</li>
-                <li><strong>Exam boards:</strong> AQA, OCR, Edexcel and CIE.</li>
-                <li><strong>Location &amp; format:</strong> Online via Zoom (UK time) or in‑person within areas of South London.</li>
-                <li><strong>Safeguarding:</strong> Enhanced DBS; references available on request.</li>
-              </ul>
-            </article>
+      <main id="main-content">
+        <section class="about-hero">
+          <div class="about-hero__left">
+            <h1 class="about-hero__title">About Me</h1>
+            <div class="about-hero__credentials">
+              <h2 class="about-hero__name">Barney Evans</h2>
+              <p><strong>Degree:</strong> MEng Computer Science with Artificial Intelligence from the University of Southampton</p>
+              <p><strong>A-Levels:</strong> A*, A*, A in Chemistry, Computer Science, Maths</p>
+              <button class="about-hero__photo-toggle js-photo-toggle" aria-expanded="false" aria-controls="about-photos">View Photos</button>
+            </div>
+          </div>
+          <div class="about-hero__right" id="about-photos">
+            <div class="about-hero__photos">
+              <img src="teaching.jpg" alt="Barney teaching a Python programming class" class="about-hero__photo" />
+              <img src="hockey_image.jpg" alt="Barney playing ice hockey" class="about-hero__photo" />
+            </div>
+            <p class="about-hero__stats">200+ hours • 5★ rating • Enhanced DBS</p>
           </div>
         </section>
 
-        <section class="services__delivery" aria-labelledby="parents-say">
-          <h3 id="parents-say">What parents say</h3>
-          <blockquote>“Barney explains things clearly and my son’s confidence has really improved.”</blockquote>
-          <blockquote>“Patient, organised and professional — lessons feel structured and calm.”</blockquote>
-          <p>You can read more reviews on my MyTutor profile — all of my 80+ online lessons are rated 5★.</p>
-        </section>
+        <section class="prof-experience">
+          <h2 class="prof-experience__title">Professional Experience</h2>
+          <div class="prof-experience__grid">
+            <!-- Left column: MyTutor -->
+            <div class="prof-experience__left">
+              <article class="experience-card experience-card--accent">
+                <h3 class="experience-card__title">MyTutor</h3>
+                <p class="experience-card__desc">85+ lessons • 5★ rating • Schools Programme approved</p>
+                <a class="experience-card__btn" href="https://www.mytutor.co.uk/tutors/9468218/" target="_blank" rel="noopener">View MyTutor profile</a>
+                <div class="testimonial-box">
+                  <p class="testimonial-box__quote">Barney has helped my daughter in her Computer Science GCSE making her much more confident within a few months. Lessons were interactive and well planned. Highly recommend!</p>
+                </div>
+              </article>
+            </div>
 
-        <section class="services__delivery" aria-labelledby="cs-ai">
-          <h3 id="cs-ai">My background in Computer Science &amp; AI</h3>
-          <p>I studied Computer Science with Artificial Intelligence, focusing on practical Python and applied machine learning.</p>
-          <ul>
-            <li>Synthetic image generation and biometrics explained in everyday language.</li>
-            <li>Hands‑on deep learning and real Python projects.</li>
-            <li>Teaching grounded in how these ideas are used in the real world.</li>
-          </ul>
-        </section>
+            <!-- Right column: Ritz Education and CodeKids -->
+            <div class="prof-experience__right">
+              <!-- Ritz Education -->
+              <article class="experience-card experience-card--accent">
+                <h3 class="experience-card__title">Ritz Education</h3>
+                <p class="experience-card__date">Mar 2024 - Present</p>
+                <p class="experience-card__desc">Teaching <strong>Maths & CS Olympiad</strong>, <strong>Web Development</strong>, <strong>Machine Learning</strong>, and <strong>Python</strong> via online Zoom sessions for group size 5-15</p>
+              </article>
 
-        <section class="services" aria-labelledby="cv-card">
-          <h2 class="section-title" id="cv-card">Want more detail?</h2>
-          <div class="services__grid">
-            <article class="card">
-              <div class="card__header">
-                <h3>Full background</h3>
-              </div>
-              <p>If you’d like to see my experience and qualifications in more detail, you can download my tutoring CV.</p>
-              <p><a class="button" href="cv.pdf" target="_blank" rel="noopener">View my CV</a></p>
-            </article>
-          </div>
-        </section>
-
-        <section class="contact" id="contact">
-          <h2 class="section-title">Let’s connect</h2>
-          <p class="contact__summary">Book a free 20-minute discovery call to discuss your learning goals. Fill out a quick form and I'll personally email you within 24 hours to schedule a time that works for you.</p>
-          <div class="contact__links">
-            <a class="contact__link js-contact-link" href="https://docs.google.com/forms/d/e/1FAIpQLSfK8TGCXA-HOv2_LMBt2WysIyLuXZ-RC66K1q1unHPSX0hQ5w/viewform?usp=header" target="_blank" rel="noopener">
-              <span>Book discovery call</span>
-            </a>
-            <a class="contact__link js-contact-link" href="mailto:ebarneytutoring@gmail.com">
-              <span class="icon icon--mail" aria-hidden="true">@</span>
-              <span>ebarneytutoring@gmail.com</span>
-            </a>
-            <a class="contact__link js-contact-link" href="https://www.linkedin.com/in/barney-evans-400379280/" target="_blank" rel="noopener">
-              <span class="icon icon--linkedin" aria-hidden="true">
-                <svg viewBox="0 0 24 24" role="img" aria-hidden="true">
-                  <path d="M19 3A2 2 0 0 1 21 5V19A2 2 0 0 1 19 21H5A2 2 0 0 1 3 19V5A2 2 0 0 1 5 3H19ZM8.34 9H5.67V18H8.34V9ZM7 5.75A1.54 1.54 0 1 0 7 8.83 1.54 1.54 0 0 0 7 5.75ZM18.33 12.68C18.33 10.42 17.09 9 15.15 9A3 3 0 0 0 12.69 10.22V9H10V18H12.69V13.17C12.69 12.02 13.22 11.3 14.2 11.3C15.15 11.3 15.61 11.96 15.61 13.17V18H18.33Z" />
-                </svg>
-              </span>
-              <span>LinkedIn</span>
-            </a>
+              <!-- CodeKids -->
+              <article class="experience-card experience-card--accent">
+                <h3 class="experience-card__title">CodeKids</h3>
+                <p class="experience-card__date">Jul 2023 - Jun 2024</p>
+                <p class="experience-card__desc">Taught <strong>engineering skills</strong> and <strong>Python programming</strong> to ages <strong>6-13</strong> at <strong>Kings College London</strong></p>
+              </article>
+            </div>
           </div>
         </section>
       </main>
@@ -123,7 +536,33 @@
       </footer>
     </div>
     <script src="scripts.js"></script>
+    <script>
+      // Photo dropdown toggle for mobile
+      document.addEventListener('DOMContentLoaded', function() {
+        const toggle = document.querySelector('.js-photo-toggle');
+
+        if (toggle) {
+          toggle.addEventListener('click', function() {
+            const isOpen = this.classList.contains('is-open');
+            const photos = document.querySelector('.about-hero__photos');
+            const stats = document.querySelector('.about-hero__stats');
+
+            if (isOpen) {
+              this.classList.remove('is-open');
+              this.setAttribute('aria-expanded', 'false');
+              this.textContent = 'View Photos';
+              if (photos) photos.classList.remove('is-open');
+              if (stats) stats.classList.remove('is-open');
+            } else {
+              this.classList.add('is-open');
+              this.setAttribute('aria-expanded', 'true');
+              this.textContent = 'Hide Photos';
+              if (photos) photos.classList.add('is-open');
+              if (stats) stats.classList.add('is-open');
+            }
+          });
+        }
+      });
+    </script>
   </body>
 </html>
-
-

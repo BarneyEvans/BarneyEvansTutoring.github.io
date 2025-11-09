@@ -3,11 +3,11 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Python Group Course | Barney Evans Tutoring</title>
-    <meta name="description" content="Weekly live Python course led by Barney Evans covering fundamentals, problem-solving, and real projects." />
+    <title>GCSE Python for Exam Success | Barney Evans Tutoring</title>
+    <meta name="description" content="A 12-week small-group online GCSE Python course, focused on exam-style questions aligned with AQA, OCR and Edexcel." />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=DM\+Sans:wght@400;500;600&family=Poppins:wght@600;700&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Poppins:wght@600;700&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="styles.css" />
     <link rel="icon" type="image/svg+xml" href="favicon.svg" />
     <link rel="mask-icon" href="safari-pinned-tab.svg" color="#ff69b4" />
@@ -16,85 +16,166 @@
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
       gtag('js', new Date());
-
       gtag('config', 'G-J3TRN1BENG');
     </script>
   </head>
   <body>
     <div id="page-top"></div>
-    <a class="skip-link" href="#services">Skip to main content</a>
+    <a class="skip-link" href="#hero">Skip to main content</a>
     <nav class="topnav" aria-label="Primary">
       <div class="topnav__wrap">
         <a class="topnav__brand topnav__brand--icon" href="home.html"><img src="favicon.svg" alt="" /><span class="topnav__brand-text">Home</span></a>
         <div class="topnav__links">
           <a class="topnav__link" href="index.html">Private Tutoring</a>
-          <a class="topnav__link" href="group-courses-home.html">Group Courses</a>
+          <a class="topnav__link" href="group-courses-python.html" aria-current="page">Python Course</a>
           <a class="topnav__link" href="about.html">About Me</a>
           <a class="topnav__link" href="#contact">Contact</a>
         </div>
-        <button class="topnav__hamburger js-hamburger" aria-label="Open menu" aria-controls="mobile-menu" aria-expanded="false"><span class="bar"></span><span class="bar"></span><span class="bar"></span></button></div><div id="mobile-menu" class="topnav__mobile" role="menu" aria-hidden="true"><a class="topnav__mobile-link" href="home.html">Home</a><a class="topnav__mobile-link" href="index.html">Private Tutoring</a><a class="topnav__mobile-link" href="group-courses-home.html">Group Courses</a><a class="topnav__mobile-link" href="about.html">About Me</a><a class="topnav__mobile-link" href="#contact">Contact</a></div></nav>
+        <button class="topnav__hamburger js-hamburger" aria-label="Open menu" aria-controls="mobile-menu" aria-expanded="false"><span class="bar"></span><span class="bar"></span><span class="bar"></span></button>
+      </div>
+      <div id="mobile-menu" class="topnav__mobile" role="menu" aria-hidden="true">
+        <a class="topnav__mobile-link" href="home.html">Home</a>
+        <a class="topnav__mobile-link" href="index.html">Private Tutoring</a>
+        <a class="topnav__mobile-link" href="group-courses-python.html" aria-current="page">Python Course</a>
+        <a class="topnav__mobile-link" href="about.html">About Me</a>
+        <a class="topnav__mobile-link" href="#contact">Contact</a>
+      </div>
+    </nav>
+
     <div class="site-content">
-      <header class="hero" id="top">
+      <header class="hero hero--python" id="hero">
         <div class="hero__content">
-          <h1 class="hero__name">Python Builders Cohort</h1>
-          <p class="hero__subtitle">Level up from basics to full projects</p>
-          <p class="hero__tagline">10-week journey covering algorithms, APIs, and presenting code with confidence.</p>
-          <ul class="hero__chips">
-            <li>Next cohort: Jan 2025</li>
-            <li>Max 12 learners</li>
-            <li>Live feedback &amp; recordings</li>
+          <h1 class="hero__name">GCSE Python for Exam Success</h1>
+          <p class="hero__subtitle">A 12-week small-group online course for Years 9-11, focused on exam-style Python questions rather than big projects.</p>
+          <p class="hero__tagline">Aligned with AQA, OCR and Edexcel &middot; taught by a Southampton MEng Computer Science with Artificial Intelligence graduate.</p>
+          <ul class="hero__price-list" aria-label="Pricing">
+            <li class="hero__price-pill">&pound;12.50 per lesson</li>
+            <li class="hero__price-pill">&pound;150 for 12 weeks</li>
           </ul>
+          <div class="hero__cta hero__cta--stack">
+            <a class="contact__link contact__link--solid" href="#contact"><span>Book a free 20-minute taster</span></a>
+            <a class="contact__link contact__link--solid" href="mailto:ebarneytutoring@gmail.com"><span>Email me a question</span></a>
+          </div>
         </div>
-        <figure class="hero__media">
-          <img src="grad_photo.jpg" alt="Laptop with Python code" />
+        <figure class="hero__media hero__media--square photo-card" aria-hidden="true">
+          <img src="grad_photo.jpg" alt="Barney Evans" />
         </figure>
       </header>
 
       <main>
-        <section class="services" id="services">
-          <h2 class="section-title">What we cover</h2>
+        <section class="services" id="who-for">
+          <h2 class="section-title">Who this course is for</h2>
           <div class="services__grid">
-            <article class="card">
-              <div class="card__header">
-                <h3>Core modules</h3>
-                <span class="card__price">Weeks 1–5</span>
-              </div>
+            <article class="card py-outline-card" aria-label="Who this course is for">
+              <p>For students who know some Python but struggle to turn it into secure exam marks.</p>
               <ul class="card__list">
-                <li>&#128736; Python essentials &amp; debugging habits</li>
-                <li>&#129321; Data structures, OOP, and testing</li>
-                <li>&#128221; Rapid problem-solving drills</li>
-                <li>&#128187; Pair programming practice</li>
-              </ul>
-            </article>
-
-            <article class="card">
-              <div class="card__header">
-                <h3>Project labs</h3>
-                <span class="card__price">Weeks 6–10</span>
-              </div>
-              <ul class="card__list">
-                <li>&#128640; Web apps with Flask &amp; APIs</li>
-                <li>&#127922; Game mechanics &amp; event loops</li>
-                <li>&#128184; Data pipelines &amp; dashboards</li>
-                <li>&#128221; Showcase portfolio presentation</li>
+                <li>Year 11 students needing a full recap.</li>
+                <li>Year 10 students wanting to get ahead.</li>
+                <li>Ambitious Year 9 students looking to build a strong foundation.</li>
               </ul>
             </article>
           </div>
         </section>
 
-        <section class="services__delivery">
-          <h3>Included in the cohort</h3>
-          <ul>
-            <li>&#9989; Weekly live session + 30 minute optional clinic.</li>
-            <li>&#9989; GitHub classroom setup with annotated feedback on every submission.</li>
-            <li>&#9989; Parent progress reports after each milestone.</li>
-            <li>&#9989; Certificate of completion and next-step roadmap.</li>
-          </ul>
+        <section class="services" id="why-this-course">
+          <h2 class="section-title">Why this course</h2>
+          <div class="services__grid py-why-grid">
+            <article class="card py-outline-card">
+              <div class="card__header"><h3>Exam-focused, not project-focused</h3></div>
+              <p>Every lesson uses real exam-style questions and past papers. We don�t spend weeks building big projects � we practise the exact types of tasks that appear in GCSE exams.</p>
+            </article>
+            <article class="card py-outline-card">
+              <div class="card__header"><h3>Very small groups (max 4)</h3></div>
+              <p>Live coding with a maximum of 4 students. Everyone can ask questions, share their screen and get direct help.</p>
+            </article>
+            <article class="card py-outline-card">
+              <div class="card__header"><h3>Weekly homework &amp; resources</h3></div>
+              <p>Homework every week with marking and model answers, plus access to lesson recordings and code examples.</p>
+            </article>
+          </div>
+        </section>
+
+        <section class="services" id="roadmap">
+          <h2 class="section-title">Course roadmap (12 weeks)</h2>
+          <div class="py-split" role="group" aria-label="Course roadmap">
+            <div class="py-pills-grid" role="group" aria-label="Lessons 1 to 12">
+              <button class="lesson-pill" data-lesson="1" aria-label="Lesson 1: Foundations"><span class="pill-num" aria-hidden="true">1</span><span class="pill-label">Print</span></button>
+              <button class="lesson-pill" data-lesson="2" aria-label="Lesson 2: Inputs &amp; Strings"><span class="pill-num" aria-hidden="true">2</span><span class="pill-label">Inputs</span></button>
+              <button class="lesson-pill" data-lesson="3" aria-label="Lesson 3: Selection &amp; Logic"><span class="pill-num" aria-hidden="true">3</span><span class="pill-label">Logic</span></button>
+              <button class="lesson-pill" data-lesson="4" aria-label="Lesson 4: Loops (while)"><span class="pill-num" aria-hidden="true">4</span><span class="pill-label">While</span></button>
+              <button class="lesson-pill" data-lesson="5" aria-label="Lesson 5: Loops (for)"><span class="pill-num" aria-hidden="true">5</span><span class="pill-label">For</span></button>
+              <button class="lesson-pill" data-lesson="6" aria-label="Lesson 6: Functions"><span class="pill-num" aria-hidden="true">6</span><span class="pill-label">Functions</span></button>
+              <button class="lesson-pill" data-lesson="7" aria-label="Lesson 7: Lists"><span class="pill-num" aria-hidden="true">7</span><span class="pill-label">Lists</span></button>
+              <button class="lesson-pill" data-lesson="8" aria-label="Lesson 8: 2D Lists"><span class="pill-num" aria-hidden="true">8</span><span class="pill-label">2D</span></button>
+              <button class="lesson-pill" data-lesson="9" aria-label="Lesson 9: Dictionaries"><span class="pill-num" aria-hidden="true">9</span><span class="pill-label">Dictionaries</span></button>
+              <button class="lesson-pill" data-lesson="10" aria-label="Lesson 10: File Handling"><span class="pill-num" aria-hidden="true">10</span><span class="pill-label">Files</span></button>
+              <button class="lesson-pill" data-lesson="11" aria-label="Lesson 11: Searching"><span class="pill-num" aria-hidden="true">11</span><span class="pill-label">Search</span></button>
+              <button class="lesson-pill" data-lesson="12" aria-label="Lesson 12: Sorting"><span class="pill-num" aria-hidden="true">12</span><span class="pill-label">Sort</span></button>
+            </div>
+            <article class="card py-info py-outline-card">
+              <div class="py-info__viewport" aria-live="polite">
+                <div class="py-info__slide is-current is-placeholder">
+                  <div class="py-info__placeholder">Please click a lesson to find out more.</div>
+                  <div class="py-info__inner">
+                    <div class="py-info__meta" aria-hidden="true"></div>
+                    <div class="card__header"><h3 class="py-info__title"></h3></div>
+                    <p class="py-info__desc"></p>
+                    <pre class="py-code"><code class="py-info__code"></code></pre>
+                  </div>
+                </div>
+                <div class="py-info__slide is-next is-placeholder" aria-hidden="true">
+                  <div class="py-info__placeholder">Please click a lesson to find out more.</div>
+                  <div class="py-info__inner">
+                    <div class="py-info__meta" aria-hidden="true"></div>
+                    <div class="card__header"><h3 class="py-info__title"></h3></div>
+                    <p class="py-info__desc"></p>
+                    <pre class="py-code"><code class="py-info__code"></code></pre>
+                  </div>
+                </div>
+              </div>
+            </article>
+          </div>
+        </section>
+
+        <section class="services" id="lesson-structure">
+          <h2 class="section-title">How a typical lesson works</h2>
+          <div class="services__grid">
+            <article class="card py-outline-card">
+              <div class="card__header"><h3>Steps</h3></div>
+              <ol class="py-lesson-steps">
+                <li>
+                  <div>
+                    <h4>Homework recap (5�10 mins)</h4>
+                    <p>We quickly review key questions from last week, fix common errors and answer short questions.</p>
+                  </div>
+                </li>
+                <li>
+                  <div>
+                    <h4>Live teaching (20�25 mins)</h4>
+                    <p>New ideas are introduced with live coding, clear explanations and short checks for understanding.</p>
+                  </div>
+                </li>
+                <li>
+                  <div>
+                    <h4>Guided exam practice (20�25 mins)</h4>
+                    <p>Students solve exam-style Python questions at the right level, with support and feedback as they work.</p>
+                  </div>
+                </li>
+                <li>
+                  <div>
+                    <h4>Wrap-up &amp; homework (5 mins)</h4>
+                    <p>We summarise the key idea, highlight common mistakes and set targeted homework to lock it in.</p>
+                  </div>
+                </li>
+              </ol>
+              <p class="service-panel__note">Close to exams, more lesson time is spent on past papers and timed questions.</p>
+            </article>
+          </div>
         </section>
 
         <section class="contact" id="contact">
-          <h2 class="section-title">Reserve a seat</h2>
-          <p class="contact__summary">Tell me a little about your learner (age, experience, goals) and I’ll share availability plus a welcome pack.</p>
+          <h2 class="section-title">Ready to try a free taster?</h2>
+          <p class="contact__summary">Book a free 20-minute taster or send a quick question about the course.</p>
           <div class="contact__links">
             <a class="contact__link" href="mailto:ebarneytutoring@gmail.com">
               <span class="icon icon--mail" aria-hidden="true">@</span>
@@ -119,6 +200,8 @@
     <script src="scripts.js"></script>
   </body>
 </html>
+
+
 
 
 
