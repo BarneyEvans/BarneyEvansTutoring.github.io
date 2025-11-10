@@ -1,0 +1,200 @@
+  .feature-pills { min-width: 0; }
+}
+
+/* Balance hero columns on mid-width screens to avoid bottom gap */
+@media (min-width: 821px) and (max-width: 1150px) {
+  #hero.hero-container { align-items: center; }
+  .hero-left { align-content: center; justify-items: center; }
+  .hero-right { align-self: center; }
+  .home-splash__media { max-width: 330px; }
+}
+
+@media (max-width: 600px) {
+  #hero::before { opacity: 0.6; }
+}
+
+/* Mobile hamburger and dropdown panel (appended) */
+.topnav__hamburger { display: none; background: none; border: none; padding: 0.35rem; margin: 0; cursor: pointer; align-items: center; justify-content: center; flex-direction: column; gap: 5px; position: relative; width: 28px; height: 22px; }
+.topnav__hamburger:focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
+.topnav__hamburger .bar { width: 24px; height: 2px; background: var(--border); border-radius: 2px; display: block; position: absolute; left: 2px; right: 2px; transform-origin: center; transition: transform 0.25s ease, opacity 0.2s ease; }
+.topnav__hamburger .bar:nth-child(1) { top: 4px; }
+.topnav__hamburger .bar:nth-child(2) { display: none; }
+.topnav__hamburger .bar:nth-child(3) { bottom: 4px; }
+
+/* Animate into an X when active */
+.topnav__hamburger.is-active .bar:nth-child(1),
+.topnav__hamburger[aria-expanded="true"] .bar:nth-child(1) { transform: translateY(6px) rotate(45deg); }
+.topnav__hamburger.is-active .bar:nth-child(3),
+.topnav__hamburger[aria-expanded="true"] .bar:nth-child(3) { transform: translateY(-6px) rotate(-45deg); }
+
+.topnav__mobile {
+  position: absolute;
+  right: 1rem;
+  top: 100%;
+  transform: translateY(-12px); /* start slightly above */
+  transform-origin: top center;
+  min-width: clamp(220px, 85vw, 420px);
+  padding: 1rem 1.25rem;
+  border-radius: 24px;
+  background: var(--card-bg);
+  border: 3px solid var(--border);
+  box-shadow: 0 22px 45px rgba(26,26,26,0.12);
+  display: grid;
+  gap: 0.5rem;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  clip-path: inset(0 0 100% 0);
+  will-change: transform, clip-path, opacity;
+  transition: clip-path 0.32s ease, transform 0.32s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.18s ease, visibility 0s linear 0.32s;
+  z-index: 1200;
+}
+.topnav__mobile[aria-hidden="true"] { display: none; }
+.topnav__mobile.is-open { opacity: 1; visibility: visible; pointer-events: auto; transform: translateY(0); clip-path: inset(0 0 0 0); transition: clip-path 0.32s ease, transform 0.32s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.18s ease, visibility 0s linear 0s; }
+
+.topnav__mobile-link { display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; padding: 0.45rem 0.6rem; color: var(--border); font-weight: 700; text-decoration: none; border-radius: 12px; transition: background-color 0.22s ease, color 0.22s ease; }
+.topnav__mobile-link:hover { background: var(--accent-soft); outline: none; }
+.topnav__mobile-link:focus-visible { background: transparent; outline: 2px solid var(--accent); outline-offset: 3px; }
+.topnav__mobile-link[aria-current="page"] { background: var(--accent-soft); }
+.topnav__mobile-sublink { color: var(--border); text-decoration: none; font-weight: 700; padding: 0.35rem 0.45rem; border-radius: 10px; }
+.topnav__mobile-sublink:hover { background: var(--accent-softer); outline: none; }
+.topnav__mobile-sublink:focus-visible { background: transparent; outline: 2px solid var(--accent); outline-offset: 3px; }
+.topnav__mobile-toggle { background: none; border: none; padding: 0.45rem 0.6rem; font: inherit; color: var(--border); font-weight: 700; display: flex; align-items: center; justify-content: space-between; cursor: pointer; border-radius: 12px; }
+.topnav__mobile-toggle:hover { background: var(--accent-soft); outline: none; }
+.topnav__mobile-toggle:focus-visible { background: transparent; outline: 2px solid var(--accent); outline-offset: 3px; }
+/* Do not persist highlight when expanded; only hover/focus should highlight */
+.topnav__mobile-toggle::after { content: ''; width: 8px; height: 8px; border-right: 3px solid currentColor; border-bottom: 3px solid currentColor; transform: rotate(45deg); margin-left: 0.5rem; transition: transform 0.2s ease; }
+.topnav__mobile-toggle[aria-expanded="true"]::after { transform: rotate(225deg); }
+
+.topnav__mobile-sub { padding-left: 0.75rem; display: grid; gap: 0.35rem; overflow: hidden; max-height: 0; opacity: 0; pointer-events: none; transform: translateY(-12px); transform-origin: top; will-change: max-height, opacity, transform; transition: max-height 0.28s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.18s ease, transform 0.28s cubic-bezier(0.22, 1, 0.36, 1); }
+.topnav__mobile-sub.is-open { max-height: var(--mobile-sub-height, 1000px); opacity: 1; pointer-events: auto; transform: translateY(0); }
+.topnav__mobile-sub[hidden] { display: none; }
+
+@media (max-width: 700px) { .topnav__links { display: none; } .topnav__hamburger { display: inline-flex; } }
+
+/* Blur overlay for mobile menu */
+body.is-mobile-menu-open::after { content: ''; position: fixed; inset: 0; z-index: 1050; background: rgba(255,255,255,0); backdrop-filter: blur(2px) brightness(0.92); -webkit-backdrop-filter: blur(2px) brightness(0.92); pointer-events: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  .topnav__mobile { transition: none; will-change: auto; }
+  .topnav__mobile.is-open { transition: none; }
+  .topnav__mobile-sub { transition: none; will-change: auto; }
+}
+
+/* Linger on hover-out for mobile links */
+.topnav__mobile-link.is-leaving { transition-duration: 0.34s, 0.34s; }
+
+/* Highlight parent when interacting within the submenu (modern browsers) */
+.topnav__mobile:has(#mobile-courses:hover) .topnav__mobile-toggle,
+  .topnav__mobile:has(#mobile-courses:focus-within) .topnav__mobile-toggle,
+  /* Fallback class toggled by JS */
+  .topnav__mobile-toggle.is-child-hover {
+  background: var(--accent-soft);
+  box-shadow: inset 0 0 0 2px var(--accent);
+}
+.about-card-wrap { max-width: var(--max-width); margin: 0 auto; padding: 2.5rem 2rem 1.75rem; }
+.about-card { --about-photo-max: 280px; --about-gap: 0.35rem; --about-right-pad: 0.6rem; padding: 1.25rem 0.75rem 1.25rem 1.25rem; border-color: var(--border); }
+.about-card__grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem 1.25rem; align-items: start; }
+.about-card__col--right { display: grid; gap: var(--about-gap); padding-left: var(--about-right-pad); border-left: 4px solid var(--accent-soft); align-content: start; }
+.about-card__photo { width: 100%; max-width: var(--about-photo-max); justify-self: end; }
+.about-card__rule { height: 3px; background: var(--accent-soft); border-radius: 999px; margin: 0.65rem 0; }
+/* Centered bold stats spanning the whole card */
+.about-card__stats { grid-column: 1 / -1; text-align: center; font-weight: 700; margin: 0.35rem 0 0.25rem; }
+
+/* Professional Experience: two-column wide card */
+.about-exp-card { border-color: var(--border); padding: 1.25rem 1rem; }
+.about-exp__grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem 1.25rem; align-items: start; }
+.about-exp__left { display: grid; gap: 0.5rem; }
+.about-exp__right { display: grid; gap: 0.5rem; border-left: 4px solid var(--accent-soft); padding-left: 1rem; }
+.about-exp__rule { height: 3px; background: var(--accent-soft); border-radius: 999px; margin: 0.5rem 0; }
+.about-exp__stats { text-align: center; }
+.about-exp__right .contact__link { justify-self: center; padding: 0.5rem 1rem; }
+.about-exp__quote { margin: 0.25rem 0 0; padding: 0.5rem 0.75rem; background: var(--card-bg); border: 3px solid var(--accent-soft); border-radius: 16px; color: rgba(26,26,26,0.82); font-style: italic; }
+.about-exp__quote p { margin: 0; }
+.about-exp__quote footer { margin-top: 0.25rem; font-style: normal; opacity: 0.7; }
+@media (max-width: 900px) { .about-exp__grid { grid-template-columns: 1fr; } .about-exp__right { border-left: 0; padding-left: 0; } }
+/* Align experience card to standard content width */
+.about-exp-wrap { max-width: var(--max-width); margin: 0 auto; padding: 0 2rem; }
+/* Shared crop controls (tweak via CSS vars) */
+.about-card__photo img { aspect-ratio: var(--about-photo-ratio, 3 / 2); object-fit: cover; object-position: var(--about-photo-pos, 50% 50%); }
+/* Square top image with higher top focus */
+.about-card__photo--square img { --about-photo-ratio: 3 / 2; --about-photo-pos: 30% 50%; }
+@media (max-width: 900px) { .about-card__grid { grid-template-columns: 1fr; } .about-card__col--right { border-left: 0; padding-left: 0; } .about-card__photo { max-width: min(85vw, 320px); } }
+/* Scale up About hero text without affecting other pages */
+.about-card .card__header h3 { font-size: clamp(1.9rem, 3.8vw, 2.4rem); }
+.about-card p { font-size: clamp(1.05rem, 1.25vw, 1.22rem); line-height: 1.5; margin: 0.35rem 0; }
+.about-card p em { font-size: 1.05em; }
+.about-card .hero__chips { justify-content: center; margin-top: 0.5rem; }
+/* Soften emphasis of the story text on the right */
+.about-card__col--right p { font-weight: 400; font-size: clamp(0.97rem, 1vw, 1.08rem); color: rgba(26, 26, 26, 0.82); }
+.pt-intro { max-width: var(--max-width); margin: 0 auto; padding: 1.5rem 2rem 0.5rem; }
+.pt-intro__title { margin: 0 0 0.25rem; font-family: 'Poppins','DM Sans',sans-serif; font-size: clamp(1.8rem, 4.5vw, 2.4rem); }
+.pt-intro__sub { margin: 0; font-weight: 700; color: var(--border); opacity: 0.9; }
+
+
+
+
+ 
+
+/* Roadmap pill number badge + stacked label */
+.py-pills-grid .lesson-pill .pill-num {
+  position: absolute;
+  top: 0.1rem;
+  left: 50%;
+  transform: translateX(-50%);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 3px solid var(--accent);
+  background: var(--card-bg);
+  color: var(--border);
+  font-weight: 400; /* non-bold numeral */
+  font-size: 0.72rem;
+  line-height: 1;
+  pointer-events: none; /* avoid overlapping clicks */
+}
+
+/* Slightly wider oval for two-digit lessons */
+.py-pills-grid .lesson-pill[data-lesson="10"] .pill-num,
+.py-pills-grid .lesson-pill[data-lesson="11"] .pill-num,
+.py-pills-grid .lesson-pill[data-lesson="12"] .pill-num {
+  width: 26px;
+  height: 20px;
+  border-radius: 999px; /* oval */
+}
+
+/* Subtle upscale for wider viewports so labels/badges don’t feel too small */
+@media (min-width: 950px) {
+  .py-pills-grid .lesson-pill .pill-label {
+    font-size: 1.08rem; /* ~8% bump */
+    top: 1px; /* keep slightly below center */
+  }
+  .py-pills-grid .lesson-pill .pill-num {
+    width: 22px;
+    height: 22px;
+    font-size: 0.8rem;
+    top: 0.15rem;
+  }
+  .py-pills-grid .lesson-pill[data-lesson="10"] .pill-num,
+  .py-pills-grid .lesson-pill[data-lesson="11"] .pill-num,
+  .py-pills-grid .lesson-pill[data-lesson="12"] .pill-num {
+    width: 28px;
+    height: 22px;
+  }
+}
+
+/* Subtle visual nudge: place the label slightly below center */
+.py-pills-grid .lesson-pill .pill-label {
+  position: relative;
+  top: 6px;
+}
+.py-pills-grid .lesson-pill .pill-label {
+  display: block;
+  font-weight: 700;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
