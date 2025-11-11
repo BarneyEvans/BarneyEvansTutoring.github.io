@@ -84,7 +84,7 @@ body.preview {
 
 .hero__photo {
   border: 3px solid var(--accent);
-  border-radius: 20px;
+  border-radius: 24px;
   overflow: hidden;
   width: 48mm;
   box-shadow: 5px 5px 0 rgba(26, 26, 26, 0.16);
@@ -179,7 +179,7 @@ body.preview {
 
 .card {
   border: 3px solid var(--accent);
-  border-radius: 18px;
+  border-radius: 24px;
   background: var(--card-bg);
   padding: 7mm;
   display: grid;
@@ -226,7 +226,7 @@ body.preview {
 
 .contact-block {
   border: 3px solid var(--accent);
-  border-radius: 18px;
+  border-radius: 24px;
   padding: 8mm 10mm;
   background: var(--card-bg);
   display: grid;

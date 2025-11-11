@@ -214,129 +214,6 @@ strong {
 }
 
 
-.topnav__dropdown {
-  position: absolute;
-  left: 0;
-  top: calc(100% + 10px);
-  transform: translateY(6px);
-  min-width: clamp(240px, 45vw, 420px);
-  max-width: min(520px, calc(100vw - 24px));
-  padding: 1.75rem 2rem;
-  border-radius: 24px;
-  background: var(--card-bg);
-  border: 3px solid var(--border);
-  box-shadow: 0 22px 45px rgba(26, 26, 26, 0.12);
-  display: grid;
-  gap: 1rem;
-  opacity: 0;
-  visibility: hidden;
-  pointer-events: none;
-  transition: opacity 0.18s ease, transform 0.18s cubic-bezier(0.22, 1, 0.36, 1);
-  z-index: 1200;
-}
-.topnav__dropdown.is-closing { transition-duration: 0.24s, 0.24s; }
-.topnav__dropdown.is-align-right { left: auto; right: 0; }
-
-.topnav__dropdown::before {
-  content: '';
-  position: absolute;
-  top: -18px;
-  left: 0;
-  right: 0;
-  height: 18px;
-}
-
-/* Pointer notch linking dropdown to trigger */
-.topnav__dropdown::after {
-  content: '';
-  position: absolute;
-  top: -10px;
-  left: 28px;
-  width: 14px;
-  height: 14px;
-  background: var(--card-bg);
-  border-left: 3px solid var(--border);
-  border-top: 3px solid var(--border);
-  transform: rotate(45deg);
-  border-right: none;
-  border-bottom: none;
-  border-radius: 3px;
-}
-.topnav__dropdown.is-align-right::after { left: auto; right: 28px; }
-
-.topnav__dropdown-label {
-  margin: 0;
-  font-size: 0.75rem;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: rgba(26, 26, 26, 0.55);
-}
-
-.topnav__dropdown-link {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  font-family: 'Poppins', 'DM Sans', sans-serif;
-  font-size: 1.25rem;
-  font-weight: 700;
-  color: var(--border);
-  text-decoration: none;
-  padding: 0.35rem 0.5rem;
-  border-radius: 12px;
-  transition: color 0.2s ease, background-color 0.18s ease;
-}
-
-.topnav__dropdown-link:hover { background: var(--accent-softer); outline: none; }
-.topnav__dropdown-link:focus-visible { background: transparent; outline: 2px solid var(--accent); outline-offset: 3px; }
-
-.topnav__badge {
-  font-family: 'DM Sans', sans-serif;
-  font-size: 0.75rem;
-  font-weight: 700;
-  color: var(--accent-dark);
-  background: var(--accent-soft);
-  border-radius: 999px;
-  padding: 0.1rem 0.5rem;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  line-height: 1;
-  vertical-align: middle;
-}
-
-/* Do NOT open dropdown on hover/focus; open only when toggled via click (.is-open) */
-.topnav__item--menu:hover .topnav__dropdown,
-.topnav__item--menu:focus-within .topnav__dropdown {
-  opacity: 0;
-  visibility: hidden;
-  pointer-events: none;
-  transform: translateY(6px);
-}
-
-.topnav__item--menu:hover .topnav__link--has-menu::after,
-.topnav__item--menu:focus-within .topnav__link--has-menu::after {
-  /* keep caret default unless menu is actually open */
-  transform: rotate(45deg);
-}
-
-/* Keep parent link highlighted while dropdown is active */
-.topnav__item--menu:hover .topnav__link--has-menu,
-.topnav__item--menu:focus-within .topnav__link--has-menu,
-.topnav__item--menu.is-open .topnav__link--has-menu {
-  background: transparent;
-}
-
-/* Also open dropdown when menu is toggled via click */
-.topnav__item--menu.is-open .topnav__dropdown {
-  opacity: 1;
-  visibility: visible;
-  pointer-events: auto;
-  transform: translateY(0);
-}
-
-.topnav__item--menu.is-open .topnav__link--has-menu::after {
-  transform: rotate(225deg);
-}
 
 /* Subtle linger on hover-out for nav links */
 .topnav__link.is-leaving {
@@ -345,23 +222,7 @@ strong {
 
 /* Restore subtle blur/dim of page content when nav menu is active */
 /* Full-page blur/dim when nav menu is active (affects body background too) */
-body.is-nav-menu-hover::after {
-  content: '';
-  position: fixed;
-  inset: 0;
-  z-index: 1050; /* below dropdown (1200) but above content */
-  background: rgba(255,255,255,0); /* transparent; backdrop-filter does the work */
-  backdrop-filter: blur(2px) brightness(0.92);
-  -webkit-backdrop-filter: blur(2px) brightness(0.92);
-  pointer-events: none; /* allow outside clicks to close menu */
-}
-
-/* Page blur/dim when nav hovered or focused */
-.site-content { transition: filter 0.18s ease; }
-/* Remove page blur/dim on nav hover so background dots remain consistent */
-body.is-nav-menu-hover .site-content {
-  filter: none;
-}
+/* Removed unused desktop dropdown styles and hover overlay */
 
 
 .services,
@@ -445,7 +306,7 @@ main {
 .hero__cta .contact__link:focus-visible { transform: translate(3px, 3px); box-shadow: none; }
 
 .hero__chips li {
-  background: var(--accent-soft);
+  background: var(--card-bg);
   border: 3px solid var(--border);
   border-radius: 999px;
   padding: 0.4rem 1rem;
@@ -463,7 +324,7 @@ main {
   max-width: 320px;
   height: clamp(220px, 40vw, 300px);
   border: 4px solid var(--accent);
-  border-radius: 32px;
+  border-radius: 24px;
   overflow: hidden;
   background: var(--card-bg);
 }
@@ -498,7 +359,7 @@ main {
 
 .photo-card {
   border: 3px solid var(--border);
-  border-radius: 32px;
+  border-radius: 24px;
   overflow: hidden;
   background: var(--card-bg);
 }
@@ -572,7 +433,7 @@ button.contact__link {
 .feature-pill {
   background: var(--accent-soft);
   border: 3px solid var(--border);
-  border-radius: 28px;
+  border-radius: 24px;
   padding: 0.85rem 1rem;
   box-shadow: none; /* remove 3D button-like effect */
   display: grid;
@@ -674,7 +535,7 @@ button.contact__link {
 .card {
   background: var(--card-bg);
   border: 4px solid var(--accent);
-  border-radius: 32px;
+  border-radius: 24px;
   padding: 2rem;
 }
 
@@ -738,7 +599,7 @@ button.contact__link {
 .why__card {
   background: var(--card-bg);
   border: 4px solid var(--accent);
-  border-radius: 28px;
+  border-radius: 24px;
   padding: 1.75rem;
   display: flex;
   flex-direction: column;
@@ -899,6 +760,34 @@ button.contact__link {
   height: 0.9rem;
 }
 
+/* MyTutor star icon sizing to match other icons */
+.icon--mytutor svg {
+  width: 0.9rem;
+  height: 0.9rem;
+  fill: var(--border);
+}
+
+/* Email icon sizing to match other icons */
+.icon--mail svg {
+  width: 0.9rem;
+  height: 0.9rem;
+  fill: var(--border);
+}
+
+/* Person icon sizing to match other icons */
+.icon--person svg {
+  width: 0.9rem;
+  height: 0.9rem;
+  fill: var(--border);
+}
+
+/* Code brackets icon sizing to match other icons */
+.icon--code svg {
+  width: 0.9rem;
+  height: 0.9rem;
+  fill: var(--border);
+}
+
 .footer {
   border-top: 4px solid var(--border);
   text-align: center;
@@ -955,7 +844,7 @@ button.contact__link {
   .topnav__item { justify-content: center; }
   .topnav__item .topnav__link { width: 100%; justify-content: center; }
   .topnav__link--has-menu::after { display: none; }
-  .topnav__dropdown { display: none !important; }
+  /* dropdown removed */
 
   /* (Reverted mobile pill/hero tweaks) */
 
@@ -966,18 +855,18 @@ button.contact__link {
 
   .hero { gap: 1.25rem; padding: 2rem 1rem 1.5rem; }
   .hero__chips li { padding: 0.3rem 0.8rem; border-width: 3px; }
-  .hero__media { flex: none; width: min(85vw, 320px); height: auto; aspect-ratio: 4 / 5; border-radius: 32px; }
+  .hero__media { flex: none; width: min(85vw, 320px); height: auto; aspect-ratio: 4 / 5; border-radius: 24px; }
   .hero__media--square { aspect-ratio: 1 / 1; }
 
   .section-title { font-size: clamp(1.6rem, 6vw, 2rem); }
 
   .services { padding: 2rem 0; }
   .services__grid { gap: 1.25rem; }
-  .card { padding: 1.25rem; border-width: 4px; border-radius: 32px; }
+  .card { padding: 1.25rem; border-width: 4px; border-radius: 24px; }
   .card__header h3 { font-size: clamp(1.2rem, 5.5vw, 1.5rem); }
   .card__list { font-size: 1rem; }
 
-  .why__card { padding: 1.25rem; border-width: 4px; border-radius: 28px; }
+  .why__card { padding: 1.25rem; border-width: 4px; border-radius: 24px; }
 
   .contact { padding: 2.5rem 1rem 3rem; }
   .contact__link { padding: 0.55rem 1rem; }
@@ -1068,7 +957,7 @@ button.contact__link {
 .lesson-pill.is-active { background: var(--card-bg); box-shadow: var(--shadow); }
 
 .py-info .card__header h3 { margin: 0; }
-.py-code { margin-top: 0.75rem; border: 3px solid var(--border); border-radius: 12px; background: var(--card-bg); padding: 0.6rem 0.8rem; }
+.py-code { margin-top: 0.75rem; border: 3px solid var(--border); border-radius: 16px; background: var(--card-bg); padding: 0.6rem 0.8rem; }
 .py-code code { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace; font-size: 0.95rem; white-space: pre-wrap; }
 
 @media (max-width: 900px) {
@@ -1092,7 +981,7 @@ button.contact__link {
   position: relative;
   background: var(--card-bg);
   border: 4px solid var(--accent);
-  border-radius: 28px;
+  border-radius: 24px;
   padding: 1.75rem 2rem 2.75rem;
   transition: box-shadow 0.2s ease, transform 0.06s ease, border-color 0.2s ease;
   margin-bottom: 2.5rem;
@@ -1242,7 +1131,7 @@ button.contact__link {
 /* Python course refinements */
 .py-outline-card {
   border: 4px solid var(--accent);
-  border-radius: 32px;
+  border-radius: 24px;
   box-shadow: var(--shadow);
 }
 
@@ -1611,16 +1500,7 @@ button.contact__link {
 .topnav__mobile-sublink { color: var(--border); text-decoration: none; font-weight: 700; padding: 0.35rem 0.45rem; border-radius: 10px; }
 .topnav__mobile-sublink:hover { background: var(--accent-softer); outline: none; }
 .topnav__mobile-sublink:focus-visible { background: transparent; outline: 2px solid var(--accent); outline-offset: 3px; }
-.topnav__mobile-toggle { background: none; border: none; padding: 0.45rem 0.6rem; font: inherit; color: var(--border); font-weight: 700; display: flex; align-items: center; justify-content: space-between; cursor: pointer; border-radius: 12px; }
-.topnav__mobile-toggle:hover { background: var(--accent-soft); outline: none; }
-.topnav__mobile-toggle:focus-visible { background: transparent; outline: 2px solid var(--accent); outline-offset: 3px; }
-/* Do not persist highlight when expanded; only hover/focus should highlight */
-.topnav__mobile-toggle::after { content: ''; width: 8px; height: 8px; border-right: 3px solid currentColor; border-bottom: 3px solid currentColor; transform: rotate(45deg); margin-left: 0.5rem; transition: transform 0.2s ease; }
-.topnav__mobile-toggle[aria-expanded="true"]::after { transform: rotate(225deg); }
-
-.topnav__mobile-sub { padding-left: 0.75rem; display: grid; gap: 0.35rem; overflow: hidden; max-height: 0; opacity: 0; pointer-events: none; transform: translateY(-12px); transform-origin: top; will-change: max-height, opacity, transform; transition: max-height 0.28s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.18s ease, transform 0.28s cubic-bezier(0.22, 1, 0.36, 1); }
-.topnav__mobile-sub.is-open { max-height: var(--mobile-sub-height, 1000px); opacity: 1; pointer-events: auto; transform: translateY(0); }
-.topnav__mobile-sub[hidden] { display: none; }
+/* Removed unused mobile submenu styles */
 
 @media (max-width: 700px) { .topnav__links { display: none; } .topnav__hamburger { display: inline-flex; } }
 
@@ -1630,52 +1510,109 @@ body.is-mobile-menu-open::after { content: ''; position: fixed; inset: 0; z-inde
 @media (prefers-reduced-motion: reduce) {
   .topnav__mobile { transition: none; will-change: auto; }
   .topnav__mobile.is-open { transition: none; }
-  .topnav__mobile-sub { transition: none; will-change: auto; }
+  /* mobile submenu removed */
 }
 
 /* Linger on hover-out for mobile links */
 .topnav__mobile-link.is-leaving { transition-duration: 0.34s, 0.34s; }
 
 /* Highlight parent when interacting within the submenu (modern browsers) */
-.topnav__mobile:has(#mobile-courses:hover) .topnav__mobile-toggle,
-  .topnav__mobile:has(#mobile-courses:focus-within) .topnav__mobile-toggle,
-  /* Fallback class toggled by JS */
-  .topnav__mobile-toggle.is-child-hover {
-  background: var(--accent-soft);
-  box-shadow: inset 0 0 0 2px var(--accent);
-}
+/* highlight for removed mobile submenu omitted */
 .about-card-wrap { max-width: var(--max-width); margin: 0 auto; padding: 1rem 2rem 1rem; }
-.about-card { --about-photo-max: 280px; --about-gap: 0.35rem; --about-right-pad: 0.6rem; padding: 1.25rem 0.75rem 1.25rem 1.25rem; border-color: var(--border); }
+.about-card { --about-photo-max: 280px; --about-gap: 0.35rem; --about-right-pad: 0.6rem; padding: 1.25rem 0.75rem 1.25rem 1.25rem; border-color: var(--border); border-width: 3px; background: var(--accent-soft); }
 .about-card__grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem 1.25rem; align-items: start; }
-.about-card__col--right { display: grid; gap: var(--about-gap); padding-left: var(--about-right-pad); align-content: start; position: relative; }
+.about-card__col--right {
+  display: grid;
+  gap: 0.75rem;
+  align-content: center;
+  position: relative;
+  background: var(--card-bg);
+  border: 3px solid var(--border);
+  border-radius: 24px;
+  padding: 1rem 1.25rem;
+  align-self: center;
+  justify-self: center;
+  width: 100%;
+  max-width: 520px;
+}
 /* Remove vertical divider; replaced by centered bubbles on the card */
 .about-card__col--right::before { content: none; }
+
+/* Side-by-side photos in right column */
+.about-card__photos {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+  width: 100%;
+}
+
+.about-card__photo-item {
+  border: 3px solid var(--border);
+  border-radius: 24px;
+  overflow: hidden;
+  background: var(--card-bg);
+}
+
+.about-card__photo-item img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  aspect-ratio: 3 / 4;
+}
+
 .about-card__photo { width: 100%; max-width: var(--about-photo-max); justify-self: end; }
 .about-card__rule { display: none; }
 /* Centered bold stats spanning the whole card */
 .about-card__stats { grid-column: 1 / -1; text-align: center; font-weight: 700; margin: 0.35rem 0 0.25rem; }
 
 /* Professional Experience: two-column wide card */
-.about-exp-card { border-color: var(--border); padding: 1.25rem 1rem; }
-.about-exp__grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem 1.25rem; align-items: start; }
-.about-exp__left { display: grid; gap: 0.5rem; }
-.about-exp__right { display: grid; gap: 0.5rem; padding-left: 1rem; position: relative; }
-/* Remove vertical divider; replaced by centered bubbles on the card */
-.about-exp__right::before { content: none; }
+.about-exp-card { border-color: var(--border); padding: 1.25rem 1rem; background: var(--card-bg); border-width: 3px; }
+/* Add pink accent bar above Professional Experience title */
+.about-exp-card > .card__header h3::before {
+  content: '';
+  display: block;
+  width: 64px;
+  height: 4px;
+  border-radius: 999px;
+  background: var(--accent);
+  margin: 0 0 0.5rem 0;
+}
+.about-exp__grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem 1.25rem; align-items: stretch; }
+.about-exp__left { display: grid; gap: 1rem; }
+.about-exp__right { display: grid; gap: 5rem; }
+/* Pink job cards */
+.exp-job-card {
+  background: var(--accent-soft);
+  border: 3px solid var(--border);
+  border-radius: 24px;
+  padding: 1rem 1.25rem;
+}
+/* White date pills inside experience cards */
+.about-exp-card .card__price {
+  background: var(--card-bg);
+}
+/* Remove old styles no longer needed */
 .about-exp__rule { display: none; }
 .about-exp__stats { text-align: center; }
-.about-exp__right .contact__link { justify-self: center; padding: 0.5rem 1rem; }
-.about-exp__quote { margin: 0.25rem 0 0; padding: 0.5rem 0.75rem; background: var(--card-bg); border: 3px solid var(--accent-soft); border-radius: 16px; color: rgba(26,26,26,0.82); font-style: italic; }
+.about-exp__right .contact__link {
+  justify-self: center;
+  align-self: center;
+  padding: 0.5rem 1rem;
+  margin: 0 auto 1.75rem;
+  display: flex;
+}
+.about-exp__quote { margin: 0.25rem 0 0; padding: 0.5rem 0.75rem; background: var(--card-bg); border: 3px solid var(--border); border-radius: 16px; color: rgba(26,26,26,0.82); font-style: italic; }
 .about-exp__quote p { margin: 0; }
 .about-exp__quote footer { margin-top: 0.25rem; font-style: normal; opacity: 0.7; }
-@media (max-width: 900px) { .about-exp__grid { grid-template-columns: 1fr; } .about-exp__right { border-left: 0; padding-left: 0; } .about-exp__right::before { content: none; } }
+@media (max-width: 900px) { .about-exp__grid { grid-template-columns: 1fr; } }
 /* Align experience card to standard content width */
 .about-exp-wrap { max-width: var(--max-width); margin: 0 auto; padding: 0 2rem; }
 /* Shared crop controls (tweak via CSS vars) */
 .about-card__photo img { aspect-ratio: var(--about-photo-ratio, 3 / 2); object-fit: cover; object-position: var(--about-photo-pos, 50% 50%); }
 /* Square top image with higher top focus */
 .about-card__photo--square img { --about-photo-ratio: 3 / 2; --about-photo-pos: 30% 50%; }
-@media (max-width: 900px) { .about-card__grid { grid-template-columns: 1fr; } .about-card__col--right { border-left: 0; padding-left: 0; } .about-card__col--right::before { content: none; } .about-card__photo { max-width: min(85vw, 320px); } }
+@media (max-width: 900px) { .about-card__grid { grid-template-columns: 1fr; } .about-card__col--right::before { content: none; } .about-card__photo { max-width: min(85vw, 320px); } }
 
 /* Centered vertical bubbles within cards (replaces divider) */
 .about-card,
@@ -1688,20 +1625,39 @@ body.is-mobile-menu-open::after { content: ''; position: fixed; inset: 0; z-inde
 }
 /* Scale up About hero text without affecting other pages */
 .about-card .card__header h3 { font-size: clamp(1.9rem, 3.8vw, 2.4rem); }
+/* Add pink accent bar above Barney Evans title */
+.about-card > .card__header h3::before {
+  content: '';
+  display: block;
+  width: 64px;
+  height: 4px;
+  border-radius: 999px;
+  background: var(--accent);
+  margin: 0 0 0.5rem 0;
+}
 .about-exp-card > .card__header h3 { font-size: clamp(1.9rem, 3.8vw, 2.4rem); }
-.about-card p { font-size: clamp(1.05rem, 1.25vw, 1.22rem); line-height: 1.5; margin: 0.35rem 0; }
+.about-card p { font-size: clamp(1rem, 1.2vw, 1.15rem); line-height: 1.5; margin: 0.35rem 0; }
 .about-card p em { font-size: 1.05em; }
 .about-card .hero__chips { justify-content: center; margin-top: 0.5rem; }
 /* Soften emphasis of the story text on the right */
-.about-card__col--right p { font-weight: 400; font-size: clamp(0.97rem, 1vw, 1.08rem); color: rgba(26, 26, 26, 0.82); }
+.about-card__col--right p {
+  font-weight: 400;
+  font-size: clamp(0.92rem, 1vw, 1rem);
+  color: rgba(26, 26, 26, 0.82);
+  margin: 0.5rem 0 0 0;
+  font-style: italic;
+}
 /* Make 'My Story' header match MyTutor/Ritz size and center it */
-.about-card__col--right > .card__header { justify-content: center; }
-.about-card__col--right > .card__header h3 { font-size: 1.5rem; text-align: center; }
+.about-card__col--right > .card__header { justify-content: center; margin-bottom: 0.5rem; }
+.about-card__col--right > .card__header h3 { font-size: 1.5rem; text-align: center; margin: 0; }
 .services#experience { padding-top: 1.25rem; padding-bottom: 2rem; }
 .pt-intro { max-width: var(--max-width); margin: 0 auto; padding: 1.5rem 2rem 0.5rem; }
 .pt-intro__title { margin: 0 0 0.25rem; font-family: 'Poppins','DM Sans',sans-serif; font-size: clamp(1.8rem, 4.5vw, 2.4rem); }
 .pt-intro__sub { margin: 0; font-weight: 700; color: var(--border); opacity: 0.9; }
 
+.about-card__col--left .hero__chips {
+  margin-top: 2rem;
+}
 
 
 

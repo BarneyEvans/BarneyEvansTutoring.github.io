@@ -1,85 +1,4 @@
-(function () {
-  const menuItem = document.querySelector('.topnav__item--menu');
-  if (!menuItem) {
-    return;
-  }
-
-  const trigger = menuItem.querySelector('.topnav__link--has-menu');
-  const dropdown = menuItem.querySelector('.topnav__dropdown');
-
-  // Disable hover-open behaviour; menu opens only on click
-  const setHover = () => {};
-
-  const openMenu = () => {
-    if (dropdown) dropdown.classList.remove('is-closing');
-    menuItem.classList.add('is-open');
-    if (trigger) trigger.setAttribute('aria-expanded', 'true');
-    // After opening, adjust alignment to keep within viewport
-    try {
-      if (!dropdown) return;
-      dropdown.classList.remove('is-align-right');
-      const adjust = () => {
-        const rect = dropdown.getBoundingClientRect();
-        const vw = window.innerWidth || document.documentElement.clientWidth;
-        const pad = 12;
-        if (rect.right > vw - pad) {
-          dropdown.classList.add('is-align-right');
-        }
-      };
-      // run on next frame to ensure dimensions are accurate
-      if (typeof requestAnimationFrame === 'function') requestAnimationFrame(adjust); else setTimeout(adjust, 0);
-    } catch (_) {}
-  };
-
-  const closeMenu = () => {
-    if (dropdown) {
-      dropdown.classList.add('is-closing');
-      const tidy = () => {
-        dropdown.removeEventListener('transitionend', tidy);
-        dropdown.classList.remove('is-closing');
-      };
-      dropdown.addEventListener('transitionend', tidy);
-    }
-    menuItem.classList.remove('is-open');
-    if (trigger) trigger.setAttribute('aria-expanded', 'false');
-  };
-
-  // Click to toggle
-  if (trigger) {
-    trigger.setAttribute('aria-expanded', 'false');
-    trigger.addEventListener('click', (e) => {
-      e.preventDefault();
-      if (menuItem.classList.contains('is-open')) {
-        closeMenu();
-      } else {
-        openMenu();
-        // Focus first item for accessibility
-        const first = dropdown && dropdown.querySelector('a');
-        if (first) first.focus();
-      }
-    });
-  }
-
-  // Close when clicking outside
-  document.addEventListener('click', (e) => {
-    if (!menuItem.contains(e.target)) {
-      closeMenu();
-    }
-  });
-
-  // Open via any element with .js-open-courses
-  document.querySelectorAll('.js-open-courses').forEach((btn) => {
-    btn.addEventListener('click', (e) => {
-      e.preventDefault();
-      openMenu();
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-      const first = dropdown && dropdown.querySelector('a');
-      if (first) {
-        setTimeout(() => first.focus(), 200);
-      }
-    });
-  });
-})();
+// Removed unused desktop dropdown logic
 
 // Subtle shake of contact buttons after scrolling into view
 (function () {
@@ -105,107 +24,14 @@
   const mobileMenu = document.getElementById('mobile-menu');
   if (!hamburger || !mobileMenu) return;
 
-  const coursesToggle = document.querySelector('.js-mobile-courses-toggle');
-  const coursesSub = document.getElementById('mobile-courses');
+  // No mobile submenu; only a single-level mobile menu is used
   const motionQuery = typeof window !== 'undefined' && typeof window.matchMedia === 'function'
     ? window.matchMedia('(prefers-reduced-motion: reduce)')
     : null;
   const prefersReducedMotion = motionQuery ? motionQuery.matches : false;
-  let subTransitionCleanup = null;
-  let subRaf = null;
+  // Submenu helpers removed
 
-  const cancelSubTransition = () => {
-    if (typeof subTransitionCleanup === 'function') {
-      subTransitionCleanup();
-      subTransitionCleanup = null;
-    }
-  };
-
-  const cancelSubRaf = () => {
-    if (subRaf !== null && typeof cancelAnimationFrame === 'function') {
-      cancelAnimationFrame(subRaf);
-    }
-    subRaf = null;
-  };
-
-  const nextSubFrame = (callback) => {
-    cancelSubRaf();
-    if (typeof requestAnimationFrame !== 'function') {
-      callback();
-      return;
-    }
-    subRaf = requestAnimationFrame(() => {
-      subRaf = null;
-      callback();
-    });
-  };
-
-  const onSubTransitionEnd = (callback) => {
-    if (!coursesSub) return;
-    const handler = (event) => {
-      if (event.target !== coursesSub || event.propertyName !== 'max-height') return;
-      coursesSub.removeEventListener('transitionend', handler);
-      subTransitionCleanup = null;
-      callback();
-    };
-    coursesSub.addEventListener('transitionend', handler);
-    subTransitionCleanup = () => {
-      coursesSub.removeEventListener('transitionend', handler);
-      subTransitionCleanup = null;
-    };
-  };
-
-  const openCoursesSub = () => {
-    if (!coursesSub || coursesSub.classList.contains('is-open')) return;
-    cancelSubTransition();
-    cancelSubRaf();
-    coursesSub.removeAttribute('hidden');
-    coursesSub.setAttribute('aria-hidden', 'false');
-
-    if (prefersReducedMotion) {
-      coursesSub.classList.add('is-open');
-      coursesSub.style.removeProperty('--mobile-sub-height');
-      return;
-    }
-
-    coursesSub.style.setProperty('--mobile-sub-height', `${coursesSub.scrollHeight}px`);
-    void coursesSub.offsetHeight;
-    nextSubFrame(() => {
-      coursesSub.classList.add('is-open');
-    });
-    onSubTransitionEnd(() => {
-      coursesSub.style.removeProperty('--mobile-sub-height');
-    });
-  };
-
-  const closeCoursesSub = (animate = true) => {
-    if (!coursesSub || coursesSub.hasAttribute('hidden')) return;
-    cancelSubTransition();
-    cancelSubRaf();
-    coursesSub.setAttribute('aria-hidden', 'true');
-
-    const finish = () => {
-      coursesSub.classList.remove('is-open');
-      coursesSub.setAttribute('hidden', '');
-      coursesSub.style.removeProperty('--mobile-sub-height');
-    };
-
-    if (!animate || prefersReducedMotion) {
-      finish();
-      return;
-    }
-
-    coursesSub.style.setProperty('--mobile-sub-height', `${coursesSub.scrollHeight}px`);
-    void coursesSub.offsetHeight;
-    nextSubFrame(() => {
-      coursesSub.classList.remove('is-open');
-    });
-    onSubTransitionEnd(finish);
-  };
-
-  if (coursesSub) {
-    coursesSub.setAttribute('aria-hidden', coursesSub.hasAttribute('hidden') ? 'true' : 'false');
-  }
+  // Submenu state removed
 
   const openMobile = () => {
     mobileMenu.classList.add('is-open');
@@ -224,10 +50,7 @@
     hamburger.classList.remove('is-active');
     hamburger.setAttribute('aria-label', 'Open menu');
     document.body.classList.remove('is-mobile-menu-open');
-    if (coursesToggle) {
-      coursesToggle.setAttribute('aria-expanded', 'false');
-    }
-    closeCoursesSub(false);
+    // No submenu to close
   };
 
   hamburger.addEventListener('click', () => {
@@ -255,28 +78,7 @@
     }
   });
 
-  if (coursesToggle && coursesSub) {
-    coursesToggle.addEventListener('click', () => {
-      const expanded = coursesToggle.getAttribute('aria-expanded') === 'true';
-      if (expanded) {
-        coursesToggle.setAttribute('aria-expanded', 'false');
-        closeCoursesSub(true);
-      } else {
-        coursesToggle.setAttribute('aria-expanded', 'true');
-        openCoursesSub();
-      }
-    });
-    // Keep parent highlighted while interacting inside submenu
-    const addParentHighlight = () => coursesToggle.classList.add('is-child-hover');
-    const removeParentHighlight = () => coursesToggle.classList.remove('is-child-hover');
-    coursesSub.addEventListener('pointerenter', addParentHighlight);
-    coursesSub.addEventListener('pointerleave', removeParentHighlight);
-    coursesSub.addEventListener('focusin', addParentHighlight);
-    coursesSub.addEventListener('focusout', (e) => {
-      // Remove when focus fully leaves submenu
-      if (!coursesSub.contains(e.relatedTarget)) removeParentHighlight();
-    });
-  }
+  // No submenu listeners
 })();
 
 // Contact buttons: use same slick press animation as CTAs (handled via CSS)
