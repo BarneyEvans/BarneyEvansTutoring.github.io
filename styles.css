@@ -1261,7 +1261,7 @@ button.contact__link {
 .py-split {
   max-width: var(--max-width);
   margin: 1rem auto 0;
-  padding: 0 2rem;
+  padding: 1.5rem 2rem;
   display: grid;
   grid-template-columns: minmax(300px, 420px) 1fr;
   gap: 1.25rem;
@@ -1269,6 +1269,11 @@ button.contact__link {
   /* share pill sizing vars with children so panel can align its height */
   --pill-h: clamp(56px, 7vw, 72px);
   --pill-gap: 0.75rem;
+  /* white pill container around roadmap */
+  background: var(--card-bg);
+  border: 3px solid var(--border);
+  border-radius: 24px;
+  box-shadow: var(--shadow);
 }
 
 .py-pills-grid {
@@ -1382,6 +1387,9 @@ button.contact__link {
       'panel'
       'pills';
     align-items: start;
+    /* soften pill on smaller screens */
+    border-radius: 24px;
+    padding: 1.25rem 1.25rem;
   }
   .py-info { grid-area: panel; }
   .py-pills-grid { grid-area: pills; }
