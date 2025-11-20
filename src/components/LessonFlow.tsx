@@ -47,9 +47,6 @@ const LessonFlow: React.FC<LessonFlowProps> = ({ services }) => {
 
             {/* Animated Timeline */}
             <div className="relative">
-                {/* Desktop Connecting Line */}
-                <div className="hidden md:block absolute top-[26px] left-0 w-full h-1 bg-cream border-t-3 border-dashed border-gray-300 z-0" />
-
                 <div className="grid md:grid-cols-4 gap-8 md:gap-4">
                     <AnimatePresence mode="wait">
                         {activeService.lessonFlow.map((step, i) => (
@@ -71,11 +68,6 @@ const LessonFlow: React.FC<LessonFlowProps> = ({ services }) => {
                                     <h4 className="font-heading font-bold text-lg mb-2">{step.title}</h4>
                                     <p className="text-sm text-gray-600 leading-relaxed">{step.description}</p>
                                 </div>
-
-                                {/* Mobile Connecting Line (Vertical) */}
-                                {i < 3 && (
-                                    <div className="md:hidden absolute left-8 top-[100%] h-8 w-1 bg-gray-300 border-l-2 border-dashed border-black z-0" />
-                                )}
                             </motion.div>
                         ))}
                     </AnimatePresence>

@@ -74,7 +74,7 @@ const About: React.FC = () => {
                         initial={{ opacity: 0, rotate: -20, scale: 0.8 }}
                         animate={{ opacity: 1, rotate: -6, scale: 1 }}
                         transition={{ delay: 0.2, duration: 0.5 }}
-                        className="absolute top-4 lg:left-4 w-[260px] h-[320px] bg-white p-3 pb-12 border-4 border-black shadow-xl transform z-0"
+                        className="absolute top-4 lg:left-4 w-[260px] h-[320px] lg:w-[300px] lg:h-[360px] bg-white p-3 pb-12 border-4 border-black shadow-xl transform z-0"
                     >
                         <div className="w-full h-full bg-gray-200 border-2 border-black overflow-hidden grayscale opacity-80 hover:grayscale-0 hover:opacity-100 transition-all duration-500">
                              <img src="/assets/hockey_image.jpg" alt="Ice Hockey" className="w-full h-full object-cover" />
@@ -87,7 +87,7 @@ const About: React.FC = () => {
                         initial={{ opacity: 0, rotate: 10, scale: 0.8 }}
                         animate={{ opacity: 1, rotate: 6, scale: 1 }}
                         transition={{ delay: 0.4, duration: 0.5 }}
-                        className="absolute top-12 lg:left-32 w-[260px] h-[320px] bg-white p-3 pb-12 border-4 border-black shadow-solid z-10"
+                        className="absolute top-12 lg:left-32 w-[260px] h-[320px] lg:w-[300px] lg:h-[360px] bg-white p-3 pb-12 border-4 border-black shadow-solid z-10"
                     >
                         <div className="w-full h-full bg-gray-200 border-2 border-black overflow-hidden">
                             <img src="/assets/teaching.jpg" alt="Teaching" className="w-full h-full object-cover" />

@@ -7,15 +7,15 @@ export const LINKEDIN_URL = "https://www.linkedin.com/in/barney-evans-400379280/
 export const MYTUTOR_URL = "https://www.mytutor.co.uk/tutors/9468218/";
 
 export const PYTHON_CURRICULUM: Lesson[] = [
-    { id: 1, title: "Foundations", description: "Print statements, variables, data types, and basic arithmetic operations.", codeSnippet: `print("Hello World")\nscore = 10\nname = "Alex"` },
+    { id: 1, title: "Foundations", description: "Print statements, variables, data types, and basic arithmetic operations.", codeSnippet: `print("Hello World")\nscore = int(input())` },
     { id: 2, title: "Inputs & Strings", description: "Handling user input, type conversion, and string manipulation methods.", codeSnippet: `name = input("Enter name: ")\nage = int(input("Age: "))` },
-    { id: 3, title: "Selection & Logic", description: "Control flow using if, elif, else and Boolean logic operators.", codeSnippet: `if score > 50:\n    print("Pass")\nelse:\n    print("Try again")` },
-    { id: 4, title: "Loops (While)", description: "Condition-controlled iteration using while loops.", codeSnippet: `while lives > 0:\n    play_game()\n    lives -= 1` },
+    { id: 3, title: "Selection & Logic", description: "Control flow using if, elif, else and Boolean logic operators.", codeSnippet: `if score > 50:\n    print("Pass")` },
+    { id: 4, title: "Loops (While)", description: "Condition-controlled iteration using while loops.", codeSnippet: `while lives > 0:\n    lives -= 1` },
     { id: 5, title: "Loops (For)", description: "Count-controlled iteration using for loops and ranges.", codeSnippet: `for i in range(5):\n    print(f"Count: {i}")` },
     { id: 6, title: "Functions", description: "Defining subroutines, parameters, and return values.", codeSnippet: `def add(a, b):\n    return a + b` },
     { id: 7, title: "Lists", description: "Working with 1D arrays: indexing, appending, and iterating.", codeSnippet: `scores = [10, 20, 35]\nscores.append(40)` },
-    { id: 8, title: "2D Lists", description: "Creating and manipulating tables, grids, and nested loops.", codeSnippet: `grid = [\n  [1, 2, 3],\n  [4, 5, 6]\n]` },
-    { id: 9, title: "Dictionaries", description: "Key-value lookups, records, and data structuring.", codeSnippet: `student = {\n  "name": "Sam",\n  "grade": 9\n}` },
+    { id: 8, title: "2D Lists", description: "Creating and manipulating tables, grids, and nested loops.", codeSnippet: `grid = [[1, 2], [3, 4]]\nprint(grid[0][1])` },
+    { id: 9, title: "Dictionaries", description: "Key-value lookups, records, and data structuring.", codeSnippet: `student = {"name": "Sam"}\nprint(student["name"])` },
     { id: 10, title: "File Handling", description: "Reading from and writing to external text files.", codeSnippet: `with open("data.txt", "w") as f:\n    f.write("Save this")` },
     { id: 11, title: "Searching", description: "Standard algorithms: Linear search and Binary search.", codeSnippet: `def linear_search(arr, target):\n    # ... implementation` },
     { id: 12, title: "Sorting", description: "Standard algorithms: Bubble sort and Merge sort.", codeSnippet: `def bubble_sort(arr):\n    # ... implementation` }

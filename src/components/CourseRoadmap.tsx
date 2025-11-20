@@ -56,8 +56,8 @@ const CourseRoadmap: React.FC = () => {
                                 </div>
                                 
                                 {selectedLesson.codeSnippet && (
-                                    <div className="bg-black rounded-xl p-4 mt-4 overflow-x-auto border-2 border-gray-700">
-                                        <pre className="font-mono text-sm text-green-400">
+                                    <div className="bg-black rounded-xl p-4 mt-4 overflow-x-auto border-2 border-gray-700 max-w-full">
+                                        <pre className="font-mono text-xs md:text-sm text-green-400 whitespace-pre-wrap">
                                             <code>{selectedLesson.codeSnippet}</code>
                                         </pre>
                                     </div>

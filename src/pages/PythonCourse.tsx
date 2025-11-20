@@ -1,11 +1,10 @@
 
 import React from 'react';
-import { Users, BookOpen, Clock, CheckCircle } from 'lucide-react';
+import { Users, BookOpen, Clock, CheckCircle, ArrowRight } from 'lucide-react';
 import { motion } from 'framer-motion';
 import CourseRoadmap from '../components/CourseRoadmap';
-import Button from '../components/Button';
-import CodeWindow from '../components/CodeWindow'; // New dynamic component
-import { CONTACT_EMAIL } from '../constants';
+import CodeWindow from '../components/CodeWindow';
+import { GOOGLE_FORM_URL } from '../constants';
 
 const PythonCourse: React.FC = () => {
     // Data for the new visual structure
@@ -15,6 +14,12 @@ const PythonCourse: React.FC = () => {
         { time: "20-25m", title: "Practice", desc: "Guided exam-style questions." },
         { time: "5m", title: "Wrap-up", desc: "Q&A and homework assignment." },
     ];
+
+    const getRotation = (i: number) => {
+        if (i === 0) return '-rotate-1';
+        if (i === 1) return 'rotate-1';
+        return '-rotate-1';
+    };
 
     return (
         <div className="max-w-6xl mx-auto px-4 pb-20">
@@ -49,7 +54,7 @@ const PythonCourse: React.FC = () => {
                             {[
                                 "Complete 12-week syllabus (Variables to Algorithms)",
                                 "Weekly homework marked with personal feedback",
-                                "Access to all lesson recordings for revision",
+                                <>Compatible with <span className="font-bold">AQA / OCR / Edexcel</span> exam boards</>,
                                 "Specific focus on how to answer written exam questions"
                             ].map((item, i) => (
                                 <li key={i} className="flex items-start gap-3">
@@ -63,8 +68,11 @@ const PythonCourse: React.FC = () => {
                     </div>
 
                     <div className="pt-2">
-                        <a href={`mailto:${CONTACT_EMAIL}?subject=Join Python Waiting List`}>
-                            <Button>Join Waiting List</Button>
+                        <a href={GOOGLE_FORM_URL} target="_blank" rel="noreferrer" className="group inline-flex items-center gap-3 bg-hot-pink text-white px-6 py-3 rounded-full border-3 border-black shadow-solid hover:bg-white hover:text-black hover:translate-x-1 hover:translate-y-1 hover:shadow-none transition-all">
+                            <span className="font-heading font-bold text-lg">Register Interest</span>
+                            <div className="bg-white text-black p-1.5 rounded-full group-hover:bg-hot-pink group-hover:text-white transition-colors">
+                                <ArrowRight size={18} />
+                            </div>
                         </a>
                         <p className="mt-3 text-sm text-gray-600 ml-1 font-medium">
                             No commitment required. Get notified when dates are released.
@@ -85,14 +93,15 @@ const PythonCourse: React.FC = () => {
             {/* Why This Course Cards */}
             <div className="grid md:grid-cols-3 gap-6 mb-20">
                 {[
-                    { icon: BookOpen, title: "Exam Focused", desc: "Not just 'fun projects'. We focus on syntax, tracing, and answering written exam questions." },
+                    { icon: BookOpen, title: "Exam Focused", desc: "Practice past paper exam questions." },
                     { icon: Users, title: "Small Groups", desc: "Maximum 4 students ensures everyone gets personal attention and feedback." },
                     { icon: Clock, title: "Weekly Homework", desc: "Marked weekly tasks with model answers to ensure continuous progress." }
                 ].map((card, idx) => (
                     <motion.div 
                         key={idx}
-                        whileHover={{ y: -5 }}
-                        className="bg-white border-4 border-black rounded-[24px] p-6 shadow-solid"
+                        whileHover={{ y: -4, rotate: 0 }}
+                        whileTap={{ y: 2 }}
+                        className={`border-4 border-black rounded-[24px] p-6 shadow-solid transition-colors ${idx === 1 ? 'bg-cream' : 'bg-white'} ${getRotation(idx)}`}
                     >
                         <div className="bg-cream w-12 h-12 rounded-full border-2 border-black flex items-center justify-center mb-4 text-hot-pink">
                             <card.icon size={24} />
@@ -114,9 +123,6 @@ const PythonCourse: React.FC = () => {
                 <h2 className="font-heading text-3xl md:text-4xl font-bold text-center mb-16">Typical 60-Minute Lesson</h2>
                 
                 <div className="relative">
-                    {/* Desktop Connecting Line */}
-                    <div className="hidden md:block absolute top-[26px] left-0 w-full h-1 bg-cream border-t-3 border-dashed border-gray-300 z-0" />
-
                     <div className="grid md:grid-cols-4 gap-8 md:gap-4">
                         {lessonSteps.map((step, i) => (
                             <motion.div

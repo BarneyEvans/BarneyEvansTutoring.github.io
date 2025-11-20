@@ -75,15 +75,12 @@ const Home: React.FC = () => {
                         {/* Pill 2 */}
                         <div className="group bg-white border-3 border-black rounded-[24px] p-6 shadow-solid hover:translate-x-1 hover:translate-y-1 hover:shadow-none transition-all cursor-pointer relative overflow-hidden">
                              <Link to="/python-course" className="absolute inset-0 z-10"></Link>
-                             <div className="absolute top-0 right-0 bg-hot-pink text-white text-xs font-bold px-3 py-1 border-l-2 border-b-2 border-black">
-                                NEW COHORT
-                             </div>
                             <div className="flex justify-between items-center">
                                 <div>
                                     <h3 className="font-heading font-bold text-xl mb-1">GCSE Python Course</h3>
                                     <p className="text-gray-700 mb-2">12-week exam-focused groups.</p>
                                     <span className="inline-block bg-cream border border-black px-2 py-0.5 rounded text-sm font-semibold">
-                                        From £12.50/lesson
+                                        £12.50/lesson
                                     </span>
                                 </div>
                                 <div className="bg-cream p-2 rounded-full border-2 border-black group-hover:bg-hot-pink group-hover:text-white transition-colors">
@@ -116,3 +113,5 @@ const Home: React.FC = () => {
 };
 
 export default Home;
+
+
