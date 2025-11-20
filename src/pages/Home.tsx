@@ -52,9 +52,10 @@ const Home: React.FC = () => {
                             </div>
                         </a>
                     </div>
-                    <p className="mt-8 text-center font-medium text-gray-600">
-                        MEng Computer Science with AI<br/>
-                        University of Southampton
+                    <p className="mt-8 text-center">
+                        <span className="font-heading font-bold text-black">MEng Computer Science with AI</span>
+                        <br/>
+                        <span className="text-sm text-gray-500">University of Southampton</span>
                     </p>
                 </motion.div>
 
