@@ -72,9 +72,12 @@
       }
       body {
         background-color: #fff9eb;
-        background-image: radial-gradient(#ff69b4 1px, transparent 1px);
-        background-size: 20px 20px;
-        opacity: 1;
+        /* Creates a vertical and horizontal line */
+        background-image: 
+            linear-gradient(#e5e5f7 1px, transparent 1px),
+            linear-gradient(90deg, #e5e5f7 1px, transparent 1px);
+        background-size: 32px 32px; /* Bigger squares = cleaner look */
+        background-position: -1px -1px;
       }
     </style>
   </head>
