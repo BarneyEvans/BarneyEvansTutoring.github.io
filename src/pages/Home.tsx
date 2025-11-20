@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { ArrowRight, Star, CheckCircle } from 'lucide-react';
 import { motion } from 'framer-motion';
 import Button from '../components/Button';
+import { MYTUTOR_URL } from '../constants';
 
 const Home: React.FC = () => {
     return (
@@ -24,18 +25,32 @@ const Home: React.FC = () => {
                             className="relative w-full h-auto rounded-[32px] border-4 border-black shadow-lg bg-white z-10"
                         />
                         
-                        {/* Floating Badge */}
-                        <div className="absolute -bottom-6 -right-2 z-20 bg-white border-3 border-black px-6 py-4 rounded-2xl shadow-solid flex flex-col items-center">
-                            <div className="flex gap-1 text-yellow-400 mb-1">
-                                <Star fill="currentColor" size={16} />
-                                <Star fill="currentColor" size={16} />
-                                <Star fill="currentColor" size={16} />
-                                <Star fill="currentColor" size={16} />
-                                <Star fill="currentColor" size={16} />
+                        {/* Option 1: Split-Action Pill */}
+                        <a
+                            href={MYTUTOR_URL}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="absolute -bottom-6 -right-4 z-20 flex rounded-2xl border-3 border-black shadow-solid overflow-hidden hover:translate-x-1 hover:translate-y-1 hover:shadow-none transition-all cursor-pointer group"
+                        >
+                            {/* Left: The Info (White) */}
+                            <div className="bg-white px-5 py-3 flex flex-col items-center justify-center">
+                                <div className="flex gap-0.5 text-yellow-400 mb-1">
+                                    <Star fill="currentColor" size={14} />
+                                    <Star fill="currentColor" size={14} />
+                                    <Star fill="currentColor" size={14} />
+                                    <Star fill="currentColor" size={14} />
+                                    <Star fill="currentColor" size={14} />
+                                </div>
+                                <span className="font-heading font-bold text-lg leading-none">
+                                    10+ Reviews
+                                </span>
                             </div>
-                            <span className="font-heading font-bold">80+ Lessons</span>
-                            <span className="text-xs text-gray-500">Enhanced DBS</span>
-                        </div>
+
+                            {/* Right: The Action (Hot Pink) */}
+                            <div className="bg-hot-pink w-14 flex items-center justify-center border-l-3 border-black group-hover:bg-black transition-colors">
+                                <ArrowRight size={24} className="text-white" />
+                            </div>
+                        </a>
                     </div>
                     <p className="mt-8 text-center font-medium text-gray-600">
                         MEng Computer Science with AI<br/>
