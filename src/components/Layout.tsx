@@ -52,12 +52,12 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
             {/* Navigation */}
             <nav className={`fixed w-full z-50 transition-all duration-300 ${scrolled ? 'bg-cream/95 backdrop-blur-sm shadow-sm py-4 border-b-3 border-black' : 'bg-transparent py-6'}`}>
                 <div className="max-w-6xl mx-auto px-4 flex justify-between items-center">
-                    <Link to="/" className="font-heading font-bold text-xl md:text-2xl tracking-tight border-b-4 border-hot-pink pb-1">
+                    <Link to="/" className="font-heading font-bold text-xl nav:text-2xl tracking-tight border-b-4 border-hot-pink pb-1">
                         Barney Evans Tutoring
                     </Link>
 
                     {/* Desktop Nav */}
-                    <div className="hidden md:flex items-center space-x-8">
+                    <div className="hidden nav:flex items-center space-x-8">
                         <NavLink to="/">Home</NavLink>
                         <NavLink to="/private-tutoring">Private Tutoring</NavLink>
                         <NavLink to="/python-course">Python Course</NavLink>
@@ -68,7 +68,7 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
                     </div>
 
                     {/* Mobile Menu Button */}
-                    <button className="md:hidden p-2" onClick={() => setIsMenuOpen(!isMenuOpen)}>
+                    <button className="nav:hidden p-2" onClick={() => setIsMenuOpen(!isMenuOpen)}>
                         {isMenuOpen ? <X size={32} /> : <Menu size={32} />}
                     </button>
                 </div>
