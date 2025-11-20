@@ -77,7 +77,7 @@ const About: React.FC = () => {
                         className="absolute top-4 lg:left-4 w-[260px] h-[320px] bg-white p-3 pb-12 border-4 border-black shadow-xl transform z-0"
                     >
                         <div className="w-full h-full bg-gray-200 border-2 border-black overflow-hidden grayscale opacity-80 hover:grayscale-0 hover:opacity-100 transition-all duration-500">
-                             <img src="https://picsum.photos/id/338/300/400" alt="Ice Hockey" className="w-full h-full object-cover" />
+                             <img src="/assets/hockey_image.jpg" alt="Ice Hockey" className="w-full h-full object-cover" />
                         </div>
                         <p className="font-heading font-bold text-center mt-3 text-gray-500 rotate-1">Ice Hockey 🏒</p>
                     </motion.div>
@@ -90,7 +90,7 @@ const About: React.FC = () => {
                         className="absolute top-12 lg:left-32 w-[260px] h-[320px] bg-white p-3 pb-12 border-4 border-black shadow-solid z-10"
                     >
                         <div className="w-full h-full bg-gray-200 border-2 border-black overflow-hidden">
-                            <img src="https://picsum.photos/id/64/600/700" alt="Graduation" className="w-full h-full object-cover" />
+                            <img src="/assets/grad_photo.jpg" alt="Graduation" className="w-full h-full object-cover" />
                         </div>
                         <p className="font-heading font-bold text-center mt-3 text-black -rotate-1">Graduation 🎓</p>
                     </motion.div>

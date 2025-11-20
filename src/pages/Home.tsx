@@ -18,9 +18,9 @@ const Home: React.FC = () => {
                 >
                     <div className="relative">
                         <div className="absolute inset-0 bg-hot-pink rounded-[32px] rotate-3 transform translate-x-2 translate-y-2 border-4 border-black"></div>
-                        <img 
-                            src="https://picsum.photos/id/64/600/700" 
-                            alt="Barney Evans Graduation" 
+                        <img
+                            src="/assets/teaching.jpg"
+                            alt="Barney Evans Teaching" 
                             className="relative w-full h-auto rounded-[32px] border-4 border-black shadow-lg bg-white z-10"
                         />
                         

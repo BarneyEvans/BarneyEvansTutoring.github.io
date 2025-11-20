@@ -2,9 +2,9 @@
 import { Lesson, FAQ, ServiceDetail, ExperienceJob } from './types';
 
 export const CONTACT_EMAIL = "ebarneytutoring@gmail.com";
-export const GOOGLE_FORM_URL = "https://forms.google.com"; // Placeholder
-export const LINKEDIN_URL = "https://linkedin.com"; // Placeholder
-export const MYTUTOR_URL = "https://mytutor.co.uk"; // Placeholder
+export const GOOGLE_FORM_URL = "https://docs.google.com/forms/d/e/1FAIpQLSfK8TGCXA-HOv2_LMBt2WysIyLuXZ-RC66K1q1unHPSX0hQ5w/viewform?usp=header";
+export const LINKEDIN_URL = "https://www.linkedin.com/in/barney-evans-400379280/";
+export const MYTUTOR_URL = "https://www.mytutor.co.uk/tutors/9468218/";
 
 export const PYTHON_CURRICULUM: Lesson[] = [
     { id: 1, title: "Foundations", description: "Print statements, variables, data types, and basic arithmetic operations.", codeSnippet: `print("Hello World")\nscore = 10\nname = "Alex"` },
