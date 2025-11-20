@@ -1,6 +1,6 @@
 
-import React from 'react';
-import { ChevronDown, MapPin, Clock } from 'lucide-react';
+import React, { useState } from 'react';
+import { ChevronDown, Clock, GraduationCap, Target, PenTool, School, Sprout, Shapes } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ServiceDetail } from '../types';
 
@@ -11,12 +11,25 @@ interface ServiceCardProps {
 }
 
 const ServiceCard: React.FC<ServiceCardProps> = ({ service, isOpen, onToggle }) => {
+    const [activeFeatureIndex, setActiveFeatureIndex] = useState(0);
+
+    // Helper to pick icons for the "Flashcards" based on keywords
+    const getPersonaIcon = (title: string) => {
+        const lower = title.toLowerCase();
+        if (lower.includes('university')) return <GraduationCap size={32} />;
+        if (lower.includes('exam')) return <PenTool size={32} />;
+        if (lower.includes('mastery')) return <Target size={32} />;
+        if (lower.includes('foundations')) return <Shapes size={32} />;
+        if (lower.includes('adult') || lower.includes('personal')) return <Sprout size={32} />;
+        return <School size={32} />;
+    };
+
     return (
         <div 
             id={service.id}
-            className={`w-full rounded-[32px] border-4 border-black shadow-solid mb-8 transition-colors duration-300 overflow-hidden ${isOpen ? 'bg-light-pink' : 'bg-white'}`}
+            className={`w-full rounded-[32px] border-4 border-black shadow-solid mb-8 transition-colors duration-300 overflow-hidden ${isOpen ? 'bg-cream' : 'bg-white'}`}
         >
-            <div className="p-8 md:p-10">
+            <div className="p-6 md:p-10 bg-white">
                 {/* Header: Title Left, Big Price Right */}
                 <div className="flex flex-col-reverse md:flex-row justify-between items-start md:items-center gap-6 mb-8">
                     <div className="flex-1">
@@ -52,7 +65,7 @@ const ServiceCard: React.FC<ServiceCardProps> = ({ service, isOpen, onToggle }) 
                 </button>
             </div>
 
-            {/* Expanded Content (The Blueprint Layout) */}
+            {/* Expanded Content */}
             <AnimatePresence>
                 {isOpen && (
                     <motion.div 
@@ -60,28 +73,35 @@ const ServiceCard: React.FC<ServiceCardProps> = ({ service, isOpen, onToggle }) 
                         animate={{ height: 'auto', opacity: 1 }}
                         exit={{ height: 0, opacity: 0 }}
                         transition={{ duration: 0.3 }}
-                        className="border-t-4 border-black bg-white"
+                        className="border-t-4 border-black"
                     >
                         {/* Zone A: The Logistics Bar */}
-                        <div className="bg-black text-white px-8 py-4 flex items-center gap-3 text-sm md:text-base font-mono tracking-wide">
-                             <Clock size={18} className="text-hot-pink" />
+                        <div className="bg-black text-white px-6 py-4 flex items-center gap-3 text-xs md:text-sm font-mono tracking-wide border-b-4 border-black">
+                             <Clock size={16} className="text-hot-pink flex-shrink-0" />
                              {service.logistics}
                         </div>
 
-                        <div className="p-8 md:p-10 grid md:grid-cols-2 gap-12">
-                            {/* Zone B: Who It's For (Personas) */}
-                            <div>
-                                <h4 className="font-heading font-bold text-2xl mb-6 text-black flex items-center gap-3">
-                                    <span className="w-10 h-10 rounded-full bg-hot-pink border-2 border-black flex items-center justify-center text-white text-sm">01</span>
-                                    Who It's For
-                                </h4>
-                                <div className="space-y-6">
+                        <div className="p-6 md:p-10 bg-light-pink/30">
+                            
+                            {/* Zone B: Flashcard Grid (Who It's For) */}
+                            <div className="mb-12">
+                                <div className="bg-black text-white transform -rotate-1 inline-block px-4 py-2 font-heading font-bold text-xl mb-8 border-2 border-transparent shadow-sm">
+                                    WHO IT'S FOR
+                                </div>
+                                <div className="grid md:grid-cols-3 gap-6">
                                     {service.structuredWhoFor.map((item, i) => (
-                                        <div key={i} className="group">
-                                            <h5 className="font-heading font-bold text-lg mb-1 group-hover:text-hot-pink transition-colors">
+                                        <div 
+                                            key={i} 
+                                            className="bg-white border-3 border-black rounded-xl p-6 shadow-solid flex flex-col items-center text-center hover:-translate-y-1 hover:shadow-solid-hover transition-all duration-200"
+                                        >
+                                            {/* Icon Circle */}
+                                            <div className="w-16 h-16 rounded-full bg-light-pink border-3 border-black flex items-center justify-center mb-4 text-black">
+                                                {getPersonaIcon(item.title)}
+                                            </div>
+                                            <h5 className="font-heading font-bold text-lg uppercase tracking-wide mb-2">
                                                 {item.title}
                                             </h5>
-                                            <p className="text-gray-700 leading-relaxed">
+                                            <p className="text-sm font-medium text-gray-700 leading-snug">
                                                 {item.description}
                                             </p>
                                         </div>
@@ -89,26 +109,59 @@ const ServiceCard: React.FC<ServiceCardProps> = ({ service, isOpen, onToggle }) 
                                 </div>
                             </div>
 
-                            {/* Zone C: How We Learn (Methodology) */}
+                            {/* Zone C: Interactive Methodology Selector (Horizontal) */}
                             <div>
-                                <h4 className="font-heading font-bold text-2xl mb-6 text-black flex items-center gap-3">
-                                    <span className="w-10 h-10 rounded-full bg-cream border-2 border-black flex items-center justify-center text-black text-sm">02</span>
-                                    How We Learn
-                                </h4>
-                                <div className="grid gap-5">
-                                    {service.structuredFeatures.map((item, i) => (
-                                        <div key={i} className="flex gap-4 items-start">
-                                            <div className="mt-1.5 w-2 h-2 bg-hot-pink rounded-full flex-shrink-0" />
-                                            <div>
-                                                <h5 className="font-bold text-black">{item.title}</h5>
-                                                <p className="text-gray-600 text-sm leading-relaxed">
-                                                    {item.description}
-                                                </p>
-                                            </div>
+                                <div className="bg-black text-white transform rotate-1 inline-block px-4 py-2 font-heading font-bold text-xl mb-8 border-2 border-transparent shadow-sm">
+                                    METHODOLOGY
+                                </div>
+                                
+                                <div className="flex flex-col gap-6">
+                                    {/* 1. The Horizontal Ticket Buttons */}
+                                    <div className="flex flex-wrap gap-3">
+                                        {service.structuredFeatures.map((_, index) => (
+                                            <button
+                                                key={index}
+                                                onClick={() => setActiveFeatureIndex(index)}
+                                                className={`
+                                                    w-12 h-12 md:w-14 md:h-14 rounded-xl border-3 border-black font-heading font-bold text-xl transition-all duration-150
+                                                    ${activeFeatureIndex === index 
+                                                        ? 'bg-hot-pink text-white translate-x-[3px] translate-y-[3px] shadow-none' 
+                                                        : 'bg-white text-black shadow-solid hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-solid-hover'}
+                                                `}
+                                            >
+                                                {String(index + 1).padStart(2, '0')}
+                                            </button>
+                                        ))}
+                                    </div>
+
+                                    {/* 2. The Display Box */}
+                                    <div className="bg-white border-3 border-black rounded-xl shadow-solid p-6 md:p-8 min-h-[180px] flex flex-col justify-center relative overflow-hidden">
+                                        {/* Background decoration number */}
+                                        <div className="absolute right-6 top-1/2 -translate-y-1/2 text-[120px] font-heading font-bold text-gray-100 pointer-events-none select-none">
+                                            {String(activeFeatureIndex + 1).padStart(2, '0')}
                                         </div>
-                                    ))}
+
+                                        <AnimatePresence mode="wait">
+                                            <motion.div
+                                                key={activeFeatureIndex}
+                                                initial={{ opacity: 0, x: 10 }}
+                                                animate={{ opacity: 1, x: 0 }}
+                                                exit={{ opacity: 0, x: -10 }}
+                                                transition={{ duration: 0.2 }}
+                                                className="relative z-10"
+                                            >
+                                                <h5 className="font-heading font-bold text-2xl mb-3 text-black">
+                                                    {service.structuredFeatures[activeFeatureIndex].title}
+                                                </h5>
+                                                <p className="text-gray-700 font-medium text-lg leading-relaxed max-w-2xl">
+                                                    {service.structuredFeatures[activeFeatureIndex].description}
+                                                </p>
+                                            </motion.div>
+                                        </AnimatePresence>
+                                    </div>
                                 </div>
                             </div>
+
                         </div>
                     </motion.div>
                 )}
