@@ -90,9 +90,9 @@ const About: React.FC = () => {
                         className="absolute top-12 lg:left-32 w-[260px] h-[320px] lg:w-[300px] lg:h-[360px] bg-white p-3 pb-12 border-4 border-black shadow-solid z-10"
                     >
                         <div className="w-full h-full bg-gray-200 border-2 border-black overflow-hidden">
-                            <img src="/assets/teaching.jpg" alt="Teaching" className="w-full h-full object-cover" />
+                            <img src="/assets/teaching.jpg" alt="Teaching Python to a class" className="w-full h-full object-cover" />
                         </div>
-                        <p className="font-heading font-bold text-center mt-3 text-black -rotate-1">Graduation 🎓</p>
+                        <p className="font-heading font-bold text-center mt-3 text-black -rotate-1">Teaching Python to a class</p>
                     </motion.div>
                 </div>
             </div>
@@ -197,3 +197,4 @@ const About: React.FC = () => {
 };
 
 export default About;
+
