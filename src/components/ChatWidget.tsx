@@ -25,7 +25,20 @@ const ChatWidget: React.FC = () => {
     // The custom loading state (string | null)
     const [processingStatus, setProcessingStatus] = useState<string | null>(null);
 
+    // Desktop view state (checks both width and height)
+    const [isDesktopView, setIsDesktopView] = useState(false);
+
     const messagesEndRef = useRef<HTMLDivElement>(null);
+
+    // Check viewport dimensions for desktop vs mobile view
+    useEffect(() => {
+        const checkViewport = () => {
+            setIsDesktopView(window.innerWidth >= 800 && window.innerHeight >= 800);
+        };
+        checkViewport();
+        window.addEventListener('resize', checkViewport);
+        return () => window.removeEventListener('resize', checkViewport);
+    }, []);
 
     // 1. Handle Nudge Logic (LocalStorage)
     useEffect(() => {
@@ -50,8 +63,7 @@ const ChatWidget: React.FC = () => {
 
     // 3. Lock Body Scroll on Mobile when Open
     useEffect(() => {
-        const isMobile = window.innerWidth < 768;
-        if (isOpen && isMobile) {
+        if (isOpen && !isDesktopView) {
             document.body.style.overflow = 'hidden';
         } else {
             document.body.style.overflow = 'unset';
@@ -59,7 +71,7 @@ const ChatWidget: React.FC = () => {
         return () => {
             document.body.style.overflow = 'unset';
         };
-    }, [isOpen]);
+    }, [isOpen, isDesktopView]);
 
     // 4. Mock Backend Handler
     const handleSendMessage = async (e: React.FormEvent) => {
@@ -112,11 +124,27 @@ const ChatWidget: React.FC = () => {
     };
 
     return (
-        <div className="fixed bottom-6 right-6 z-50 font-sans flex flex-col items-end gap-4">
-
-            {/* Chat Window */}
+        <>
+            {/* Backdrop Overlay - Desktop only */}
             <AnimatePresence>
-                {isOpen && (
+                {isOpen && isDesktopView && (
+                    <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        transition={{ duration: 0.2 }}
+                        onClick={() => setIsOpen(false)}
+                        className="fixed inset-0 bg-black/30 backdrop-blur-sm z-40 cursor-pointer"
+                        aria-label="Close chat"
+                    />
+                )}
+            </AnimatePresence>
+
+            <div className="fixed bottom-6 right-6 z-50 font-sans flex flex-col items-end gap-4">
+
+                {/* Chat Window */}
+                <AnimatePresence>
+                    {isOpen && (
                     <motion.div
                         initial={{ opacity: 0, scale: 0.9, y: 20, x: 20 }}
                         animate={{ opacity: 1, scale: 1, y: 0, x: 0 }}
@@ -126,10 +154,9 @@ const ChatWidget: React.FC = () => {
                             origin-bottom-right
                             bg-white border-4 border-black shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]
                             flex flex-col overflow-hidden
-                            /* Mobile: Full Screen with Dynamic Viewport Height */
-                            fixed inset-0 h-[100dvh] md:h-[520px] md:inset-auto md:relative
-                            /* Desktop: Fixed Size */
-                            md:w-[360px] md:mb-2 md:rounded-xl
+                            ${isDesktopView
+                                ? 'relative h-[520px] w-[360px] mb-2 rounded-xl'
+                                : 'fixed inset-0 h-[100dvh]'}
                         `}
                     >
                         {/* Window Header - Retro Terminal Style */}
@@ -144,13 +171,15 @@ const ChatWidget: React.FC = () => {
                                     <div className="w-2 h-2 rounded-full bg-hot-pink"></div>
                                 </div>
                                 {/* Mobile Close Button - Only visible on mobile to prevent overlap with Send button */}
-                                <button
-                                    onClick={() => setIsOpen(false)}
-                                    className="md:hidden text-white hover:text-hot-pink transition-colors p-1"
-                                    aria-label="Close chat"
-                                >
-                                    <X size={24} />
-                                </button>
+                                {!isDesktopView && (
+                                    <button
+                                        onClick={() => setIsOpen(false)}
+                                        className="text-white hover:text-hot-pink transition-colors p-1"
+                                        aria-label="Close chat"
+                                    >
+                                        <X size={24} />
+                                    </button>
+                                )}
                             </div>
                         </div>
 
@@ -223,7 +252,7 @@ const ChatWidget: React.FC = () => {
             </AnimatePresence>
 
             {/* Trigger Button & Nudge Wrapper */}
-            <div className={`relative group ${isOpen ? 'hidden md:block' : 'block'}`}>
+            <div className={`relative group ${isOpen && !isDesktopView ? 'hidden' : 'block'}`}>
                 {/* Nudge Tooltip (Appears to the LEFT now) */}
                 <AnimatePresence>
                     {showNudge && !isOpen && (
@@ -231,7 +260,7 @@ const ChatWidget: React.FC = () => {
                             initial={{ opacity: 0, x: 10 }}
                             animate={{ opacity: 1, x: 0 }}
                             exit={{ opacity: 0, x: 10 }}
-                            className="absolute right-full mr-5 bottom-3 w-max max-w-[200px] bg-white border-3 border-black p-4 rounded-xl shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] z-40 hidden md:block"
+                            className={`absolute right-full mr-5 bottom-3 w-max max-w-[200px] bg-white border-3 border-black p-4 rounded-xl shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] z-40 ${isDesktopView ? 'block' : 'hidden'}`}
                         >
                             {/* Arrow pointing RIGHT */}
                             <div className="absolute top-1/2 -right-2 w-4 h-4 bg-white border-t-3 border-r-3 border-black transform rotate-45 -translate-y-1/2"></div>
@@ -260,7 +289,7 @@ const ChatWidget: React.FC = () => {
                         transition-all duration-200 ease-out
                         shadow-solid hover:shadow-solid-hover hover:translate-x-[4px] hover:translate-y-[4px]
                         active:shadow-none active:translate-x-[6px] active:translate-y-[6px]
-                        ${isOpen ? 'bg-black text-white' : 'bg-white text-black'}
+                        ${isOpen ? 'bg-white text-hot-pink' : 'bg-white text-black'}
                     `}
                     aria-label={isOpen ? "Close chat" : "Open chat"}
                 >
@@ -270,7 +299,7 @@ const ChatWidget: React.FC = () => {
                         transition={{ type: "spring", stiffness: 260, damping: 20 }}
                     >
                         {isOpen ? (
-                            <X size={32} strokeWidth={3} />
+                            <X size={32} strokeWidth={3} className="text-hot-pink" />
                         ) : (
                             <MessageSquare size={32} strokeWidth={3} className="text-hot-pink fill-current" style={{ fillOpacity: 0.1 }} />
                         )}
@@ -278,6 +307,7 @@ const ChatWidget: React.FC = () => {
                 </button>
             </div>
         </div>
+        </>
     );
 };
 
