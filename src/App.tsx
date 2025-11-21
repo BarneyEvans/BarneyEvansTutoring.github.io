@@ -6,6 +6,7 @@ import Home from './pages/Home';
 import PrivateTutoring from './pages/PrivateTutoring';
 import PythonCourse from './pages/PythonCourse';
 import About from './pages/About';
+import ChatWidget from './components/ChatWidget';
 
 const ScrollToTop = () => {
   const { pathname, hash } = useLocation();
@@ -38,6 +39,8 @@ const App: React.FC = () => {
           </Routes>
         </AnimatePresence>
       </Layout>
+      {/* Add ChatWidget here to float above all content */}
+      <ChatWidget />
     </HashRouter>
   );
 };

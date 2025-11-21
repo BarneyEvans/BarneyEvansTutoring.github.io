@@ -1,0 +1,284 @@
+import React, { useState, useEffect, useRef } from 'react';
+import { Terminal, X, Send, MessageSquare } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+
+interface Message {
+    id: string;
+    text: string;
+    sender: 'user' | 'ai';
+    timestamp: Date;
+}
+
+const ChatWidget: React.FC = () => {
+    const [isOpen, setIsOpen] = useState(false);
+    const [showNudge, setShowNudge] = useState(false);
+    const [inputValue, setInputValue] = useState('');
+    const [messages, setMessages] = useState<Message[]>([
+        {
+            id: '1',
+            text: "Hello! I'm AI-Barney. I can answer questions about the course syllabus, pricing, or my teaching style. Try asking: 'Do you teach A-Level?'",
+            sender: 'ai',
+            timestamp: new Date()
+        }
+    ]);
+
+    // The custom loading state (string | null)
+    const [processingStatus, setProcessingStatus] = useState<string | null>(null);
+
+    const messagesEndRef = useRef<HTMLDivElement>(null);
+
+    // 1. Handle Nudge Logic (LocalStorage)
+    useEffect(() => {
+        const hasSeenNudge = localStorage.getItem('hasSeenChatNudge');
+        if (!hasSeenNudge) {
+            // Delay the nudge slightly for better UX
+            const timer = setTimeout(() => setShowNudge(true), 2000);
+            return () => clearTimeout(timer);
+        }
+    }, []);
+
+    const dismissNudge = (e: React.MouseEvent) => {
+        e.stopPropagation();
+        setShowNudge(false);
+        localStorage.setItem('hasSeenChatNudge', 'true');
+    };
+
+    // 2. Auto-scroll to bottom
+    useEffect(() => {
+        messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    }, [messages, processingStatus]);
+
+    // 3. Lock Body Scroll on Mobile when Open
+    useEffect(() => {
+        const isMobile = window.innerWidth < 768;
+        if (isOpen && isMobile) {
+            document.body.style.overflow = 'hidden';
+        } else {
+            document.body.style.overflow = 'unset';
+        }
+        return () => {
+            document.body.style.overflow = 'unset';
+        };
+    }, [isOpen]);
+
+    // 4. Mock Backend Handler
+    const handleSendMessage = async (e: React.FormEvent) => {
+        e.preventDefault();
+        if (!inputValue.trim()) return;
+
+        const userMsg: Message = {
+            id: Date.now().toString(),
+            text: inputValue,
+            sender: 'user',
+            timestamp: new Date()
+        };
+
+        setMessages(prev => [...prev, userMsg]);
+        setInputValue('');
+
+        // Simulate complex backend states
+        setProcessingStatus("Initializing agent...");
+
+        setTimeout(() => {
+            setProcessingStatus("Scanning course syllabus...");
+        }, 1000);
+
+        setTimeout(() => {
+            setProcessingStatus("Retrieving vector embeddings...");
+        }, 2200);
+
+        setTimeout(() => {
+            setProcessingStatus("Formulating response...");
+        }, 3500);
+
+        setTimeout(() => {
+            setProcessingStatus(null);
+            const aiMsg: Message = {
+                id: (Date.now() + 1).toString(),
+                text: "This is a simulated response. In the real app, this would be connected to the Gemini API using the context of your website.",
+                sender: 'ai',
+                timestamp: new Date()
+            };
+            setMessages(prev => [...prev, aiMsg]);
+        }, 4500);
+    };
+
+    const handleToggle = () => {
+        setIsOpen(!isOpen);
+        if (showNudge) {
+            setShowNudge(false);
+            localStorage.setItem('hasSeenChatNudge', 'true');
+        }
+    };
+
+    return (
+        <div className="fixed bottom-6 right-6 z-50 font-sans flex flex-col items-end gap-4">
+
+            {/* Chat Window */}
+            <AnimatePresence>
+                {isOpen && (
+                    <motion.div
+                        initial={{ opacity: 0, scale: 0.9, y: 20, x: 20 }}
+                        animate={{ opacity: 1, scale: 1, y: 0, x: 0 }}
+                        exit={{ opacity: 0, scale: 0.9, y: 20, x: 20 }}
+                        transition={{ duration: 0.2 }}
+                        className={`
+                            origin-bottom-right
+                            bg-white border-4 border-black shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]
+                            flex flex-col overflow-hidden
+                            /* Mobile: Full Screen with Dynamic Viewport Height */
+                            fixed inset-0 h-[100dvh] md:h-[520px] md:inset-auto md:relative
+                            /* Desktop: Fixed Size */
+                            md:w-[360px] md:mb-2 md:rounded-xl
+                        `}
+                    >
+                        {/* Window Header - Retro Terminal Style */}
+                        <div className="bg-black text-white p-3 flex justify-between items-center border-b-4 border-black shrink-0">
+                            <div className="flex items-center gap-3">
+                                <Terminal size={18} className="text-white" />
+                                <span className="font-mono font-bold tracking-wider text-sm">AI_BARNEY_V1.0</span>
+                            </div>
+                            <div className="flex items-center gap-4">
+                                <div className="flex items-center gap-2">
+                                    <span className="text-[10px] font-mono text-hot-pink animate-pulse">ONLINE</span>
+                                    <div className="w-2 h-2 rounded-full bg-hot-pink"></div>
+                                </div>
+                                {/* Mobile Close Button - Only visible on mobile to prevent overlap with Send button */}
+                                <button
+                                    onClick={() => setIsOpen(false)}
+                                    className="md:hidden text-white hover:text-hot-pink transition-colors p-1"
+                                    aria-label="Close chat"
+                                >
+                                    <X size={24} />
+                                </button>
+                            </div>
+                        </div>
+
+                        {/* Messages Area - Uses custom .scrollbar-terminal class from index.html */}
+                        <div className="flex-1 overflow-y-auto p-4 bg-cream space-y-4 scrollbar-terminal">
+                            {messages.map((msg) => (
+                                <div
+                                    key={msg.id}
+                                    className={`flex flex-col max-w-[85%] ${msg.sender === 'user' ? 'self-end items-end ml-auto' : 'self-start items-start mr-auto'}`}
+                                >
+                                    <div className={`
+                                        p-3 border-2 border-black shadow-[3px_3px_0px_0px_rgba(0,0,0,1)]
+                                        ${msg.sender === 'user'
+                                            ? 'bg-hot-pink text-white rounded-l-xl rounded-tr-xl'
+                                            : 'bg-white text-black rounded-r-xl rounded-tl-xl font-mono text-sm'}
+                                    `}>
+                                        {msg.text}
+                                    </div>
+                                    <span className="text-[10px] font-bold text-gray-400 mt-1 uppercase">
+                                        {msg.sender === 'user' ? 'You' : 'System'} • {msg.timestamp.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
+                                    </span>
+                                </div>
+                            ))}
+
+                            {/* Custom Loading Indicator */}
+                            {processingStatus && (
+                                <div className="self-start mr-auto max-w-[85%]">
+                                    <div className="bg-black text-hot-pink border-2 border-black p-3 rounded-r-xl rounded-tl-xl font-mono text-xs shadow-[3px_3px_0px_0px_rgba(0,0,0,0.3)] flex items-center gap-2">
+                                        <span className="animate-pulse">▋</span>
+                                        {processingStatus}
+                                    </div>
+                                </div>
+                            )}
+
+                            <div ref={messagesEndRef} />
+                        </div>
+
+                        {/* Disclaimer */}
+                        <div className="bg-cream px-4 py-1 text-[10px] text-center text-gray-500 border-t-2 border-black/10">
+                            AI can make mistakes. Verify important details.
+                        </div>
+
+                        {/* Input Area */}
+                        <form onSubmit={handleSendMessage} className="p-3 bg-white border-t-4 border-black flex gap-2 shrink-0 safe-area-bottom">
+                            <input
+                                type="text"
+                                value={inputValue}
+                                onChange={(e) => setInputValue(e.target.value)}
+                                placeholder="Ask a question..."
+                                className="flex-1 bg-gray-100 border-2 border-black px-3 py-2 text-sm font-mono focus:outline-none focus:bg-white focus:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] transition-all rounded-lg placeholder:text-gray-400"
+                            />
+                            <button
+                                type="submit"
+                                disabled={!!processingStatus}
+                                className={`
+                                    bg-black text-hot-pink p-2 border-2 border-black rounded-lg
+                                    shadow-[3px_3px_0px_0px_rgba(0,0,0,1)]
+                                    transition-all duration-150 ease-out
+                                    hover:bg-hot-pink hover:text-white hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-[1px_1px_0px_0px_rgba(0,0,0,1)]
+                                    active:translate-x-[3px] active:translate-y-[3px] active:shadow-none
+                                    disabled:opacity-50 disabled:hover:bg-black disabled:hover:text-hot-pink disabled:cursor-not-allowed
+                                    flex items-center justify-center
+                                `}
+                            >
+                                <Send size={20} />
+                            </button>
+                        </form>
+                    </motion.div>
+                )}
+            </AnimatePresence>
+
+            {/* Trigger Button & Nudge Wrapper */}
+            <div className={`relative group ${isOpen ? 'hidden md:block' : 'block'}`}>
+                {/* Nudge Tooltip (Appears to the LEFT now) */}
+                <AnimatePresence>
+                    {showNudge && !isOpen && (
+                        <motion.div
+                            initial={{ opacity: 0, x: 10 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            exit={{ opacity: 0, x: 10 }}
+                            className="absolute right-full mr-5 bottom-3 w-max max-w-[200px] bg-white border-3 border-black p-4 rounded-xl shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] z-40 hidden md:block"
+                        >
+                            {/* Arrow pointing RIGHT */}
+                            <div className="absolute top-1/2 -right-2 w-4 h-4 bg-white border-t-3 border-r-3 border-black transform rotate-45 -translate-y-1/2"></div>
+
+                            <button
+                                onClick={dismissNudge}
+                                className="absolute -top-3 -left-3 bg-black text-white rounded-full p-1 hover:bg-hot-pink border-2 border-black transition-colors"
+                            >
+                                <X size={12} strokeWidth={3} />
+                            </button>
+                            <p className="font-heading font-bold text-sm leading-tight text-black">
+                                Questions? <br/>
+                                <span className="text-hot-pink">Ask AI-Barney.</span>
+                            </p>
+                        </motion.div>
+                    )}
+                </AnimatePresence>
+
+                {/* Main Trigger Button (Circle) */}
+                {/* On mobile, if chat is open, this entire wrapper is hidden via the className above, preventing overlap */}
+                <button
+                    onClick={handleToggle}
+                    className={`
+                        w-16 h-16 rounded-full
+                        border-3 border-black flex items-center justify-center
+                        transition-all duration-200 ease-out
+                        shadow-solid hover:shadow-solid-hover hover:translate-x-[4px] hover:translate-y-[4px]
+                        active:shadow-none active:translate-x-[6px] active:translate-y-[6px]
+                        ${isOpen ? 'bg-black text-white' : 'bg-white text-black'}
+                    `}
+                    aria-label={isOpen ? "Close chat" : "Open chat"}
+                >
+                    <motion.div
+                        initial={false}
+                        animate={{ rotate: isOpen ? 90 : 0 }}
+                        transition={{ type: "spring", stiffness: 260, damping: 20 }}
+                    >
+                        {isOpen ? (
+                            <X size={32} strokeWidth={3} />
+                        ) : (
+                            <MessageSquare size={32} strokeWidth={3} className="text-hot-pink fill-current" style={{ fillOpacity: 0.1 }} />
+                        )}
+                    </motion.div>
+                </button>
+            </div>
+        </div>
+    );
+};
+
+export default ChatWidget;
