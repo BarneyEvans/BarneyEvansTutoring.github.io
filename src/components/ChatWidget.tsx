@@ -281,7 +281,7 @@ const ChatWidget: React.FC = () => {
                     )}
                 </AnimatePresence>
 
-                <div className={`relative group ${isOpen ? 'hidden md:block' : 'block'}`}>
+                <div className={`relative group ${isOpen && !isDesktopView ? 'hidden' : 'block'}`}>
                     <AnimatePresence>
                         {showNudge && !isOpen && (
                             <motion.div
