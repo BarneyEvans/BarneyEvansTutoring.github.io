@@ -4,8 +4,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 
 interface Message {
     id: string;
-    text: string;
-    sender: 'user' | 'ai';
+    content: string;
+    role: 'user' | 'ai';
     timestamp: Date;
 }
 
@@ -16,21 +16,16 @@ const ChatWidget: React.FC = () => {
     const [messages, setMessages] = useState<Message[]>([
         {
             id: '1',
-            text: "Hello! I'm AI-Barney. I can answer questions about the course syllabus, pricing, or my teaching style. Try asking: 'Do you teach A-Level?'",
-            sender: 'ai',
+            content: "Hello! I'm AI-Barney. I can answer questions about the course syllabus, pricing, or my teaching style. Try asking: 'Do you teach A-Level?'",
+            role: 'ai',
             timestamp: new Date()
         }
     ]);
 
-    // The custom loading state (string | null)
     const [processingStatus, setProcessingStatus] = useState<string | null>(null);
-
-    // Desktop view state (checks both width and height)
     const [isDesktopView, setIsDesktopView] = useState(false);
-
     const messagesEndRef = useRef<HTMLDivElement>(null);
 
-    // Check viewport dimensions for desktop vs mobile view
     useEffect(() => {
         const checkViewport = () => {
             setIsDesktopView(window.innerWidth >= 800 && window.innerHeight >= 800);
@@ -40,11 +35,9 @@ const ChatWidget: React.FC = () => {
         return () => window.removeEventListener('resize', checkViewport);
     }, []);
 
-    // 1. Handle Nudge Logic (LocalStorage)
     useEffect(() => {
         const hasSeenNudge = localStorage.getItem('hasSeenChatNudge');
         if (!hasSeenNudge) {
-            // Delay the nudge slightly for better UX
             const timer = setTimeout(() => setShowNudge(true), 2000);
             return () => clearTimeout(timer);
         }
@@ -56,12 +49,10 @@ const ChatWidget: React.FC = () => {
         localStorage.setItem('hasSeenChatNudge', 'true');
     };
 
-    // 2. Auto-scroll to bottom
     useEffect(() => {
         messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
     }, [messages, processingStatus]);
 
-    // 3. Lock Body Scroll on Mobile when Open
     useEffect(() => {
         if (isOpen && !isDesktopView) {
             document.body.style.overflow = 'hidden';
@@ -73,46 +64,57 @@ const ChatWidget: React.FC = () => {
         };
     }, [isOpen, isDesktopView]);
 
-    // 4. Mock Backend Handler
     const handleSendMessage = async (e: React.FormEvent) => {
         e.preventDefault();
         if (!inputValue.trim()) return;
 
         const userMsg: Message = {
             id: Date.now().toString(),
-            text: inputValue,
-            sender: 'user',
+            content: inputValue,
+            role: 'user',
             timestamp: new Date()
         };
 
         setMessages(prev => [...prev, userMsg]);
         setInputValue('');
+        setProcessingStatus("Thinking...")
+        
+        const history = [...messages.slice(1), userMsg].map(msg => ({
+            role: msg.role === 'ai' ? 'assistant' : msg.role,
+            content: msg.content
+        }));
 
-        // Simulate complex backend states
-        setProcessingStatus("Initializing agent...");
+        try {
+            const response = await fetch("http://localhost:8000/chat", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    message: history
+                })
+            });
 
-        setTimeout(() => {
-            setProcessingStatus("Scanning course syllabus...");
-        }, 1000);
+            if (!response.ok) {
+                throw new Error("Server error!");
+            }
 
-        setTimeout(() => {
-            setProcessingStatus("Retrieving vector embeddings...");
-        }, 2200);
+            const data = await response.json(); 
 
-        setTimeout(() => {
-            setProcessingStatus("Formulating response...");
-        }, 3500);
-
-        setTimeout(() => {
-            setProcessingStatus(null);
+            setProcessingStatus(null)
+            
             const aiMsg: Message = {
                 id: (Date.now() + 1).toString(),
-                text: "This is a simulated response. In the real app, this would be connected to the Gemini API using the context of your website.",
-                sender: 'ai',
+                content: data.reply,
+                role: 'ai',
                 timestamp: new Date()
-            };
-            setMessages(prev => [...prev, aiMsg]);
-        }, 4500);
+            }
+            setMessages(prev => [...prev, aiMsg])
+
+        } catch (error) {
+            setProcessingStatus("Failed to get response")
+            console.error("Failed:", error);
+        }
     };
 
     const handleToggle = () => {
@@ -125,7 +127,6 @@ const ChatWidget: React.FC = () => {
 
     return (
         <>
-            {/* Backdrop Overlay - Desktop only */}
             <AnimatePresence>
                 {isOpen && isDesktopView && (
                     <motion.div
@@ -141,8 +142,6 @@ const ChatWidget: React.FC = () => {
             </AnimatePresence>
 
             <div className="fixed bottom-6 right-6 z-50 font-sans flex flex-col items-end gap-4">
-
-                {/* Chat Window */}
                 <AnimatePresence>
                     {isOpen && (
                     <motion.div
@@ -159,7 +158,6 @@ const ChatWidget: React.FC = () => {
                                 : 'fixed inset-0 h-[100dvh]'}
                         `}
                     >
-                        {/* Window Header - Retro Terminal Style */}
                         <div className="bg-black text-white p-3 flex justify-between items-center border-b-4 border-black shrink-0">
                             <div className="flex items-center gap-3">
                                 <Terminal size={18} className="text-white" />
@@ -170,7 +168,6 @@ const ChatWidget: React.FC = () => {
                                     <span className="text-[10px] font-mono text-hot-pink animate-pulse">ONLINE</span>
                                     <div className="w-2 h-2 rounded-full bg-hot-pink"></div>
                                 </div>
-                                {/* Mobile Close Button - Only visible on mobile to prevent overlap with Send button */}
                                 {!isDesktopView && (
                                     <button
                                         onClick={() => setIsOpen(false)}
@@ -183,28 +180,26 @@ const ChatWidget: React.FC = () => {
                             </div>
                         </div>
 
-                        {/* Messages Area - Uses custom .scrollbar-terminal class from index.html */}
                         <div className="flex-1 overflow-y-auto p-4 bg-cream space-y-4 scrollbar-terminal">
                             {messages.map((msg) => (
                                 <div
                                     key={msg.id}
-                                    className={`flex flex-col max-w-[85%] ${msg.sender === 'user' ? 'self-end items-end ml-auto' : 'self-start items-start mr-auto'}`}
+                                    className={`flex flex-col max-w-[85%] ${msg.role === 'user' ? 'self-end items-end ml-auto' : 'self-start items-start mr-auto'}`}
                                 >
                                     <div className={`
                                         p-3 border-2 border-black shadow-[3px_3px_0px_0px_rgba(0,0,0,1)]
-                                        ${msg.sender === 'user'
+                                        ${msg.role === 'user'
                                             ? 'bg-hot-pink text-white rounded-l-xl rounded-tr-xl'
                                             : 'bg-white text-black rounded-r-xl rounded-tl-xl font-mono text-sm'}
                                     `}>
-                                        {msg.text}
+                                        {msg.content}
                                     </div>
                                     <span className="text-[10px] font-bold text-gray-400 mt-1 uppercase">
-                                        {msg.sender === 'user' ? 'You' : 'System'} • {msg.timestamp.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
+                                        {msg.role === 'user' ? 'You' : 'System'} • {msg.timestamp.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
                                     </span>
                                 </div>
                             ))}
 
-                            {/* Custom Loading Indicator */}
                             {processingStatus && (
                                 <div className="self-start mr-auto max-w-[85%]">
                                     <div className="bg-black text-hot-pink border-2 border-black p-3 rounded-r-xl rounded-tl-xl font-mono text-xs shadow-[3px_3px_0px_0px_rgba(0,0,0,0.3)] flex items-center gap-2">
@@ -217,12 +212,10 @@ const ChatWidget: React.FC = () => {
                             <div ref={messagesEndRef} />
                         </div>
 
-                        {/* Disclaimer */}
                         <div className="bg-cream px-4 py-1 text-[10px] text-center text-gray-500 border-t-2 border-black/10">
                             AI can make mistakes. Verify important details.
                         </div>
 
-                        {/* Input Area */}
                         <form onSubmit={handleSendMessage} className="p-3 bg-white border-t-4 border-black flex gap-2 shrink-0 safe-area-bottom">
                             <input
                                 type="text"
@@ -248,65 +241,60 @@ const ChatWidget: React.FC = () => {
                             </button>
                         </form>
                     </motion.div>
-                )}
-            </AnimatePresence>
-
-            {/* Trigger Button & Nudge Wrapper */}
-            <div className={`relative group ${isOpen && !isDesktopView ? 'hidden' : 'block'}`}>
-                {/* Nudge Tooltip (Appears to the LEFT now) */}
-                <AnimatePresence>
-                    {showNudge && !isOpen && (
-                        <motion.div
-                            initial={{ opacity: 0, x: 10 }}
-                            animate={{ opacity: 1, x: 0 }}
-                            exit={{ opacity: 0, x: 10 }}
-                            className={`absolute right-full mr-5 bottom-3 w-max max-w-[200px] bg-white border-3 border-black p-4 rounded-xl shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] z-40 ${isDesktopView ? 'block' : 'hidden'}`}
-                        >
-                            {/* Arrow pointing RIGHT */}
-                            <div className="absolute top-1/2 -right-2 w-4 h-4 bg-white border-t-3 border-r-3 border-black transform rotate-45 -translate-y-1/2"></div>
-
-                            <button
-                                onClick={dismissNudge}
-                                className="absolute -top-3 -left-3 bg-black text-white rounded-full p-1 hover:bg-hot-pink border-2 border-black transition-colors"
-                            >
-                                <X size={12} strokeWidth={3} />
-                            </button>
-                            <p className="font-heading font-bold text-sm leading-tight text-black">
-                                Questions? <br/>
-                                <span className="text-hot-pink">Ask AI-Barney.</span>
-                            </p>
-                        </motion.div>
                     )}
                 </AnimatePresence>
 
-                {/* Main Trigger Button (Circle) */}
-                {/* On mobile, if chat is open, this entire wrapper is hidden via the className above, preventing overlap */}
-                <button
-                    onClick={handleToggle}
-                    className={`
-                        w-16 h-16 rounded-full
-                        border-3 border-black flex items-center justify-center
-                        transition-all duration-200 ease-out
-                        shadow-solid hover:shadow-solid-hover hover:translate-x-[4px] hover:translate-y-[4px]
-                        active:shadow-none active:translate-x-[6px] active:translate-y-[6px]
-                        ${isOpen ? 'bg-white text-hot-pink' : 'bg-white text-black'}
-                    `}
-                    aria-label={isOpen ? "Close chat" : "Open chat"}
-                >
-                    <motion.div
-                        initial={false}
-                        animate={{ rotate: isOpen ? 90 : 0 }}
-                        transition={{ type: "spring", stiffness: 260, damping: 20 }}
-                    >
-                        {isOpen ? (
-                            <X size={32} strokeWidth={3} className="text-hot-pink" />
-                        ) : (
-                            <MessageSquare size={32} strokeWidth={3} className="text-hot-pink fill-current" style={{ fillOpacity: 0.1 }} />
+                <div className={`relative group ${isOpen ? 'hidden md:block' : 'block'}`}>
+                    <AnimatePresence>
+                        {showNudge && !isOpen && (
+                            <motion.div
+                                initial={{ opacity: 0, x: 10 }}
+                                animate={{ opacity: 1, x: 0 }}
+                                exit={{ opacity: 0, x: 10 }}
+                                className="absolute right-full mr-5 bottom-3 w-max max-w-[200px] bg-white border-3 border-black p-4 rounded-xl shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] z-40 hidden md:block"
+                            >
+                                <div className="absolute top-1/2 -right-2 w-4 h-4 bg-white border-t-3 border-r-3 border-black transform rotate-45 -translate-y-1/2"></div>
+
+                                <button
+                                    onClick={dismissNudge}
+                                    className="absolute -top-3 -left-3 bg-black text-white rounded-full p-1 hover:bg-hot-pink border-2 border-black transition-colors"
+                                >
+                                    <X size={12} strokeWidth={3} />
+                                </button>
+                                <p className="font-heading font-bold text-sm leading-tight text-black">
+                                    Questions? <br/>
+                                    <span className="text-hot-pink">Ask AI-Barney.</span>
+                                </p>
+                            </motion.div>
                         )}
-                    </motion.div>
-                </button>
+                    </AnimatePresence>
+
+                    <button
+                        onClick={handleToggle}
+                        className={`
+                            w-16 h-16 rounded-full
+                            border-3 border-black flex items-center justify-center
+                            transition-all duration-200 ease-out
+                            shadow-solid hover:shadow-solid-hover hover:translate-x-[4px] hover:translate-y-[4px]
+                            active:shadow-none active:translate-x-[6px] active:translate-y-[6px]
+                            ${isOpen ? 'bg-white text-hot-pink' : 'bg-white text-black'}
+                        `}
+                        aria-label={isOpen ? "Close chat" : "Open chat"}
+                    >
+                        <motion.div
+                            initial={false}
+                            animate={{ rotate: isOpen ? 90 : 0 }}
+                            transition={{ type: "spring", stiffness: 260, damping: 20 }}
+                        >
+                            {isOpen ? (
+                                <X size={32} strokeWidth={3} className="text-hot-pink" />
+                            ) : (
+                                <MessageSquare size={32} strokeWidth={3} className="text-hot-pink fill-current" style={{ fillOpacity: 0.1 }} />
+                            )}
+                        </motion.div>
+                    </button>
+                </div>
             </div>
-        </div>
         </>
     );
 };
