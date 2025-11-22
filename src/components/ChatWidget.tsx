@@ -13,6 +13,7 @@ const ChatWidget: React.FC = () => {
     const [isOpen, setIsOpen] = useState(false);
     const [showNudge, setShowNudge] = useState(false);
     const [inputValue, setInputValue] = useState('');
+    const [sessionId] = useState(() => crypto.randomUUID());
     const [messages, setMessages] = useState<Message[]>([
         {
             id: '1',
@@ -91,7 +92,8 @@ const ChatWidget: React.FC = () => {
                     "Content-Type": "application/json"
                 },
                 body: JSON.stringify({
-                    message: history
+                    message: history,
+                    session_id: sessionId
                 })
             });
 
