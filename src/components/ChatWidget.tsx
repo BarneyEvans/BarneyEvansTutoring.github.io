@@ -101,20 +101,55 @@ const ChatWidget: React.FC = () => {
                 throw new Error("Server error!");
             }
 
-            const data = await response.json(); 
+            // Read the stream
+            const reader = response.body?.getReader();
+            const decoder = new TextDecoder();
 
-            setProcessingStatus(null)
-            
-            const aiMsg: Message = {
-                id: (Date.now() + 1).toString(),
-                content: data.reply,
-                role: 'ai',
-                timestamp: new Date()
+            if (!reader) {
+                throw new Error("No reader available");
             }
-            setMessages(prev => [...prev, aiMsg])
+
+            // Create AI message on first chunk
+            const aiMsgId = (Date.now() + 1).toString();
+            let messageCreated = false;
+
+            while (true) {
+                const { done, value } = await reader.read();
+                if (done) break;
+
+                const chunk = decoder.decode(value);
+                const lines = chunk.split('\n');
+
+                for (const line of lines) {
+                    if (line.startsWith('data: ')) {
+                        const data = line.slice(6);
+                        if (data === '[DONE]') break;
+
+                        // Create AI message on first text chunk
+                        if (!messageCreated) {
+                            const aiMsg: Message = {
+                                id: aiMsgId,
+                                content: data,
+                                role: 'ai',
+                                timestamp: new Date()
+                            };
+                            setMessages(prev => [...prev, aiMsg]);
+                            setProcessingStatus(null);
+                            messageCreated = true;
+                        } else {
+                            // Append to existing message
+                            setMessages(prev => prev.map(msg =>
+                                msg.id === aiMsgId
+                                    ? { ...msg, content: msg.content + data }
+                                    : msg
+                            ));
+                        }
+                    }
+                }
+            }
 
         } catch (error) {
-            setProcessingStatus("Failed to get response")
+            setProcessingStatus("Failed to get response");
             console.error("Failed:", error);
         }
     };

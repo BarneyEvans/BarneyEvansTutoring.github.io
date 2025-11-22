@@ -1,5 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import StreamingResponse
 from pydantic import BaseModel
 from dotenv import load_dotenv
 import os
@@ -35,13 +36,6 @@ SUPABASE_URL = os.getenv("SUPABASE_URL")
 SUPABASE_KEY = os.getenv("SUPABASE_KEY")
 supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
 
-def model_response(text):
-    response = client.responses.create(
-        model="gpt-5-nano",
-        input=text
-    )
-    return response.output_text
-
 def log_message(session_id, source, message_text):
     """Inserts a message into the Supabase 'chat_messages' table."""
     try:
@@ -55,6 +49,29 @@ def log_message(session_id, source, message_text):
     except Exception as e:
         print(f"Error logging to Supabase: {e}")
 
+def stream_response(history, session_id):
+    """Generator that streams OpenAI response and logs when complete."""
+    full_response = ""
+
+    response = client.responses.create(
+        model="gpt-5-nano",
+        input=history,
+        stream=True
+    )
+
+    for event in response:
+        if event.type == "response.output_text.delta":
+            text = event.delta
+            full_response += text
+            # Send as SSE format
+            yield f"data: {text}\n\n"
+
+    # Log complete response to Supabase
+    log_message(session_id, "ai", full_response)
+
+    # Send done signal
+    yield "data: [DONE]\n\n"
+
 @app.post("/chat")
 def chat(chat_data: Chat):
     # 1. Log User Message
@@ -62,15 +79,11 @@ def chat(chat_data: Chat):
     print(chat_data)
     log_message(chat_data.session_id, "user", last_user_message)
 
-    # 2. Generate AI Response
-    # We reconstruct the history with the system prompt
+    # 2. Generate streaming AI Response
     history = [{"role": "system", "content": initial_prompt}] + chat_data.message
-    ai_reply = model_response(history)
 
-    # 3. Log AI Response
-    log_message(chat_data.session_id, "ai", ai_reply)
-
-    return {
-        "reply": ai_reply,
-    }
+    return StreamingResponse(
+        stream_response(history, chat_data.session_id),
+        media_type="text/event-stream"
+    )
 
