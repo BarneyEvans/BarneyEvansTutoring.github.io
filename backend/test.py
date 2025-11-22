@@ -37,11 +37,10 @@ SUPABASE_KEY = os.getenv("SUPABASE_KEY")
 supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
 
 def log_message(session_id, source, message_text):
-    """Inserts a message into the Supabase 'chat_messages' table."""
     try:
         data = {
-            "conversation_id": session_id,  # Mapping session_id to conversation_id
-            "source": source,               # 'user' or 'ai'
+            "conversation_id": session_id, 
+            "source": source,               
             "message": message_text
         }
         # Insert and execute
@@ -50,9 +49,7 @@ def log_message(session_id, source, message_text):
         print(f"Error logging to Supabase: {e}")
 
 def stream_response(history, session_id):
-    """Generator that streams OpenAI response and logs when complete."""
     full_response = ""
-
     response = client.responses.create(
         model="gpt-5-nano",
         input=history,
@@ -63,23 +60,18 @@ def stream_response(history, session_id):
         if event.type == "response.output_text.delta":
             text = event.delta
             full_response += text
-            # Send as SSE format
             yield f"data: {text}\n\n"
 
-    # Log complete response to Supabase
     log_message(session_id, "ai", full_response)
 
-    # Send done signal
+
     yield "data: [DONE]\n\n"
 
 @app.post("/chat")
 def chat(chat_data: Chat):
-    # 1. Log User Message
-    last_user_message = chat_data.message[-1]['content']
-    print(chat_data)
-    log_message(chat_data.session_id, "user", last_user_message)
+    #last_user_message = chat_data.message[-1]['content']
+    #log_message(chat_data.session_id, "user", last_user_message)
 
-    # 2. Generate streaming AI Response
     history = [{"role": "system", "content": initial_prompt}] + chat_data.message
 
     return StreamingResponse(
