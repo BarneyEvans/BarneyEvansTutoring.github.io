@@ -4,6 +4,7 @@ from fastapi.responses import StreamingResponse
 from pydantic import BaseModel
 from dotenv import load_dotenv
 import os
+import json  # <--- Added import
 from openai import OpenAI
 from prompts import make_system_prompt
 from supabase import create_client, Client
@@ -50,6 +51,7 @@ def log_message(session_id, source, message_text):
 
 def stream_response(history, session_id):
     full_response = ""
+    # Preserving your specific client syntax and model as requested
     response = client.responses.create(
         model="gpt-5.1",
         input=history,
@@ -60,10 +62,12 @@ def stream_response(history, session_id):
         if event.type == "response.output_text.delta":
             text = event.delta
             full_response += text
-            yield f"data: {text}\n\n"
+            
+            # --- FIX: Wrap text in JSON to preserve newlines in SSE ---
+            payload = json.dumps({"content": text})
+            yield f"data: {payload}\n\n"
 
     #log_message(session_id, "ai", full_response)
-
 
     yield "data: [DONE]\n\n"
 
@@ -87,7 +91,7 @@ def chat(chat_data: Chat):
     }).execute()
     context_data = response.data
 
-    context_data = response.data
+
     context_text = "\n\n".join([item['content'] for item in context_data]) if context_data else "No specific context found."
 
     system_prompt = make_system_prompt(context_text)
@@ -98,4 +102,3 @@ def chat(chat_data: Chat):
         stream_response(final_messages, chat_data.session_id),
         media_type="text/event-stream"
     )
-

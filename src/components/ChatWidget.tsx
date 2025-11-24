@@ -119,30 +119,40 @@ const ChatWidget: React.FC = () => {
                 const { done, value } = await reader.read();
                 if (done) break;
 
-                const chunk = decoder.decode(value);
+                const chunk = decoder.decode(value, { stream: true });
+                // Split by double newline which is the SSE standard delimiter
                 const events = chunk.split('\n\n');
 
                 for (const event of events) {
                     if (event.startsWith('data: ')) {
                         const data = event.slice(6);
-                        if (data === '[DONE]') break;
+                        if (data.trim() === '[DONE]') break;
 
-                        if (!messageCreated) {
-                            const aiMsg: Message = {
-                                id: aiMsgId,
-                                content: data,
-                                role: 'ai',
-                                timestamp: new Date()
-                            };
-                            setMessages(prev => [...prev, aiMsg]);
-                            setProcessingStatus(null);
-                            messageCreated = true;
-                        } else {
-                            setMessages(prev => prev.map(msg =>
-                                msg.id === aiMsgId
-                                    ? { ...msg, content: msg.content + data }
-                                    : msg
-                            ));
+                        try {
+                            // --- NEW LOGIC: Parse the JSON wrapper ---
+                            // We expect data to be '{"content": "some text"}'
+                            const parsed = JSON.parse(data);
+                            const textContent = parsed.content;
+
+                            if (!messageCreated) {
+                                const aiMsg: Message = {
+                                    id: aiMsgId,
+                                    content: textContent,
+                                    role: 'ai',
+                                    timestamp: new Date()
+                                };
+                                setMessages(prev => [...prev, aiMsg]);
+                                setProcessingStatus(null);
+                                messageCreated = true;
+                            } else {
+                                setMessages(prev => prev.map(msg =>
+                                    msg.id === aiMsgId
+                                        ? { ...msg, content: msg.content + textContent }
+                                        : msg
+                                ));
+                            }
+                        } catch (err) {
+                            console.error("Failed to parse JSON chunk:", data, err);
                         }
                     }
                 }
@@ -275,7 +285,7 @@ const ChatWidget: React.FC = () => {
                                                         h1: ({children}) => <h1 className="text-lg font-bold mt-3 mb-2">{children}</h1>,
                                                         h2: ({children}) => <h2 className="text-base font-bold mt-3 mb-2">{children}</h2>,
                                                         h3: ({children}) => <h3 className="text-sm font-bold mt-3 mb-1">{children}</h3>,
-                                                        p: ({children}) => <p className="mb-2 leading-relaxed">{children}</p>,
+                                                        p: ({children}) => <p className="mb-2 leading-relaxed whitespace-pre-wrap">{children}</p>,
                                                         ul: ({children}) => <ul className="list-disc list-inside mb-2 space-y-1">{children}</ul>,
                                                         ol: ({children}) => <ol className="list-decimal list-inside mb-2 space-y-1">{children}</ol>,
                                                         li: ({children}) => <li className="leading-relaxed">{children}</li>,
