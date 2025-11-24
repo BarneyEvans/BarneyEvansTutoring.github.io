@@ -1,6 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Terminal, X, Send, MessageSquare } from 'lucide-react';
+import { Terminal, X, Send, MessageSquare, Copy, Check } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
+import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
+import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
 
 interface Message {
     id: string;
@@ -80,7 +84,7 @@ const ChatWidget: React.FC = () => {
         setInputValue('');
         setProcessingStatus("Thinking...")
         
-        const history = [...messages.slice(1), userMsg].map(msg => ({
+        const history = [...messages, userMsg].map(msg => ({
             role: msg.role === 'ai' ? 'assistant' : msg.role,
             content: msg.content
         }));
@@ -101,7 +105,6 @@ const ChatWidget: React.FC = () => {
                 throw new Error("Server error!");
             }
 
-            // Read the stream
             const reader = response.body?.getReader();
             const decoder = new TextDecoder();
 
@@ -109,7 +112,6 @@ const ChatWidget: React.FC = () => {
                 throw new Error("No reader available");
             }
 
-            // Create AI message on first chunk
             const aiMsgId = (Date.now() + 1).toString();
             let messageCreated = false;
 
@@ -118,14 +120,13 @@ const ChatWidget: React.FC = () => {
                 if (done) break;
 
                 const chunk = decoder.decode(value);
-                const lines = chunk.split('\n');
+                const events = chunk.split('\n\n');
 
-                for (const line of lines) {
-                    if (line.startsWith('data: ')) {
-                        const data = line.slice(6);
+                for (const event of events) {
+                    if (event.startsWith('data: ')) {
+                        const data = event.slice(6);
                         if (data === '[DONE]') break;
 
-                        // Create AI message on first text chunk
                         if (!messageCreated) {
                             const aiMsg: Message = {
                                 id: aiMsgId,
@@ -137,7 +138,6 @@ const ChatWidget: React.FC = () => {
                             setProcessingStatus(null);
                             messageCreated = true;
                         } else {
-                            // Append to existing message
                             setMessages(prev => prev.map(msg =>
                                 msg.id === aiMsgId
                                     ? { ...msg, content: msg.content + data }
@@ -160,6 +160,43 @@ const ChatWidget: React.FC = () => {
             setShowNudge(false);
             localStorage.setItem('hasSeenChatNudge', 'true');
         }
+    };
+
+    // --- Custom Renderer for Code Blocks ---
+    const CodeBlock = ({ node, inline, className, children, ...props }: any) => {
+        const match = /language-(\w+)/.exec(className || '');
+        const [isCopied, setIsCopied] = useState(false);
+
+        const handleCopy = () => {
+            navigator.clipboard.writeText(String(children));
+            setIsCopied(true);
+            setTimeout(() => setIsCopied(false), 2000);
+        };
+
+        return !inline && match ? (
+            <div className="relative my-4 rounded-lg overflow-hidden border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
+                <div className="bg-gray-800 text-gray-200 px-4 py-1 text-xs flex justify-between items-center border-b border-gray-700 font-mono">
+                    <span>{match[1]}</span>
+                    <button onClick={handleCopy} className="flex items-center gap-1 hover:text-white transition-colors">
+                        {isCopied ? <Check size={12} /> : <Copy size={12} />}
+                        {isCopied ? 'Copied!' : 'Copy'}
+                    </button>
+                </div>
+                <SyntaxHighlighter
+                    style={vscDarkPlus}
+                    language={match[1]}
+                    PreTag="div"
+                    customStyle={{ margin: 0, borderRadius: 0 }}
+                    {...props}
+                >
+                    {String(children).replace(/\n$/, '')}
+                </SyntaxHighlighter>
+            </div>
+        ) : (
+            <code className={`${className} bg-gray-200 text-red-500 px-1 rounded text-sm font-mono`} {...props}>
+                {children}
+            </code>
+        );
     };
 
     return (
@@ -227,9 +264,32 @@ const ChatWidget: React.FC = () => {
                                         p-3 border-2 border-black shadow-[3px_3px_0px_0px_rgba(0,0,0,1)]
                                         ${msg.role === 'user'
                                             ? 'bg-hot-pink text-white rounded-l-xl rounded-tr-xl'
-                                            : 'bg-white text-black rounded-r-xl rounded-tl-xl font-mono text-sm'}
+                                            : 'bg-white text-black rounded-r-xl rounded-tl-xl text-sm'}
                                     `}>
-                                        {msg.content}
+                                         {msg.role === 'ai' ? (
+                                            <div className="max-w-none">
+                                                <ReactMarkdown
+                                                    remarkPlugins={[remarkGfm]}
+                                                    components={{
+                                                        code: CodeBlock,
+                                                        h1: ({children}) => <h1 className="text-lg font-bold mt-3 mb-2">{children}</h1>,
+                                                        h2: ({children}) => <h2 className="text-base font-bold mt-3 mb-2">{children}</h2>,
+                                                        h3: ({children}) => <h3 className="text-sm font-bold mt-3 mb-1">{children}</h3>,
+                                                        p: ({children}) => <p className="mb-2 leading-relaxed">{children}</p>,
+                                                        ul: ({children}) => <ul className="list-disc list-inside mb-2 space-y-1">{children}</ul>,
+                                                        ol: ({children}) => <ol className="list-decimal list-inside mb-2 space-y-1">{children}</ol>,
+                                                        li: ({children}) => <li className="leading-relaxed">{children}</li>,
+                                                        strong: ({children}) => <strong className="font-bold">{children}</strong>,
+                                                        em: ({children}) => <em className="italic">{children}</em>,
+                                                        hr: () => <hr className="my-3 border-gray-300" />,
+                                                    }}
+                                                >
+                                                    {msg.content}
+                                                </ReactMarkdown>
+                                            </div>
+                                        ) : (
+                                            msg.content
+                                        )}
                                     </div>
                                     <span className="text-[10px] font-bold text-gray-400 mt-1 uppercase">
                                         {msg.role === 'user' ? 'You' : 'System'} • {msg.timestamp.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}

@@ -5,7 +5,7 @@ from pydantic import BaseModel
 from dotenv import load_dotenv
 import os
 from openai import OpenAI
-from prompts import initial_prompt
+from prompts import make_system_prompt
 from supabase import create_client, Client
 
 
@@ -51,7 +51,7 @@ def log_message(session_id, source, message_text):
 def stream_response(history, session_id):
     full_response = ""
     response = client.responses.create(
-        model="gpt-5-nano",
+        model="gpt-5.1",
         input=history,
         stream=True
     )
@@ -62,20 +62,40 @@ def stream_response(history, session_id):
             full_response += text
             yield f"data: {text}\n\n"
 
-    log_message(session_id, "ai", full_response)
+    #log_message(session_id, "ai", full_response)
 
 
     yield "data: [DONE]\n\n"
 
+def generate_embedding(text):
+    response = client.embeddings.create(
+        input=text,
+        model="text-embedding-3-small"
+    )
+    return response.data[0].embedding
+
 @app.post("/chat")
 def chat(chat_data: Chat):
-    #last_user_message = chat_data.message[-1]['content']
+    last_user_message = chat_data.message[-1]['content']
     #log_message(chat_data.session_id, "user", last_user_message)
+    user_embedding = generate_embedding(last_user_message)
 
-    history = [{"role": "system", "content": initial_prompt}] + chat_data.message
+    response = supabase.rpc("match_knowledge", {
+        "query_embedding": user_embedding, 
+        "match_threshold": 0.1,            
+        "match_count": 3                   
+    }).execute()
+    context_data = response.data
+
+    context_data = response.data
+    context_text = "\n\n".join([item['content'] for item in context_data]) if context_data else "No specific context found."
+
+    system_prompt = make_system_prompt(context_text)
+
+    final_messages = [{"role": "system", "content": system_prompt}] + chat_data.message
 
     return StreamingResponse(
-        stream_response(history, chat_data.session_id),
+        stream_response(final_messages, chat_data.session_id),
         media_type="text/event-stream"
     )
 
