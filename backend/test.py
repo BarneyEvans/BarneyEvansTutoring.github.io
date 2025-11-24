@@ -86,11 +86,10 @@ def chat(chat_data: Chat):
 
     response = supabase.rpc("match_knowledge", {
         "query_embedding": user_embedding, 
-        "match_threshold": 0.1,            
-        "match_count": 3                   
+        "match_threshold": 0.01,            
+        "match_count": 5                   
     }).execute()
     context_data = response.data
-
 
     context_text = "\n\n".join([item['content'] for item in context_data]) if context_data else "No specific context found."
 
