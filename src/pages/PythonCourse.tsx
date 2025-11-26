@@ -99,9 +99,7 @@ const PythonCourse: React.FC = () => {
                 ].map((card, idx) => (
                     <motion.div 
                         key={idx}
-                        whileHover={{ y: -4, rotate: 0 }}
-                        whileTap={{ y: 2 }}
-                        className={`border-4 border-black rounded-[24px] p-6 shadow-solid transition-colors ${idx === 1 ? 'bg-cream' : 'bg-white'} ${getRotation(idx)}`}
+                        className={`border-4 border-black rounded-[24px] p-6 shadow-solid transition-colors ${idx === 1 ? 'bg-light-pink' : 'bg-white'} ${getRotation(idx)}`}
                     >
                         <div className="bg-cream w-12 h-12 rounded-full border-2 border-black flex items-center justify-center mb-4 text-hot-pink">
                             <card.icon size={24} />
@@ -134,12 +132,12 @@ const PythonCourse: React.FC = () => {
                                 className="relative z-10 flex flex-col md:items-center text-left md:text-center group"
                             >
                                 {/* Time Pill */}
-                                <div className="mb-4 self-start md:self-center bg-hot-pink text-white border-2 border-black font-mono font-bold text-sm px-3 py-1 rounded-full shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] group-hover:scale-110 transition-transform">
+                                <div className="mb-4 self-start md:self-center bg-hot-pink text-white border-2 border-black font-mono font-bold text-sm px-3 py-1 rounded-full shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] transition-transform">
                                     {step.time}
                                 </div>
 
                                 {/* Content Box */}
-                                <div className="bg-white border-3 border-black rounded-xl p-5 w-full h-full shadow-solid hover:shadow-solid-hover hover:translate-x-[2px] hover:translate-y-[2px] transition-all duration-200">
+                                <div className="bg-white border-3 border-black rounded-xl p-5 w-full h-full shadow-solid transition-all duration-200">
                                     <h4 className="font-heading font-bold text-lg mb-2">{step.title}</h4>
                                     <p className="text-sm text-gray-600 leading-relaxed">{step.desc}</p>
                                 </div>

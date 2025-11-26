@@ -70,33 +70,34 @@ const CourseRoadmap: React.FC = () => {
                 {/* Left: Grid of Pills */}
                 <div className="lg:col-span-7">
                     <h3 className="font-heading text-2xl font-bold mb-6">12-Week Roadmap</h3>
-                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                         {PYTHON_CURRICULUM.map((lesson) => (
                             <button
                                 key={lesson.id}
                                 onClick={() => setSelectedLesson(lesson)}
                                 className={`
-                                    group flex items-stretch rounded-xl border-3 border-black font-bold text-sm md:text-base transition-all duration-150 ease-out overflow-hidden
+                                    relative w-full text-left px-5 py-4 rounded-xl border-2 transition-all duration-200 flex items-center justify-between group overflow-hidden
                                     ${selectedLesson?.id === lesson.id
-                                        ? 'shadow-none translate-x-[3px] translate-y-[3px]'
-                                        : 'shadow-solid-sm hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-solid-hover'}
+                                        ? 'bg-black border-black text-white shadow-[4px_4px_0px_0px_#ff69b4] -translate-y-1'
+                                        : 'bg-white border-gray-200 text-gray-600 hover:border-black hover:text-black hover:bg-gray-50'}
                                 `}
                             >
-                                {/* Left: Number Zone */}
-                                <div className={`w-10 flex items-center justify-center border-r-3 border-black transition-colors py-3 ${
-                                    selectedLesson?.id === lesson.id
-                                        ? 'bg-cream text-black'
-                                        : 'bg-cream text-black group-hover:bg-hot-pink group-hover:text-white'
-                                }`}>
-                                    {lesson.id}
+                                <div className="flex items-center gap-4 z-10">
+                                    <span className={`font-mono text-sm font-bold ${selectedLesson?.id === lesson.id ? 'text-hot-pink' : 'text-gray-300 group-hover:text-black'} transition-colors`}>
+                                        {String(lesson.id).padStart(2, '0')}
+                                    </span>
+                                    <span className={`font-heading font-bold text-lg ${selectedLesson?.id === lesson.id ? 'text-white' : 'text-gray-800'} transition-colors`}>
+                                        {lesson.title}
+                                    </span>
                                 </div>
-                                {/* Right: Topic Name */}
-                                <div className={`flex-1 py-3 px-3 transition-colors ${
-                                    selectedLesson?.id === lesson.id
-                                        ? 'bg-hot-pink text-white'
-                                        : 'bg-cream text-black'
+
+                                {/* Subtle arrow that appears on hover/active */}
+                                <div className={`transform transition-all duration-300 z-10 ${
+                                    selectedLesson?.id === lesson.id 
+                                        ? 'opacity-100 translate-x-0 text-hot-pink' 
+                                        : 'opacity-0 -translate-x-4 group-hover:opacity-100 group-hover:translate-x-0 text-black'
                                 }`}>
-                                    {lesson.title}
+                                    →
                                 </div>
                             </button>
                         ))}
@@ -104,7 +105,7 @@ const CourseRoadmap: React.FC = () => {
                 </div>
 
                 {/* Right: Details Panel */}
-                <div className="lg:col-span-5 bg-cream rounded-[24px] border-3 border-black p-6 relative min-h-[300px] flex flex-col">
+                <div className="lg:col-span-5 bg-white rounded-[24px] border-3 border-black p-6 relative min-h-[300px] flex flex-col">
                     <AnimatePresence mode="wait">
                         {selectedLesson ? (
                             <motion.div

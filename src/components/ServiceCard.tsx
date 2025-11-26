@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { ChevronDown, Clock, GraduationCap, Target, PenTool, School, Sprout, Shapes } from 'lucide-react';
+import { ChevronDown, Clock, GraduationCap, Target, PenTool, School, Sprout, Shapes, Bot, Layers, Briefcase } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ServiceDetail } from '../types';
 
@@ -16,6 +16,9 @@ const ServiceCard: React.FC<ServiceCardProps> = ({ service, isOpen, onToggle }) 
     // Helper to pick icons for the "Flashcards" based on keywords
     const getPersonaIcon = (title: string) => {
         const lower = title.toLowerCase();
+        if (lower.includes('ai')) return <Bot size={32} />;
+        if (lower.includes('full-stack')) return <Layers size={32} />;
+        if (lower.includes('career')) return <Briefcase size={32} />;
         if (lower.includes('university')) return <GraduationCap size={32} />;
         if (lower.includes('exam')) return <PenTool size={32} />;
         if (lower.includes('mastery')) return <Target size={32} />;
@@ -92,7 +95,7 @@ const ServiceCard: React.FC<ServiceCardProps> = ({ service, isOpen, onToggle }) 
                                     {service.structuredWhoFor.map((item, i) => (
                                         <div 
                                             key={i} 
-                                            className="bg-white border-3 border-black rounded-xl p-6 shadow-solid flex flex-col items-center text-center hover:-translate-y-1 hover:shadow-solid-hover transition-all duration-200"
+                                            className="bg-white border-3 border-black rounded-xl p-6 shadow-solid flex flex-col items-center text-center transition-all duration-200"
                                         >
                                             {/* Icon Circle */}
                                             <div className="w-16 h-16 rounded-full bg-light-pink border-3 border-black flex items-center justify-center mb-4 text-black">

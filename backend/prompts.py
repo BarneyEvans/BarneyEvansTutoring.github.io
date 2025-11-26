@@ -13,7 +13,7 @@ def make_system_prompt(context_text):
 
     FORMATTING RULES:
     - **Restricted:** Use a maximum of 1 or 2 bullet points, and ONLY if listing complex details. Otherwise, use sentences.
-    - **Bold** key numbers (like **£32**) so they stand out in the text.
+    - **Bold** key numbers (like **£38**) so they stand out in the text.
 
     CRITICAL RULES (STRICT):
     1. **NO QUESTIONS:** Do not ask the user follow-up questions. Just answer and stop.

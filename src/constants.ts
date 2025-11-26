@@ -24,23 +24,47 @@ export const PYTHON_CURRICULUM: Lesson[] = [
 export const SERVICES: ServiceDetail[] = [
     {
         id: "cs",
-        title: "Programming & AI",
-        price: "£32",
+        title: "Specialist Programming and Applied AI",
+        price: "£38",
         priceDetail: "/hour",
         description: "", // Subtitle removed
         tags: ["Python", "JavaScript", "HTML/CSS", "Machine Learning"],
         logistics: "Online via Zoom (UK Time)  |  Levels: KS3, University & Adult Learners",
         structuredWhoFor: [
-            { title: "For School & Exams", description: "GCSE and A-Level Computer Science students needing grade security." },
-            { title: "For University", description: "Undergraduates working on coursework, dissertations, or new languages." },
-            { title: "For Personal Growth", description: "Adult beginners and hobbyists curious about AI, web development, or career switching." }
+            { 
+                title: "Build AI Applications", 
+                description: "Don't just use AI—build it. Learn to create RAG-powered chatbots (like AI-Barney) using Python, OpenAI, and Fast API."
+            },
+            { 
+                title: "Full-Stack Development", 
+                description: "Master the modern tech stack. We build responsive, deployed applications using React, TypeScript, and Tailwind CSS." 
+            },
+            { 
+                title: "Academic & Career Mastery", 
+                description: "For A-Level NEAs, University dissertations, or career switchers. We focus on high-level system design and grade-securing code." 
+            }
         ],
         structuredFeatures: [
-            { title: "Interactive Coding", description: "We code live together—you don't just watch me type." },
-            { title: "Step-by-Step", description: "Complex ideas broken down into small, clear components." },
-            { title: "Adaptive Pace", description: "We move as fast or slow as you need to master the concept." },
-            { title: "Active Recall", description: "Regular recaps of earlier concepts to ensure they stick." },
-            { title: "Applied Learning", description: "New ideas are immediately linked to exam questions or small projects." }
+            { 
+                title: "Industry Best Practices", 
+                description: "Writing clean, maintainable code using standard conventions (PEP 8, ESLint) and modular architecture." 
+            },
+            { 
+                title: "Full-Stack Architecture", 
+                description: "Understanding how frontend, backend, and databases interact to build complete, scalable systems." 
+            },
+            { 
+                title: "Professional Code Review", 
+                description: "Detailed feedback on your logic, efficiency, and style to refine your implementation towards professional standards." 
+            },
+            { 
+                title: "Systematic Debugging", 
+                description: "Learning structured workflows to diagnose errors, manage dependencies, and solve complex problems independently." 
+            },
+            { 
+                title: "Deployment Pipelines", 
+                description: "Taking projects from local development to live production environments using modern hosting and version control." 
+            }
         ],
         lessonFlow: [
             { time: "5-10m", title: "Recap", description: "Reviewing previous concept or homework." },
@@ -52,7 +76,7 @@ export const SERVICES: ServiceDetail[] = [
     {
         id: "gcse",
         title: "GCSE Sciences & Maths",
-        price: "£29",
+        price: "£32",
         priceDetail: "/hour",
         description: "", // Subtitle removed
         tags: ["Maths", "Physics", "Chemistry", "Biology", "CompSci"],
@@ -89,7 +113,7 @@ export const EXPERIENCE: ExperienceJob[] = [
         title: "Tutor",
         company: "MyTutor",
         period: "Dec 2023 - Present",
-        details: ["85+ lessons delivered", "5★ rating average", "Schools Programme approved"]
+        details: ["95+ lessons delivered", "5★ rating average", "Schools Programme approved"]
     },
     {
         title: "Engineering Tutor",

@@ -1,10 +1,31 @@
 
-import React from 'react';
-import { motion } from 'framer-motion';
+import React, { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { EXPERIENCE, MYTUTOR_URL } from '../constants';
-import { ExternalLink, GraduationCap, Star, Code, Quote, Clock, ShieldCheck } from 'lucide-react';
+import { ExternalLink, GraduationCap, Star, Code, Quote, Clock, ShieldCheck, ChevronLeft, ChevronRight } from 'lucide-react';
 
 const About: React.FC = () => {
+    const [currentReviewIndex, setCurrentReviewIndex] = useState(0);
+
+    const reviews = [
+        {
+            text: "Barney has helped my daughter in her Computer Science GCSE making her much more confident within a few months.",
+            author: "Rahnuma, Parent from Norwich"
+        },
+        {
+            text: "Really pleased with the work Barney is doing with my son for Computer Science GCSE, he is helping build his confidence and knowledge base after an extended time out of school.",
+            author: "Suzanne, Parent from Hook"
+        }
+    ];
+
+    const nextReview = () => {
+        setCurrentReviewIndex((prev) => (prev + 1) % reviews.length);
+    };
+
+    const prevReview = () => {
+        setCurrentReviewIndex((prev) => (prev - 1 + reviews.length) % reviews.length);
+    };
+
     const getIcon = (company: string) => {
         if (company.includes("Ritz")) return <GraduationCap size={20} />;
         if (company.includes("MyTutor")) return <Star size={20} />;
@@ -70,26 +91,26 @@ const About: React.FC = () => {
                 {/* Right: The Polaroid Stack */}
                 <div className="relative h-[400px] w-full flex justify-center lg:block lg:mt-0">
                     {/* Back Photo (Ice Hockey) - Tilted Left */}
-                    <motion.div 
+                    <motion.div
                         initial={{ opacity: 0, rotate: -20, scale: 0.8 }}
                         animate={{ opacity: 1, rotate: -6, scale: 1 }}
                         transition={{ delay: 0.2, duration: 0.5 }}
-                        className="absolute top-4 lg:left-4 w-[260px] h-[320px] lg:w-[300px] lg:h-[360px] bg-white p-3 pb-12 border-4 border-black shadow-xl transform z-0"
+                        className="absolute top-4 lg:left-4 w-[260px] h-[320px] lg:w-[300px] lg:h-[360px] bg-white p-3 pb-12 border-4 border-black rounded-2xl shadow-xl transform z-0"
                     >
-                        <div className="w-full h-full bg-gray-200 border-2 border-black overflow-hidden grayscale opacity-80 hover:grayscale-0 hover:opacity-100 transition-all duration-500">
+                        <div className="w-full h-full bg-gray-200 border-2 border-black rounded-xl overflow-hidden grayscale opacity-80 hover:grayscale-0 hover:opacity-100 transition-all duration-500">
                              <img src="/assets/hockey_image.jpg" alt="Ice Hockey" className="w-full h-full object-cover" />
                         </div>
                         <p className="font-heading font-bold text-center mt-3 text-gray-500 rotate-1">Ice Hockey 🏒</p>
                     </motion.div>
 
                     {/* Front Photo (Graduation) - Tilted Right */}
-                    <motion.div 
+                    <motion.div
                         initial={{ opacity: 0, rotate: 10, scale: 0.8 }}
                         animate={{ opacity: 1, rotate: 6, scale: 1 }}
                         transition={{ delay: 0.4, duration: 0.5 }}
-                        className="absolute top-12 lg:left-32 w-[260px] h-[320px] lg:w-[300px] lg:h-[360px] bg-white p-3 pb-12 border-4 border-black shadow-solid z-10"
+                        className="absolute top-12 lg:left-32 w-[260px] h-[320px] lg:w-[300px] lg:h-[360px] bg-white p-3 pb-12 border-4 border-black rounded-2xl shadow-solid z-10"
                     >
-                        <div className="w-full h-full bg-gray-200 border-2 border-black overflow-hidden">
+                        <div className="w-full h-full bg-gray-200 border-2 border-black rounded-xl overflow-hidden">
                             <img src="/assets/teaching.jpg" alt="Teaching Python to a class" className="w-full h-full object-cover" />
                         </div>
                         <p className="font-heading font-bold text-center mt-3 text-black -rotate-1">Teaching Python to a class</p>
@@ -160,28 +181,78 @@ const About: React.FC = () => {
                                         </div>
                                     </div>
 
-                                    {/* Threaded Testimonial for MyTutor */}
+                                    {/* Testimonials Carousel for MyTutor */}
                                     {isMyTutor && (
                                         <div className="relative mt-4 ml-8 md:ml-0 md:mt-6">
                                             {/* Connector Line (Mobile: L-Shape) */}
                                             <div className="md:hidden absolute -left-6 -top-6 w-6 h-12 border-l-3 border-b-3 border-black rounded-bl-2xl opacity-30"></div>
                                             {/* Connector Line (Desktop: Vertical) */}
                                             <div className="hidden md:block absolute -top-6 left-1/2 -translate-x-1/2 w-1 h-6 bg-black opacity-30"></div>
-                                            
-                                            <div className="bg-white rounded-xl border-3 border-black p-4 shadow-sm relative">
-                                                <div className="flex gap-3 items-start">
-                                                    <Quote size={20} className="text-hot-pink flex-shrink-0 mt-1" />
-                                                    <div>
-                                                        <p className="italic text-sm text-gray-700 mb-3">
-                                                            "Barney has helped my daughter in her Computer Science GCSE making her much more confident within a few months."
-                                                        </p>
-                                                        <div className="flex justify-between items-center">
-                                                            <span className="font-bold text-xs">- Parent</span>
-                                                            <a href={MYTUTOR_URL} target="_blank" rel="noreferrer" className="text-xs font-bold flex items-center gap-1 hover:text-hot-pink">
-                                                                Verify <ExternalLink size={12}/>
-                                                            </a>
-                                                        </div>
+
+                                            {/* Carousel Container */}
+                                            <div className="bg-white rounded-xl border-3 border-black shadow-sm overflow-hidden">
+                                                {/* Review Content with AnimatePresence for slide animation */}
+                                                <div className="relative min-h-[140px] p-4">
+                                                    <AnimatePresence mode="wait">
+                                                        <motion.div
+                                                            key={currentReviewIndex}
+                                                            initial={{ opacity: 0, x: 20 }}
+                                                            animate={{ opacity: 1, x: 0 }}
+                                                            exit={{ opacity: 0, x: -20 }}
+                                                            transition={{ duration: 0.3 }}
+                                                            className="flex gap-3 items-start"
+                                                        >
+                                                            <Quote size={20} className="text-hot-pink flex-shrink-0 mt-1" />
+                                                            <div className="flex-1">
+                                                                <p className="italic text-sm text-gray-700 mb-3">
+                                                                    "{reviews[currentReviewIndex].text}"
+                                                                </p>
+                                                                <div className="flex justify-between items-center">
+                                                                    <span className="font-bold text-xs">- {reviews[currentReviewIndex].author}</span>
+                                                                    <a href={MYTUTOR_URL} target="_blank" rel="noreferrer" className="text-xs font-bold flex items-center gap-1 hover:text-hot-pink transition-colors">
+                                                                        Verify <ExternalLink size={12}/>
+                                                                    </a>
+                                                                </div>
+                                                            </div>
+                                                        </motion.div>
+                                                    </AnimatePresence>
+                                                </div>
+
+                                                {/* Navigation Controls */}
+                                                <div className="border-t-3 border-black bg-light-pink px-4 py-3 flex items-center justify-between">
+                                                    {/* Left Arrow */}
+                                                    <button
+                                                        onClick={prevReview}
+                                                        className="bg-white border-3 border-black rounded-lg p-2 hover:bg-hot-pink hover:text-white transition-colors shadow-solid-sm hover:shadow-none hover:translate-x-[2px] hover:translate-y-[2px]"
+                                                        aria-label="Previous review"
+                                                    >
+                                                        <ChevronLeft size={16} />
+                                                    </button>
+
+                                                    {/* Pagination Dots */}
+                                                    <div className="flex gap-2">
+                                                        {reviews.map((_, index) => (
+                                                            <button
+                                                                key={index}
+                                                                onClick={() => setCurrentReviewIndex(index)}
+                                                                className={`w-2 h-2 rounded-full border-2 border-black transition-all ${
+                                                                    index === currentReviewIndex
+                                                                        ? 'bg-hot-pink scale-125'
+                                                                        : 'bg-white hover:bg-gray-200'
+                                                                }`}
+                                                                aria-label={`Go to review ${index + 1}`}
+                                                            />
+                                                        ))}
                                                     </div>
+
+                                                    {/* Right Arrow */}
+                                                    <button
+                                                        onClick={nextReview}
+                                                        className="bg-white border-3 border-black rounded-lg p-2 hover:bg-hot-pink hover:text-white transition-colors shadow-solid-sm hover:shadow-none hover:translate-x-[2px] hover:translate-y-[2px]"
+                                                        aria-label="Next review"
+                                                    >
+                                                        <ChevronRight size={16} />
+                                                    </button>
                                                 </div>
                                             </div>
                                         </div>
