@@ -12,6 +12,7 @@ from supabase import create_client, Client
 app = FastAPI()
 
 MAX_MESSAGE_LENGTH = 250
+MAX_CONTEXT_HISTORY = 10
 
 origins = [
     "http://localhost:5173",
@@ -193,7 +194,9 @@ def chat(chat_data: Chat):
     context_text = "\n\n".join([item['content'] for item in context_data]) if context_data else ""
     system_prompt = make_system_prompt(context_text)
 
-    final_messages = [{"role": "system", "content": system_prompt}] + chat_data.message
+    # Limit Context History to save tokens
+    recent_messages = chat_data.message[-MAX_CONTEXT_HISTORY:]
+    final_messages = [{"role": "system", "content": system_prompt}] + recent_messages
 
     return StreamingResponse(
         stream_response(final_messages, chat_data.session_id),
