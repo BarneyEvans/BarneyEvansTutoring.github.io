@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { EXPERIENCE, MYTUTOR_URL } from '../constants';
 import { ExternalLink, GraduationCap, Star, Code, Quote, Clock, ShieldCheck, ChevronLeft, ChevronRight } from 'lucide-react';
@@ -7,7 +7,7 @@ import { ExternalLink, GraduationCap, Star, Code, Quote, Clock, ShieldCheck, Che
 const About: React.FC = () => {
     const [currentReviewIndex, setCurrentReviewIndex] = useState(0);
 
-    const reviews = [
+    const reviews = useMemo(() => [
         {
             text: "Barney has helped my daughter in her Computer Science GCSE making her much more confident within a few months.",
             author: "Rahnuma, Parent from Norwich"
@@ -16,7 +16,23 @@ const About: React.FC = () => {
             text: "Really pleased with the work Barney is doing with my son for Computer Science GCSE, he is helping build his confidence and knowledge base after an extended time out of school.",
             author: "Suzanne, Parent from Hook"
         }
-    ];
+    ], []);
+
+    const measurementRefs = useRef<(HTMLDivElement | null)[]>([]);
+    const [maxReviewHeight, setMaxReviewHeight] = useState(0);
+
+    useEffect(() => {
+        const updateMaxHeight = () => {
+            const heights = measurementRefs.current.map((el) => el?.offsetHeight || 0);
+            const tallest = Math.max(...heights, 0);
+            setMaxReviewHeight(tallest);
+        };
+
+        updateMaxHeight();
+        window.addEventListener('resize', updateMaxHeight);
+
+        return () => window.removeEventListener('resize', updateMaxHeight);
+    }, [reviews]);
 
     const nextReview = () => {
         setCurrentReviewIndex((prev) => (prev + 1) % reviews.length);
@@ -33,6 +49,23 @@ const About: React.FC = () => {
         return <Star size={20} />;
     };
 
+    const ReviewContent: React.FC<{ review: { text: string; author: string }; stretch?: boolean }> = ({ review, stretch }) => (
+        <div className={`flex gap-3 items-start ${stretch ? 'h-full' : ''}`}>
+            <Quote size={20} className="text-hot-pink flex-shrink-0 mt-1" />
+            <div className={`flex-1 flex flex-col gap-3 ${stretch ? 'h-full' : ''}`}>
+                <p className="italic text-sm text-gray-700">
+                    "{review.text}"
+                </p>
+                <div className="flex justify-between items-center mt-auto">
+                    <span className="font-bold text-xs">- {review.author}</span>
+                    <a href={MYTUTOR_URL} target="_blank" rel="noreferrer" className="text-xs font-bold flex items-center gap-1 hover:text-hot-pink transition-colors">
+                        Verify <ExternalLink size={12}/>
+                    </a>
+                </div>
+            </div>
+        </div>
+    );
+
     return (
         <div className="max-w-6xl mx-auto px-4 pb-20 overflow-hidden">
             <div className="text-center py-12">
@@ -43,7 +76,7 @@ const About: React.FC = () => {
             <div className="grid lg:grid-cols-2 gap-16 items-center mb-24">
                 
                 {/* Left: Credentials Hero Card */}
-                <motion.div 
+                <motion.div
                     initial={{ opacity: 0, x: -50 }}
                     animate={{ opacity: 1, x: 0 }}
                     className="bg-white rounded-[24px] border-4 border-black shadow-solid p-8 md:p-10 relative z-20"
@@ -190,32 +223,41 @@ const About: React.FC = () => {
                                             <div className="hidden md:block absolute -top-6 left-1/2 -translate-x-1/2 w-1 h-6 bg-black opacity-30"></div>
 
                                             {/* Carousel Container */}
-                                            <div className="bg-white rounded-xl border-3 border-black shadow-sm overflow-hidden">
+                                            <div className="bg-white rounded-xl border-3 border-black shadow-solid overflow-hidden">
                                                 {/* Review Content with AnimatePresence for slide animation */}
-                                                <div className="relative min-h-[140px] p-4">
-                                                    <AnimatePresence mode="wait">
-                                                        <motion.div
-                                                            key={currentReviewIndex}
-                                                            initial={{ opacity: 0, x: 20 }}
-                                                            animate={{ opacity: 1, x: 0 }}
-                                                            exit={{ opacity: 0, x: -20 }}
-                                                            transition={{ duration: 0.3 }}
-                                                            className="flex gap-3 items-start"
-                                                        >
-                                                            <Quote size={20} className="text-hot-pink flex-shrink-0 mt-1" />
-                                                            <div className="flex-1">
-                                                                <p className="italic text-sm text-gray-700 mb-3">
-                                                                    "{reviews[currentReviewIndex].text}"
-                                                                </p>
-                                                                <div className="flex justify-between items-center">
-                                                                    <span className="font-bold text-xs">- {reviews[currentReviewIndex].author}</span>
-                                                                    <a href={MYTUTOR_URL} target="_blank" rel="noreferrer" className="text-xs font-bold flex items-center gap-1 hover:text-hot-pink transition-colors">
-                                                                        Verify <ExternalLink size={12}/>
-                                                                    </a>
-                                                                </div>
+                                                <div
+                                                    className="relative"
+                                                    style={maxReviewHeight ? { minHeight: maxReviewHeight } : undefined}
+                                                >
+                                                    <div className="p-4 h-full">
+                                                        <AnimatePresence mode="wait">
+                                                            <motion.div
+                                                                key={currentReviewIndex}
+                                                                initial={{ opacity: 0, x: 20 }}
+                                                                animate={{ opacity: 1, x: 0 }}
+                                                                exit={{ opacity: 0, x: -20 }}
+                                                                transition={{ duration: 0.3 }}
+                                                                className="w-full h-full"
+                                                            >
+                                                                <ReviewContent review={reviews[currentReviewIndex]} stretch />
+                                                            </motion.div>
+                                                        </AnimatePresence>
+                                                    </div>
+
+                                                    {/* Hidden clones to lock height to the tallest review */}
+                                                    <div className="absolute inset-0 opacity-0 pointer-events-none -z-10" aria-hidden="true">
+                                                        {reviews.map((review, index) => (
+                                                            <div
+                                                                key={`measure-${index}`}
+                                                                ref={(el) => {
+                                                                    measurementRefs.current[index] = el;
+                                                                }}
+                                                                className="p-4"
+                                                            >
+                                                                <ReviewContent review={review} />
                                                             </div>
-                                                        </motion.div>
-                                                    </AnimatePresence>
+                                                        ))}
+                                                    </div>
                                                 </div>
 
                                                 {/* Navigation Controls */}

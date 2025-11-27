@@ -21,7 +21,7 @@ const Home: React.FC = () => {
                         <div className="absolute inset-0 bg-hot-pink rounded-[32px] rotate-3 transform translate-x-2 translate-y-2 border-4 border-black"></div>
                         <img
                             src="/assets/grad_photo.jpg"
-                            alt="Barney Evans Graduation" 
+                            alt="Barney Evans Graduation"
                             className="relative w-full h-auto rounded-[32px] border-4 border-black shadow-lg bg-white z-10"
                         />
                         

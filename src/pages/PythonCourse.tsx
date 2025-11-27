@@ -36,7 +36,7 @@ const PythonCourse: React.FC = () => {
                             Coming Soon
                         </span>
                          <span className="bg-white border-2 border-black px-3 py-1 rounded-lg font-bold shadow-solid-sm text-sm">
-                            Max 4 Students
+                            Max 5 Students
                         </span>
                         <span className="bg-white border-2 border-black px-3 py-1 rounded-lg font-bold shadow-solid-sm text-sm">
                             £12.50 / lesson
@@ -94,10 +94,10 @@ const PythonCourse: React.FC = () => {
             <div className="grid md:grid-cols-3 gap-6 mb-20">
                 {[
                     { icon: BookOpen, title: "Exam Focused", desc: "Practice past paper exam questions." },
-                    { icon: Users, title: "Small Groups", desc: "Maximum 4 students ensures everyone gets personal attention and feedback." },
+                    { icon: Users, title: "Small Groups", desc: "Maximum 5 students ensures everyone gets personal attention and feedback." },
                     { icon: Clock, title: "Weekly Homework", desc: "Marked weekly tasks with model answers to ensure continuous progress." }
                 ].map((card, idx) => (
-                    <motion.div 
+                    <motion.div
                         key={idx}
                         className={`border-4 border-black rounded-[24px] p-6 shadow-solid transition-colors ${idx === 1 ? 'bg-light-pink' : 'bg-white'} ${getRotation(idx)}`}
                     >

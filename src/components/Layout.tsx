@@ -95,7 +95,7 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
                 <div className="max-w-4xl mx-auto px-4 text-center">
                     <h2 className="font-heading text-4xl md:text-5xl font-bold mb-6">Ready to get started?</h2>
                     <p className="text-xl mb-12 max-w-2xl mx-auto text-gray-700">
-                        Book a free 20-minute discovery call to discuss your goals, or explore the Python course with a free taster session.
+                        Book a free 20-minute discovery call to discuss your goals for private tutoring or the Python course.
                     </p>
                     
                     <div className="flex flex-col md:flex-row justify-center gap-6">
