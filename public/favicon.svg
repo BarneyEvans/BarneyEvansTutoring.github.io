@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <!-- Background: White for contrast (can be transparent or hot pink) -->
+  <rect width="512" height="512" fill="#ffffff" rx="100" />
+  
+  <!-- The Letter B: Bold, Monospace-style font -->
+  <text x="140" y="380" font-family="monospace" font-weight="bold" font-size="400" fill="#000000">B</text>
+  
+  <!-- The Cursor: Hot Pink Underscore, slightly thick -->
+  <rect x="380" y="330" width="80" height="50" fill="#FF69B4">
+    <animate attributeName="opacity" values="1;0;1" dur="1s" repeatCount="indefinite" />
+  </rect>
+</svg>
