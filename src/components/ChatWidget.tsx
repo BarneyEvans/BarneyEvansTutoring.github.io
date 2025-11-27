@@ -13,10 +13,13 @@ interface Message {
     timestamp: Date;
 }
 
+const MAX_MESSAGE_LENGTH = 250;
+
 const ChatWidget: React.FC = () => {
     const [isOpen, setIsOpen] = useState(false);
     const [showNudge, setShowNudge] = useState(false);
     const [inputValue, setInputValue] = useState('');
+    const [inputError, setInputError] = useState<string | null>(null);
     const [sessionId] = useState(() => crypto.randomUUID());
     const [messages, setMessages] = useState<Message[]>([
         {
@@ -30,6 +33,12 @@ const ChatWidget: React.FC = () => {
     const [processingStatus, setProcessingStatus] = useState<string | null>(null);
     const [isDesktopView, setIsDesktopView] = useState(false);
     const messagesEndRef = useRef<HTMLDivElement>(null);
+    const normalizedLength = inputValue.trim().length;
+    const progressPercent = Math.min((normalizedLength / MAX_MESSAGE_LENGTH) * 100, 100);
+    const isOverLimit = normalizedLength > MAX_MESSAGE_LENGTH;
+    const isNearLimit = normalizedLength > MAX_MESSAGE_LENGTH - 30;
+    const isSending = processingStatus === "Thinking...";
+    const isSendDisabled = isSending || isOverLimit || !inputValue.trim();
 
     useEffect(() => {
         const checkViewport = () => {
@@ -69,20 +78,42 @@ const ChatWidget: React.FC = () => {
         };
     }, [isOpen, isDesktopView]);
 
+    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const nextValue = e.target.value;
+        setInputValue(nextValue);
+
+        if (processingStatus && processingStatus !== "Thinking...") {
+            setProcessingStatus(null);
+        }
+
+        if (nextValue.trim().length > MAX_MESSAGE_LENGTH) {
+            setInputError(`Max ${MAX_MESSAGE_LENGTH} characters`);
+        } else {
+            setInputError(null);
+        }
+    };
+
     const handleSendMessage = async (e: React.FormEvent) => {
         e.preventDefault();
-        if (!inputValue.trim()) return;
+        const trimmedInput = inputValue.trim();
+        if (!trimmedInput) return;
+
+        if (trimmedInput.length > MAX_MESSAGE_LENGTH) {
+            setInputError(`Max ${MAX_MESSAGE_LENGTH} characters`);
+            return;
+        }
 
         const userMsg: Message = {
             id: Date.now().toString(),
-            content: inputValue,
+            content: trimmedInput,
             role: 'user',
             timestamp: new Date()
         };
 
         setMessages(prev => [...prev, userMsg]);
         setInputValue('');
-        setProcessingStatus("Thinking...")
+        setInputError(null);
+        setProcessingStatus("Thinking...");
         
         const history = [...messages, userMsg].map(msg => ({
             role: msg.role === 'ai' ? 'assistant' : msg.role,
@@ -102,7 +133,16 @@ const ChatWidget: React.FC = () => {
             });
 
             if (!response.ok) {
-                throw new Error("Server error!");
+                let errorMessage = "Server error!";
+                try {
+                    const errorData = await response.json();
+                    if (typeof errorData?.detail === "string") {
+                        errorMessage = errorData.detail;
+                    }
+                } catch {
+                    // ignore JSON parse failure and keep default message
+                }
+                throw new Error(errorMessage);
             }
 
             const reader = response.body?.getReader();
@@ -159,7 +199,11 @@ const ChatWidget: React.FC = () => {
             }
 
         } catch (error) {
-            setProcessingStatus("Failed to get response");
+            const message = error instanceof Error ? error.message : "Failed to get response";
+            setProcessingStatus(message);
+            if (message.toLowerCase().includes("message too long")) {
+                setInputError(message);
+            }
             console.error("Failed:", error);
         }
     };
@@ -238,7 +282,7 @@ const ChatWidget: React.FC = () => {
                             bg-white border-4 border-black shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]
                             flex flex-col overflow-hidden
                             ${isDesktopView
-                                ? 'relative h-[520px] w-[360px] mb-2 rounded-xl'
+                                ? 'relative h-[640px] w-[500px] max-h-[80vh] mb-2 rounded-xl'
                                 : 'fixed inset-0 h-[100dvh]'}
                         `}
                     >
@@ -323,29 +367,42 @@ const ChatWidget: React.FC = () => {
                             AI can make mistakes. Verify important details.
                         </div>
 
-                        <form onSubmit={handleSendMessage} className="p-3 bg-white border-t-4 border-black flex gap-2 shrink-0 safe-area-bottom">
-                            <input
-                                type="text"
-                                value={inputValue}
-                                onChange={(e) => setInputValue(e.target.value)}
-                                placeholder="Ask a question..."
-                                className="flex-1 bg-gray-100 border-2 border-black px-3 py-2 text-sm font-mono focus:outline-none focus:bg-white focus:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] transition-all rounded-lg placeholder:text-gray-400"
-                            />
-                            <button
-                                type="submit"
-                                disabled={!!processingStatus}
-                                className={`
-                                    bg-black text-hot-pink p-2 border-2 border-black rounded-lg
-                                    shadow-[3px_3px_0px_0px_rgba(0,0,0,1)]
-                                    transition-all duration-150 ease-out
-                                    hover:bg-hot-pink hover:text-white hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-[1px_1px_0px_0px_rgba(0,0,0,1)]
-                                    active:translate-x-[3px] active:translate-y-[3px] active:shadow-none
-                                    disabled:opacity-50 disabled:hover:bg-black disabled:hover:text-hot-pink disabled:cursor-not-allowed
-                                    flex items-center justify-center
-                                `}
-                            >
-                                <Send size={20} />
-                            </button>
+                        <form onSubmit={handleSendMessage} className="p-3 bg-white border-t-4 border-black flex flex-col gap-2 shrink-0 safe-area-bottom">
+                            <div className="flex gap-2 items-stretch">
+                                <input
+                                    type="text"
+                                    value={inputValue}
+                                    onChange={handleInputChange}
+                                    placeholder="Ask a question..."
+                                    className={`flex-1 bg-gray-100 border-2 border-black px-3 py-2 text-sm font-mono focus:outline-none focus:bg-white focus:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] transition-all rounded-lg placeholder:text-gray-400 ${isOverLimit ? 'border-red-500 ring-2 ring-red-200' : ''}`}
+                                />
+                                <button
+                                    type="submit"
+                                    disabled={isSendDisabled}
+                                    className={`
+                                        bg-black text-hot-pink p-2 border-2 border-black rounded-lg
+                                        shadow-[3px_3px_0px_0px_rgba(0,0,0,1)]
+                                        transition-all duration-150 ease-out
+                                        hover:bg-hot-pink hover:text-white hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-[1px_1px_0px_0px_rgba(0,0,0,1)]
+                                        active:translate-x-[3px] active:translate-y-[3px] active:shadow-none
+                                        disabled:opacity-50 disabled:hover:bg-black disabled:hover:text-hot-pink disabled:cursor-not-allowed
+                                        flex items-center justify-center
+                                    `}
+                                >
+                                    <Send size={20} />
+                                </button>
+                            </div>
+                            <div className="flex items-center gap-2 px-1">
+                                <div className="flex-1 h-2 bg-gray-200 border-2 border-black rounded-full overflow-hidden shadow-inner">
+                                    <div
+                                        className={`${isOverLimit ? 'bg-red-500' : 'bg-hot-pink'} h-full transition-all duration-200`}
+                                        style={{ width: `${progressPercent}%` }}
+                                    />
+                                </div>
+                                <span className={`text-[11px] font-mono font-bold ${isOverLimit ? 'text-red-600' : isNearLimit ? 'text-hot-pink' : 'text-gray-700'}`}>
+                                    {normalizedLength}/{MAX_MESSAGE_LENGTH}
+                                </span>
+                            </div>
                         </form>
                     </motion.div>
                     )}

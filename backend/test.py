@@ -1,4 +1,4 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import StreamingResponse
 from pydantic import BaseModel
@@ -10,6 +10,8 @@ from prompts import make_system_prompt
 from supabase import create_client, Client
 
 app = FastAPI()
+
+MAX_MESSAGE_LENGTH = 250
 
 origins = [
     "http://localhost:5173",
@@ -104,6 +106,15 @@ def generate_embedding(text):
 @app.post("/chat")
 def chat(chat_data: Chat):
     last_user_message = chat_data.message[-1]['content'].strip()
+
+    for msg in chat_data.message:
+        if msg.get("role") == "user":
+            content = msg.get("content", "").strip()
+            if len(content) > MAX_MESSAGE_LENGTH:
+                raise HTTPException(
+                    status_code=400,
+                    detail=f"Message too long. Please keep messages under {MAX_MESSAGE_LENGTH} characters.",
+                )
     
     # --- DEBUG: Print User Question ---
     print(f"\n📢 USER ASKED: '{last_user_message}'") 
