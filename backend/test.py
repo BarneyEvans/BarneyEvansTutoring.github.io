@@ -9,196 +9,121 @@ from openai import OpenAI
 from prompts import make_system_prompt
 from supabase import create_client, Client
 
-app = FastAPI()
+load_dotenv()
 
 MAX_MESSAGE_LENGTH = 250
 MAX_CONTEXT_HISTORY = 10
+MODEL_NAME = "gpt-5-nano"
+EMBEDDING_MODEL = "text-embedding-3-small"
+REJECTION_TEXT = "Please only ask information relevant to Barney's tutoring services, such as course details or pricing. Or email Barney for more infomration:"
+WELCOME_MESSAGE = "Hello! I'm AI-Barney. I can answer questions about the course syllabus, pricing, or my teaching style. Try asking: 'Do you teach A-Level?'"
 
-origins = [
-    "http://localhost:5173",
-    "http://127.0.0.1:5173",
-]
+try:
+    openai_client = OpenAI(api_key=os.getenv("CHATGPT_API_KEY"))
+    supabase: Client = create_client(os.getenv("SUPABASE_URL"), os.getenv("SUPABASE_KEY"))
+except Exception:
+    pass
+
+app = FastAPI()
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],        # which frontends are allowed
+    allow_origins=["*"],
     allow_credentials=False,
-    allow_methods=["*"],          # allow all HTTP methods (GET, POST, etc.)
-    allow_headers=["*"],          # allow all headers (e.g. Content-Type)
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 class Chat(BaseModel):
     message: list[dict[str, str]]
     session_id: str
 
-load_dotenv()
-api_key = os.getenv("CHATGPT_API_KEY")
-
-client = OpenAI(api_key=api_key)
-SUPABASE_URL = os.getenv("SUPABASE_URL")
-SUPABASE_KEY = os.getenv("SUPABASE_KEY")
-supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
-
-# The phrase used to detect if a user is still "On Probation"
-REJECTION_TEXT = "Please only ask information relevant to Barney's tutoring services, such as course details or pricing."
-WELCOME_MESSAGE = "Hello! I'm AI-Barney. I can answer questions about the course syllabus, pricing, or my teaching style. Try asking: 'Do you teach A-Level?'"
+class FeedbackPayload(BaseModel):
+    session_id: str
+    message: str
+    feedback: int
 
 def log_message(session_id, source, message_text):
     try:
-        data = {
+        supabase.table("chat_messages").insert({
             "conversation_id": session_id, 
             "source": source,               
             "message": message_text
-        }
-        # Insert and execute
-        supabase.table("chat_messages").insert(data).execute()
-    except Exception as e:
-        print(f"Error logging to Supabase: {e}")
+        }).execute()
+    except Exception:
+        pass
 
-def stream_rejection(session_id):
-    """
-    DEFAULT OUTPUT TO AVOID RUNNING THE MODEL
-    This function mimics the OpenAI stream format but returns static text ($0 cost).
-    """
-    # 1. Text rejection
-    payload = json.dumps({"content": REJECTION_TEXT})
-    yield f"data: {payload}\n\n"
-    
-    # 2. Email block
-    email_block = "\n\n```\nebarneytutoring@gmail.com\n```"
-    payload_email = json.dumps({"content": email_block})
-    yield f"data: {payload_email}\n\n"
-    
-    yield "data: [DONE]\n\n"
-
-    # Log the rejection so you know a user was blocked
-    # log_message(session_id, "ai", REJECTION_TEXT)
-
-def stream_response(history, session_id):
-    full_response = ""
-    # Using your specific model syntax as requested
-    response = client.responses.create(
-        model="gpt-5-nano",
-        input=history,
-        stream=True
-    )
-
-    for event in response:
-        if event.type == "response.output_text.delta":
-            text = event.delta
-            full_response += text
-            
-            # Wrap text in JSON to preserve newlines in SSE
-            payload = json.dumps({"content": text})
-            yield f"data: {payload}\n\n"
-
-    # Log the full successful AI response
-    # log_message(session_id, "ai", full_response)
-
-    yield "data: [DONE]\n\n"
-
-def generate_embedding(text):
-    response = client.embeddings.create(
-        input=text,
-        model="text-embedding-3-small"
-    )
-    return response.data[0].embedding
-
-@app.post("/chat")
-def chat(chat_data: Chat):
-    last_user_message = chat_data.message[-1]['content'].strip()
-
-    for msg in chat_data.message:
+def validate_input(messages: list[dict[str, str]]) -> str:
+    last_content = messages[-1].get("content", "").strip()
+    for msg in messages:
         if msg.get("role") == "user":
-            content = msg.get("content", "").strip()
-            if len(content) > MAX_MESSAGE_LENGTH:
-                raise HTTPException(
-                    status_code=400,
-                    detail=f"Message too long. Please keep messages under {MAX_MESSAGE_LENGTH} characters.",
-                )
-    
-    # --- DEBUG: Print User Question ---
-    print(f"\n📢 USER ASKED: '{last_user_message}'") 
-    
-    # Log the User's Message
-    # log_message(chat_data.session_id, "user", last_user_message)
-    
-    # ---------------------------------------------------------
-    # 1. ESTABLISH TRUST (The Boolean Flag)
-    # ---------------------------------------------------------
-    ai_messages = [m['content'] for m in chat_data.message if m['role'] == 'assistant']
-    
-    if not ai_messages:
-        # No history = New User = Probation
-        is_trusted_user = False 
-    elif REJECTION_TEXT in ai_messages[-1]: 
-        # Last answer was a rejection = Still on Probation
-        is_trusted_user = False 
-    elif ai_messages[-1] == WELCOME_MESSAGE:
-        # Last answer was just the welcome message = Still on Probation
-        is_trusted_user = False
-    else:
-        # Last answer was real content = Trusted
-        is_trusted_user = True 
+            if len(msg.get("content", "").strip()) > MAX_MESSAGE_LENGTH:
+                raise HTTPException(status_code=400, detail=f"Message too long. Max {MAX_MESSAGE_LENGTH} chars.")
+    return last_content
 
-    # ---------------------------------------------------------
-    # 2. SEARCH BROADLY (VIP + Guests)
-    # ---------------------------------------------------------
-    user_embedding = generate_embedding(last_user_message)
-    
-    # Fetch 5 chunks even if they are weak (0.01) so the LLM has guests
-    response = supabase.rpc("match_knowledge", {
-        "query_embedding": user_embedding, 
+def get_user_status(history: list[dict[str, str]]) -> bool:
+    ai_messages = [m['content'] for m in history if m['role'] == 'assistant']
+    if not ai_messages:
+        return False
+    last_ai = ai_messages[-1]
+    if REJECTION_TEXT in last_ai or last_ai == WELCOME_MESSAGE:
+        return False
+    return True
+
+def retrieve_context(query: str) -> list:
+    emb = openai_client.embeddings.create(input=query, model=EMBEDDING_MODEL).data[0].embedding
+    res = supabase.rpc("match_knowledge", {
+        "query_embedding": emb, 
         "match_threshold": 0.01,  
         "match_count": 5          
     }).execute()
-    context_data = response.data
+    return res.data or []
 
-    # --- DEBUG: Print Scores ---
-    if context_data:
-        print(f"🔍 Found {len(context_data)} matches:")
-        for i, item in enumerate(context_data):
-            score = item.get('similarity', 0)
-            preview = item.get('content', '')[:60].replace('\n', ' ')
-            print(f"   [{i+1}] Score: {score:.4f} | Content: {preview}...")
-    else:
-        print("❌ No matches found (even with low threshold).")
-    print("-" * 50)
-    # ---------------------------
+def check_gatekeeper(is_trusted: bool, context_data: list) -> bool:
+    if is_trusted:
+        return False
+    if not context_data:
+        return True
+    return context_data[0].get('similarity', 0) < 0.25
 
-    # ---------------------------------------------------------
-    # 3. GATEKEEPER (Soft Gate: 0.25)
-    # ---------------------------------------------------------
-    # We only block if the user is NOT trusted yet.
-    if not is_trusted_user:
-        
-        # Check relevance: Look at the TOP match score
-        has_relevant_match = False
-        if context_data and len(context_data) > 0:
-            top_score = context_data[0].get('similarity', 0)
-            if top_score >= 0.25: # Soft Gate Threshold
-                has_relevant_match = True
-        
-        # If no relevant documents found -> BLOCK
-        if not has_relevant_match:
-            print(f"🛑 BLOCKED BY GATEKEEPER")
-            return StreamingResponse(
-                stream_rejection(chat_data.session_id),
-                media_type="text/event-stream"
-            )
-
-    # ---------------------------------------------------------
-    # 4. PROCEED
-    # ---------------------------------------------------------
-    # Pass ALL 5 chunks (VIP + Guests) to the system prompt
-    context_text = "\n\n".join([item['content'] for item in context_data]) if context_data else ""
+def build_prompt(context_data: list, history: list[dict[str, str]]) -> list:
+    context_text = "\n\n".join([item['content'] for item in context_data])
     system_prompt = make_system_prompt(context_text)
+    return [{"role": "system", "content": system_prompt}] + history[-MAX_CONTEXT_HISTORY:]
 
-    # Limit Context History to save tokens
-    recent_messages = chat_data.message[-MAX_CONTEXT_HISTORY:]
-    final_messages = [{"role": "system", "content": system_prompt}] + recent_messages
+def stream_rejection(session_id: str):
+    yield f"data: {json.dumps({'content': REJECTION_TEXT})}\n\n"
+    email_block = "\n\n```\nebarneytutoring@gmail.com\n```"
+    yield f"data: {json.dumps({'content': email_block})}\n\n"
+    yield "data: [DONE]\n\n"
+    log_message(session_id, "ai", REJECTION_TEXT)
 
-    return StreamingResponse(
-        stream_response(final_messages, chat_data.session_id),
-        media_type="text/event-stream"
+def stream_generator(messages: list, session_id: str):
+    full_resp = ""
+    stream = openai_client.chat.completions.create(
+        model=MODEL_NAME,
+        messages=messages,
+        stream=True
     )
+    for chunk in stream:
+        content = chunk.choices[0].delta.content
+        if content:
+            full_resp += content
+            yield f"data: {json.dumps({'content': content})}\n\n"
+    
+    log_message(session_id, "ai", full_resp)
+    yield "data: [DONE]\n\n"
+
+@app.post("/chat")
+def chat(payload: Chat):
+    query = validate_input(payload.message)
+    log_message(payload.session_id, "user", query)
+    
+    is_trusted = get_user_status(payload.message)
+    context = retrieve_context(query)
+    
+    if check_gatekeeper(is_trusted, context):
+        return StreamingResponse(stream_rejection(payload.session_id), media_type="text/event-stream")
+    
+    messages = build_prompt(context, payload.message)
+    return StreamingResponse(stream_generator(messages, payload.session_id), media_type="text/event-stream")
