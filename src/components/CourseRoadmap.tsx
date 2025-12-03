@@ -149,7 +149,7 @@ const CourseRoadmap: React.FC = () => {
                                     <MousePointerClick size={32} className="text-hot-pink" />
                                 </div>
                                 <p className="font-heading font-bold text-xl text-black mb-2">Explore the Curriculum</p>
-                                <p className="text-sm">Select a week on the left to view the lesson plan and code examples.</p>
+                                <p className="text-sm">Select a week to view the lesson plan and code examples.</p>
                             </motion.div>
                         )}
                     </AnimatePresence>
