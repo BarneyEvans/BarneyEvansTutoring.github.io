@@ -52,16 +52,10 @@ const About: React.FC = () => {
     const ReviewContent: React.FC<{ review: { text: string; author: string }; stretch?: boolean }> = ({ review, stretch }) => (
         <div className={`flex gap-3 items-start ${stretch ? 'h-full' : ''}`}>
             <Quote size={20} className="text-hot-pink flex-shrink-0 mt-1" />
-            <div className={`flex-1 flex flex-col gap-3 ${stretch ? 'h-full' : ''}`}>
+            <div className={`flex-1 flex flex-col ${stretch ? 'h-full' : ''}`}>
                 <p className="italic text-sm text-gray-700">
                     "{review.text}"
                 </p>
-                <div className="flex justify-between items-center mt-auto">
-                    <span className="font-bold text-xs">- {review.author}</span>
-                    <a href={MYTUTOR_URL} target="_blank" rel="noreferrer" className="text-xs font-bold flex items-center gap-1 hover:text-hot-pink transition-colors">
-                        Verify <ExternalLink size={12}/>
-                    </a>
-                </div>
             </div>
         </div>
     );
@@ -223,10 +217,10 @@ const About: React.FC = () => {
                                             <div className="hidden md:block absolute -top-6 left-1/2 -translate-x-1/2 w-1 h-6 bg-black opacity-30"></div>
 
                                             {/* Carousel Container */}
-                                            <div className="bg-white rounded-xl border-3 border-black shadow-solid overflow-hidden">
+                                            <div className="bg-white rounded-xl border-3 border-black shadow-solid overflow-hidden flex flex-col">
                                                 {/* Review Content with AnimatePresence for slide animation */}
                                                 <div
-                                                    className="relative"
+                                                    className="relative flex-1"
                                                     style={maxReviewHeight ? { minHeight: maxReviewHeight } : undefined}
                                                 >
                                                     <div className="p-4 h-full">
@@ -258,6 +252,19 @@ const About: React.FC = () => {
                                                             </div>
                                                         ))}
                                                     </div>
+                                                </div>
+
+                                                {/* Meta bar */}
+                                                <div className="px-4 py-3 flex items-center justify-between bg-white">
+                                                    <span className="font-bold text-xs">- {reviews[currentReviewIndex].author}</span>
+                                                    <a
+                                                        href={MYTUTOR_URL}
+                                                        target="_blank"
+                                                        rel="noreferrer"
+                                                        className="text-xs font-bold flex items-center gap-1 hover:text-hot-pink transition-colors"
+                                                    >
+                                                        Verify <ExternalLink size={12}/>
+                                                    </a>
                                                 </div>
 
                                                 {/* Navigation Controls */}
