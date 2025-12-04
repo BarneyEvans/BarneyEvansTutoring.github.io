@@ -1,10 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Terminal, X, Send, MessageSquare, Copy, Check } from 'lucide-react';
+import { Terminal, X, Send, MessageSquare, Copy, Check, Info, Shield, Database, Bot, Server } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
+import Button from './Button';
 
 interface Message {
     id: string;
@@ -17,6 +18,7 @@ const MAX_MESSAGE_LENGTH = 250;
 
 const ChatWidget: React.FC = () => {
     const [isOpen, setIsOpen] = useState(false);
+    const [showInfo, setShowInfo] = useState(false);
     const [showNudge, setShowNudge] = useState(false);
     const [inputValue, setInputValue] = useState('');
     const [inputError, setInputError] = useState<string | null>(null);
@@ -64,8 +66,10 @@ const ChatWidget: React.FC = () => {
     };
 
     useEffect(() => {
-        messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-    }, [messages, processingStatus]);
+        if (!showInfo) {
+            messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+        }
+    }, [messages, processingStatus, showInfo]);
 
     useEffect(() => {
         if (isOpen && !isDesktopView) {
@@ -217,6 +221,10 @@ const ChatWidget: React.FC = () => {
         }
     };
 
+    const toggleInfo = () => {
+        setShowInfo(!showInfo);
+    };
+
     // --- Custom Renderer for Code Blocks ---
     const CodeBlock = ({ node, inline, className, children, ...props }: any) => {
         const match = /language-(\w+)/.exec(className || '');
@@ -283,7 +291,7 @@ const ChatWidget: React.FC = () => {
                             bg-white border-4 border-black shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]
                             flex flex-col overflow-hidden
                             ${isDesktopView
-                                ? 'relative h-[640px] w-[620px] max-h-[80vh] mb-2 rounded-xl'
+                                ? 'relative h-[680px] w-[620px] max-h-[80vh] mb-2 rounded-xl'
                                 : 'fixed inset-0 h-[100dvh]'}
                         `}
                     >
@@ -293,6 +301,13 @@ const ChatWidget: React.FC = () => {
                                 <span className="font-mono font-bold tracking-wider text-sm">AI_BARNEY_V1.0</span>
                             </div>
                             <div className="flex items-center gap-4">
+                                <button 
+                                    onClick={toggleInfo} 
+                                    className={`transition-colors p-1 ${showInfo ? 'text-hot-pink' : 'text-white hover:text-hot-pink'}`}
+                                    aria-label="Data and Privacy Info"
+                                >
+                                    <Info size={20} />
+                                </button>
                                 <div className="flex items-center gap-2">
                                     <span className="text-[10px] font-mono text-hot-pink animate-pulse">ONLINE</span>
                                     <div className="w-2 h-2 rounded-full bg-hot-pink"></div>
@@ -309,102 +324,173 @@ const ChatWidget: React.FC = () => {
                             </div>
                         </div>
 
-                        <div className="flex-1 overflow-y-auto p-4 bg-cream space-y-4 scrollbar-terminal">
-                            {messages.map((msg) => (
-                                <div
-                                    key={msg.id}
-                                    className={`flex flex-col max-w-[85%] ${msg.role === 'user' ? 'self-end items-end ml-auto' : 'self-start items-start mr-auto'}`}
-                                >
-                                    <div className={`
-                                        p-3 border-2 border-black shadow-[3px_3px_0px_0px_rgba(0,0,0,1)]
-                                        ${msg.role === 'user'
-                                            ? 'bg-hot-pink text-white rounded-l-xl rounded-tr-xl'
-                                            : 'bg-white text-black rounded-r-xl rounded-tl-xl text-sm'}
-                                    `}>
-                                         {msg.role === 'ai' ? (
-                                            <div className="max-w-none">
-                                                <ReactMarkdown
-                                                    remarkPlugins={[remarkGfm]}
-                                                    components={{
-                                                        code: CodeBlock,
-                                                        h1: ({children}) => <h1 className="text-lg font-bold mt-3 mb-2">{children}</h1>,
-                                                        h2: ({children}) => <h2 className="text-base font-bold mt-3 mb-2">{children}</h2>,
-                                                        h3: ({children}) => <h3 className="text-sm font-bold mt-3 mb-1">{children}</h3>,
-                                                        p: ({children}) => <p className="mb-2 leading-relaxed whitespace-pre-wrap">{children}</p>,
-                                                        ul: ({children}) => <ul className="list-disc list-inside mb-2 space-y-1">{children}</ul>,
-                                                        ol: ({children}) => <ol className="list-decimal list-inside mb-2 space-y-1">{children}</ol>,
-                                                        li: ({children}) => <li className="leading-relaxed">{children}</li>,
-                                                        strong: ({children}) => <strong className="font-bold">{children}</strong>,
-                                                        em: ({children}) => <em className="italic">{children}</em>,
-                                                        hr: () => <hr className="my-3 border-gray-300" />,
-                                                    }}
-                                                >
-                                                    {msg.content}
-                                                </ReactMarkdown>
+                        {showInfo ? (
+                            <div className="flex-1 bg-cream p-6 overflow-y-auto flex flex-col justify-center">
+                                <div className="bg-white border-3 border-black p-6 rounded-2xl shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] mb-6">
+                                    <h3 className="font-heading font-bold text-2xl mb-6 flex items-center gap-3 border-b-2 border-black pb-4">
+                                        <Info className="text-hot-pink" size={28} />
+                                        Data & Privacy
+                                    </h3>
+                                    
+                                    <div className="space-y-6">
+                                        <div className="flex gap-4">
+                                            <div className="bg-light-pink p-2 rounded-lg h-fit border-2 border-black shrink-0">
+                                                <Bot className="text-black" size={20} />
                                             </div>
-                                        ) : (
-                                            msg.content
-                                        )}
+                                            <div>
+                                                <h4 className="font-bold mb-1">AI Assistant</h4>
+                                                <p className="text-sm text-gray-700 leading-relaxed">
+                                                    You are chatting with an AI, not a real person. Responses are generated automatically.
+                                                </p>
+                                            </div>
+                                        </div>
+
+                                        <div className="flex gap-4">
+                                            <div className="bg-yellow-200 p-2 rounded-lg h-fit border-2 border-black shrink-0">
+                                                <Database className="text-black" size={20} />
+                                            </div>
+                                            <div>
+                                                <h4 className="font-bold mb-1">Data Storage</h4>
+                                                <p className="text-sm text-gray-700 leading-relaxed">
+                                                    Your chat history is stored securely to improve future responses and service quality.
+                                                </p>
+                                            </div>
+                                        </div>
+
+                                        <div className="flex gap-4">
+                                            <div className="bg-blue-200 p-2 rounded-lg h-fit border-2 border-black shrink-0">
+                                                <Server className="text-black" size={20} />
+                                            </div>
+                                            <div>
+                                                <h4 className="font-bold mb-1">Third-Party Processors</h4>
+                                                <p className="text-sm text-gray-700 leading-relaxed">
+                                                    We use trusted services (OpenAI, DeepSeek) to process and generate messages.
+                                                </p>
+                                            </div>
+                                        </div>
+
+                                        <div className="flex gap-4">
+                                            <div className="bg-red-200 p-2 rounded-lg h-fit border-2 border-black shrink-0">
+                                                <Shield className="text-black" size={20} />
+                                            </div>
+                                            <div>
+                                                <h4 className="font-bold mb-1">Privacy First</h4>
+                                                <p className="text-sm text-gray-700 leading-relaxed">
+                                                    Please do not share sensitive personal information (e.g., passwords, bank details) in this chat.
+                                                </p>
+                                            </div>
+                                        </div>
                                     </div>
-                                    <span className="text-[10px] font-bold text-gray-400 mt-1 uppercase">
-                                        {msg.role === 'user' ? 'You' : 'System'} • {msg.timestamp.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
-                                    </span>
                                 </div>
-                            ))}
 
-                            {processingStatus && (
-                                <div className="self-start mr-auto max-w-[85%]">
-                                    <div className="bg-black text-hot-pink border-2 border-black p-3 rounded-r-xl rounded-tl-xl font-mono text-xs shadow-[3px_3px_0px_0px_rgba(0,0,0,0.3)] flex items-center gap-2">
-                                        <span className="animate-pulse">▋</span>
-                                        {processingStatus}
-                                    </div>
-                                </div>
-                            )}
-
-                            <div ref={messagesEndRef} />
-                        </div>
-
-                        <div className="bg-cream px-4 py-1 text-[10px] text-center text-gray-500 border-t-2 border-black/10">
-                            AI can make mistakes. Verify important details.
-                        </div>
-
-                        <form onSubmit={handleSendMessage} className="p-3 bg-white border-t-4 border-black flex flex-col gap-2 shrink-0 safe-area-bottom">
-                            <div className="flex gap-2 items-stretch">
-                                <input
-                                    type="text"
-                                    value={inputValue}
-                                    onChange={handleInputChange}
-                                    placeholder="Ask a question..."
-                                    className={`flex-1 bg-gray-100 border-2 border-black px-3 py-2 text-sm font-mono focus:outline-none focus:bg-white focus:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] transition-all rounded-lg placeholder:text-gray-400 ${isOverLimit ? 'border-red-500 ring-2 ring-red-200' : ''}`}
-                                />
-                                <button
-                                    type="submit"
-                                    disabled={isSendDisabled}
-                                    className={`
-                                        bg-black text-hot-pink p-2 border-2 border-black rounded-lg
-                                        shadow-[3px_3px_0px_0px_rgba(0,0,0,1)]
-                                        transition-all duration-150 ease-out
-                                        hover:bg-hot-pink hover:text-white hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-[1px_1px_0px_0px_rgba(0,0,0,1)]
-                                        active:translate-x-[3px] active:translate-y-[3px] active:shadow-none
-                                        disabled:opacity-50 disabled:hover:bg-black disabled:hover:text-hot-pink disabled:cursor-not-allowed
-                                        flex items-center justify-center
-                                    `}
+                                <Button 
+                                    onClick={toggleInfo}
+                                    variant="primary"
+                                    fullWidth={true}
                                 >
-                                    <Send size={20} />
-                                </button>
+                                    Back to Chat
+                                </Button>
                             </div>
-                            <div className="flex items-center gap-2 px-1">
-                                <div className="flex-1 h-2 bg-gray-200 border-2 border-black rounded-full overflow-hidden shadow-inner">
-                                    <div
-                                        className={`${isOverLimit ? 'bg-red-500' : 'bg-hot-pink'} h-full transition-all duration-200`}
-                                        style={{ width: `${progressPercent}%` }}
-                                    />
+                        ) : (
+                            <>
+                                <div className="flex-1 overflow-y-auto p-4 bg-cream space-y-4 scrollbar-terminal">
+                                    {messages.map((msg) => (
+                                        <div
+                                            key={msg.id}
+                                            className={`flex flex-col max-w-[85%] ${msg.role === 'user' ? 'self-end items-end ml-auto' : 'self-start items-start mr-auto'}`}
+                                        >
+                                            <div className={`
+                                                p-3 border-2 border-black shadow-[3px_3px_0px_0px_rgba(0,0,0,1)]
+                                                ${msg.role === 'user'
+                                                    ? 'bg-hot-pink text-white rounded-l-xl rounded-tr-xl'
+                                                    : 'bg-white text-black rounded-r-xl rounded-tl-xl text-sm'}
+                                            `}>
+                                                {msg.role === 'ai' ? (
+                                                    <div className="max-w-none">
+                                                        <ReactMarkdown
+                                                            remarkPlugins={[remarkGfm]}
+                                                            components={{
+                                                                code: CodeBlock,
+                                                                h1: ({children}) => <h1 className="text-lg font-bold mt-3 mb-2">{children}</h1>,
+                                                                h2: ({children}) => <h2 className="text-base font-bold mt-3 mb-2">{children}</h2>,
+                                                                h3: ({children}) => <h3 className="text-sm font-bold mt-3 mb-1">{children}</h3>,
+                                                                p: ({children}) => <p className="mb-2 leading-relaxed whitespace-pre-wrap">{children}</p>,
+                                                                ul: ({children}) => <ul className="list-disc list-inside mb-2 space-y-1">{children}</ul>,
+                                                                ol: ({children}) => <ol className="list-decimal list-inside mb-2 space-y-1">{children}</ol>,
+                                                                li: ({children}) => <li className="leading-relaxed">{children}</li>,
+                                                                strong: ({children}) => <strong className="font-bold">{children}</strong>,
+                                                                em: ({children}) => <em className="italic">{children}</em>,
+                                                                hr: () => <hr className="my-3 border-gray-300" />,
+                                                            }}
+                                                        >
+                                                            {msg.content}
+                                                        </ReactMarkdown>
+                                                    </div>
+                                                ) : (
+                                                    msg.content
+                                                )}
+                                            </div>
+                                            <span className="text-[10px] font-bold text-gray-400 mt-1 uppercase">
+                                                {msg.role === 'user' ? 'You' : 'System'} • {msg.timestamp.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
+                                            </span>
+                                        </div>
+                                    ))}
+
+                                    {processingStatus && (
+                                        <div className="self-start mr-auto max-w-[85%]">
+                                            <div className="bg-black text-hot-pink border-2 border-black p-3 rounded-r-xl rounded-tl-xl font-mono text-xs shadow-[3px_3px_0px_0px_rgba(0,0,0,0.3)] flex items-center gap-2">
+                                                <span className="animate-pulse">▋</span>
+                                                {processingStatus}
+                                            </div>
+                                        </div>
+                                    )}
+
+                                    <div ref={messagesEndRef} />
                                 </div>
-                                <span className={`text-[11px] font-mono font-bold ${isOverLimit ? 'text-red-600' : isNearLimit ? 'text-hot-pink' : 'text-gray-700'}`}>
-                                    {normalizedLength}/{MAX_MESSAGE_LENGTH}
-                                </span>
-                            </div>
-                        </form>
+
+                                <div className="bg-cream px-4 py-1 text-[10px] text-center text-gray-500 border-t-2 border-black/10">
+                                    AI can make mistakes. Verify important details.
+                                </div>
+
+                                <form onSubmit={handleSendMessage} className="p-3 bg-white border-t-4 border-black flex flex-col gap-2 shrink-0 safe-area-bottom">
+                                    <div className="flex gap-2 items-stretch">
+                                        <input
+                                            type="text"
+                                            value={inputValue}
+                                            onChange={handleInputChange}
+                                            placeholder="Ask a question..."
+                                            className={`flex-1 bg-gray-100 border-2 border-black px-3 py-2 text-sm font-mono focus:outline-none focus:bg-white focus:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] transition-all rounded-lg placeholder:text-gray-400 ${isOverLimit ? 'border-red-500 ring-2 ring-red-200' : ''}`}
+                                        />
+                                        <button
+                                            type="submit"
+                                            disabled={isSendDisabled}
+                                            className={`
+                                                bg-black text-hot-pink p-2 border-2 border-black rounded-lg
+                                                shadow-[3px_3px_0px_0px_rgba(0,0,0,1)]
+                                                transition-all duration-150 ease-out
+                                                hover:bg-hot-pink hover:text-white hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-[1px_1px_0px_0px_rgba(0,0,0,1)]
+                                                active:translate-x-[3px] active:translate-y-[3px] active:shadow-none
+                                                disabled:opacity-50 disabled:hover:bg-black disabled:hover:text-hot-pink disabled:cursor-not-allowed
+                                                flex items-center justify-center
+                                            `}
+                                        >
+                                            <Send size={20} />
+                                        </button>
+                                    </div>
+                                    <div className="flex items-center gap-2 px-1">
+                                        <div className="flex-1 h-2 bg-gray-200 border-2 border-black rounded-full overflow-hidden shadow-inner">
+                                            <div
+                                                className={`${isOverLimit ? 'bg-red-500' : 'bg-hot-pink'} h-full transition-all duration-200`}
+                                                style={{ width: `${progressPercent}%` }}
+                                            />
+                                        </div>
+                                        <span className={`text-[11px] font-mono font-bold ${isOverLimit ? 'text-red-600' : isNearLimit ? 'text-hot-pink' : 'text-gray-700'}`}>
+                                            {normalizedLength}/{MAX_MESSAGE_LENGTH}
+                                        </span>
+                                    </div>
+                                </form>
+                            </>
+                        )}
                     </motion.div>
                     )}
                 </AnimatePresence>
