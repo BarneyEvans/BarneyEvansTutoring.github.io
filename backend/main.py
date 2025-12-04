@@ -13,7 +13,7 @@ load_dotenv()
 
 MAX_MESSAGE_LENGTH = 250
 MAX_CONTEXT_HISTORY = 10
-MODEL_NAME = "gpt-5-nano"
+MODEL_NAME = "deepseek-chat"
 EMBEDDING_MODEL = "text-embedding-3-small"
 REJECTION_TEXT = "Please only ask information relevant to Barney's tutoring services, such as course details or pricing. Or email Barney for more infomration:"
 WELCOME_MESSAGE = "Hello! I'm AI-Barney. I can answer questions about the course syllabus, pricing, or my teaching style. Try asking: 'Do you teach A-Level?'"
@@ -21,6 +21,7 @@ WELCOME_MESSAGE = "Hello! I'm AI-Barney. I can answer questions about the course
 try:
     openai_client = OpenAI(api_key=os.getenv("CHATGPT_API_KEY"))
     supabase: Client = create_client(os.getenv("SUPABASE_URL"), os.getenv("SUPABASE_KEY"))
+    deepseek_client = OpenAI(api_key=os.getenv("DEEPSEEK_API_KEY"), base_url="https://api.deepseek.com")
 except Exception:
     pass
 
@@ -106,7 +107,7 @@ def stream_rejection(session_id: str):
 
 def stream_generator(messages: list, session_id: str):
     full_resp = ""
-    stream = openai_client.chat.completions.create(
+    stream = deepseek_client.chat.completions.create(
         model=MODEL_NAME,
         messages=messages,
         stream=True
