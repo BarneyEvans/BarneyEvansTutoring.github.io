@@ -53,7 +53,7 @@ const Home: React.FC = () => {
                         </a>
                     </div>
                     <p className="mt-8 text-center">
-                        <span className="font-heading font-bold text-black">MEng Computer Science with AI</span>
+                        <span className="font-heading font-bold text-black">Master of Computer Science with AI</span>
                         <br/>
                         <span className="text-sm text-gray-500">University of Southampton</span>
                     </p>
@@ -67,7 +67,7 @@ const Home: React.FC = () => {
                     className="order-1 md:order-2"
                 >
                     <h1 className="font-heading text-4xl md:text-6xl font-bold leading-tight mb-6">
-                        Personalised tutoring in <span className="text-hot-pink bg-white px-2 border-2 border-black rounded-lg shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] inline-block transform -rotate-1">CS</span>, Maths & Sciences
+                        Personalised tutoring in <span className="text-hot-pink bg-white px-2 border-2 border-black rounded-lg shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] inline-block transform -rotate-1">AI</span>, Maths, Sciences & Computer Science
                     </h1>
                     <p className="text-xl text-gray-700 mb-10">
                         Interactive, exam-focused lessons to help students achieve top grades. From Year 9 to University level.
