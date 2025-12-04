@@ -121,7 +121,8 @@ const ChatWidget: React.FC = () => {
         }));
 
         try {
-            const response = await fetch("https://barney-backend.onrender.com/chat", {
+            //const response = await fetch("https://barney-backend.onrender.com/chat", {
+            const response = await fetch("http://localhost:8000/chat", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
@@ -282,7 +283,7 @@ const ChatWidget: React.FC = () => {
                             bg-white border-4 border-black shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]
                             flex flex-col overflow-hidden
                             ${isDesktopView
-                                ? 'relative h-[640px] w-[500px] max-h-[80vh] mb-2 rounded-xl'
+                                ? 'relative h-[640px] w-[620px] max-h-[80vh] mb-2 rounded-xl'
                                 : 'fixed inset-0 h-[100dvh]'}
                         `}
                     >
