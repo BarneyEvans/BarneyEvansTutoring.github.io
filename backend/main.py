@@ -15,7 +15,7 @@ MAX_MESSAGE_LENGTH = 250
 MAX_CONTEXT_HISTORY = 10
 MODEL_NAME = "deepseek-chat"
 EMBEDDING_MODEL = "text-embedding-3-small"
-REJECTION_TEXT = "Please only ask information relevant to Barney's tutoring services, such as course details or pricing. Or email Barney for more infomration:"
+REJECTION_TEXT = "Please only ask information relevant to Barney's tutoring services, such as course details or pricing. Or email Barney for more information:"
 WELCOME_MESSAGE = "Hello! I'm AI-Barney. I can answer questions about the course syllabus, pricing, or my teaching style. Try asking: 'Do you teach A-Level?'"
 
 try:
