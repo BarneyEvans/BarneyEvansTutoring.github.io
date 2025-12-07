@@ -1,6 +1,20 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
+    <!-- Google tag (gtag.js) -->
+    <script
+      async
+      src="https://www.googletagmanager.com/gtag/js?id=G-J3TRN1BENG"
+    ></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      gtag("js", new Date());
+
+      gtag("config", "G-J3TRN1BENG");
+    </script>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
@@ -14,10 +28,10 @@
               nav: "1000px",
             },
             colors: {
-              cream: "#fff9eb",       // <-- Backgrounds / Light color
-              "hot-pink": "#ff69b4",  // <-- Main Accent / Buttons (Change this!)
-              "light-pink": "#ffe0f1",// <-- Secondary Accent
-              black: "#1a1a1a",       // <-- Text / Borders
+              cream: "#fff9eb", // <-- Backgrounds / Light color
+              "hot-pink": "#ff69b4", // <-- Main Accent / Buttons (Change this!)
+              "light-pink": "#ffe0f1", // <-- Secondary Accent
+              black: "#1a1a1a", // <-- Text / Borders
             },
             fontFamily: {
               sans: ["DM Sans", "sans-serif"],
@@ -92,9 +106,8 @@
       body {
         background-color: #fff9eb;
         /* Creates a vertical and horizontal line */
-        background-image: 
-            linear-gradient(#e5e5f7 1px, transparent 1px),
-            linear-gradient(90deg, #e5e5f7 1px, transparent 1px);
+        background-image: linear-gradient(#e5e5f7 1px, transparent 1px),
+          linear-gradient(90deg, #e5e5f7 1px, transparent 1px);
         background-size: 32px 32px; /* Bigger squares = cleaner look */
         background-position: -1px -1px;
       }
