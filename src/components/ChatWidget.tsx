@@ -44,7 +44,7 @@ const ChatWidget: React.FC = () => {
 
     useEffect(() => {
         const checkViewport = () => {
-            setIsDesktopView(window.innerWidth >= 800 && window.innerHeight >= 800);
+            setIsDesktopView(window.innerWidth >= 800 && window.innerHeight >= 600);
         };
         checkViewport();
         window.addEventListener('resize', checkViewport);
@@ -291,7 +291,7 @@ const ChatWidget: React.FC = () => {
                             bg-white border-4 border-black shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]
                             flex flex-col overflow-hidden
                             ${isDesktopView
-                                ? 'relative h-[680px] w-[620px] max-h-[80vh] mb-2 rounded-xl'
+                                ? 'relative h-[600px] w-[620px] max-h-[80vh] mb-2 rounded-xl'
                                 : 'fixed inset-0 h-[100dvh]'}
                         `}
                     >
