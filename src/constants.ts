@@ -47,7 +47,7 @@ export const SERVICES: ServiceDetail[] = [
         structuredFeatures: [
             { 
                 title: "Industry Best Practices", 
-                description: "Writing clean, maintainable code using standard conventions (PEP 8, ESLint) and modular architecture." 
+                description: "Writing clean, maintainable code using the latest tools to help you code and modular architecture." 
             },
             { 
                 title: "Full-Stack Architecture", 
