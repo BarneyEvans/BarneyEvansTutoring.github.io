@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ServiceDetail } from '../types';
+import { Presentation } from 'lucide-react';
 
 interface LessonFlowProps {
     services: ServiceDetail[];
@@ -72,6 +73,21 @@ const LessonFlow: React.FC<LessonFlowProps> = ({ services }) => {
                         ))}
                     </AnimatePresence>
                 </div>
+                
+                {/* Custom Slides Feature */}
+                <motion.div
+                    initial={{ opacity: 0 }}
+                    whileInView={{ opacity: 1 }}
+                    viewport={{ once: true }}
+                    className="mt-12 bg-white border-4 border-black rounded-2xl p-6 md:p-8 flex flex-col md:flex-row items-center gap-6 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]"
+                >
+                    <div className="bg-hot-pink p-4 rounded-xl border-3 border-black text-white shrink-0 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] -rotate-3">
+                        <Presentation size={32} strokeWidth={2.5} />
+                    </div>
+                    <p className="font-bold text-black text-lg md:text-xl md:text-left text-center leading-snug">
+                        Every lesson is built with a custom set of slides tailored to the current topic and progress which can be used for recap at a later stage.
+                    </p>
+                </motion.div>
             </div>
         </div>
     );

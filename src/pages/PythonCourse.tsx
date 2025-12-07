@@ -141,11 +141,6 @@ const PythonCourse: React.FC = () => {
                                     <h4 className="font-heading font-bold text-lg mb-2">{step.title}</h4>
                                     <p className="text-sm text-gray-600 leading-relaxed">{step.desc}</p>
                                 </div>
-
-                                {/* Mobile Connecting Line (Vertical) */}
-                                {i < 3 && (
-                                    <div className="md:hidden absolute left-8 top-[100%] h-8 w-1 bg-gray-300 border-l-2 border-dashed border-black z-0" />
-                                )}
                             </motion.div>
                         ))}
                     </div>
