@@ -12,7 +12,6 @@ const CourseRoadmap: React.FC = () => {
 
     // Typewriter effect for code snippets
     useEffect(() => {
-        // Cancel any in-flight typing when switching lessons quickly
         if (typingTimeoutRef.current) {
             clearTimeout(typingTimeoutRef.current);
         }
@@ -63,43 +62,116 @@ const CourseRoadmap: React.FC = () => {
         );
     }, [typedCode]);
 
+    // --- Sub-Components ---
+
+    const LessonButton = ({ lesson, isActive, onClick, isMobile = false }: { lesson: Lesson, isActive: boolean, onClick: () => void, isMobile?: boolean }) => (
+        <button
+            onClick={onClick}
+            className={`
+                relative w-full text-left rounded-xl border-2 transition-all duration-200 flex items-center justify-between group overflow-hidden
+                ${isMobile ? 'px-3 py-3' : 'px-5 py-4'}
+                ${isActive
+                    ? 'bg-black border-black text-white shadow-[4px_4px_0px_0px_#ff69b4] -translate-y-1'
+                    : 'bg-white border-gray-200 text-gray-600 hover:border-black hover:text-black hover:bg-gray-50'}
+                ${isMobile && isActive ? 'rounded-b-none border-b-0 shadow-none translate-y-0' : ''}
+            `}
+        >
+            <div className="flex items-center gap-3 z-10 min-w-0">
+                <span className={`font-mono font-bold ${isMobile ? 'text-xs' : 'text-sm'} ${isActive ? 'text-hot-pink' : 'text-gray-300 group-hover:text-black'} transition-colors`}>
+                    {String(lesson.id).padStart(2, '0')}
+                </span>
+                <span className={`font-heading font-bold truncate ${isMobile ? 'text-sm' : 'text-lg'} ${isActive ? 'text-white' : 'text-gray-800'} transition-colors`}>
+                    {lesson.title}
+                </span>
+            </div>
+
+            {/* Arrow */}
+            <div className={`transform transition-all duration-300 z-10 flex-shrink-0 ${
+                isActive 
+                    ? 'opacity-100 translate-x-0 text-hot-pink' 
+                    : 'opacity-0 -translate-x-4 group-hover:opacity-100 group-hover:translate-x-0 text-black'
+            }`}>
+                {isMobile && isActive ? '↓' : (isMobile ? '' : '→')}
+            </div>
+        </button>
+    );
+
+    const LessonDetails = ({ lesson }: { lesson: Lesson }) => (
+        <div className="h-full flex flex-col">
+            <div className="mb-auto">
+                <span className="inline-block bg-black text-white text-xs font-bold px-2 py-1 rounded mb-2">
+                    WEEK {lesson.id}
+                </span>
+                <h4 className="font-heading text-2xl font-bold mb-4">{lesson.title}</h4>
+                <p className="text-gray-800 mb-6 text-lg leading-relaxed">
+                    {lesson.description}
+                </p>
+            </div>
+            
+            {lesson.codeSnippet && (
+                <div className="bg-[#1e1e1e] rounded-xl p-4 mt-4 overflow-x-auto border-2 border-[#2d2d2d] max-w-full min-h-[5rem]">
+                    <pre className="font-mono text-xs md:text-sm text-[#d4d4d4] whitespace-pre-wrap leading-relaxed">
+                        <code dangerouslySetInnerHTML={{ __html: highlightedCode }} />
+                        {typedCode.length < (lesson.codeSnippet?.length || 0) && (
+                            <span className="inline-block w-2 h-4 bg-hot-pink animate-pulse ml-0.5 align-middle" />
+                        )}
+                    </pre>
+                </div>
+            )}
+        </div>
+    );
+
     return (
         <div className="bg-white rounded-[32px] border-4 border-black shadow-solid p-6 md:p-10">
-            <div className="grid lg:grid-cols-12 gap-8">
-                
+            <h3 className="font-heading text-2xl font-bold mb-6">12-Week Roadmap</h3>
+
+            {/* --- Mobile Layout (Smart Grid) --- */}
+            <div className="md:hidden grid grid-cols-2 gap-3">
+                {PYTHON_CURRICULUM.map((lesson) => {
+                    const isActive = selectedLesson?.id === lesson.id;
+                    return (
+                        <div 
+                            key={lesson.id} 
+                            className={`flex flex-col transition-all duration-300 ${isActive ? 'col-span-2' : 'col-span-1'}`}
+                        >
+                            <LessonButton 
+                                lesson={lesson} 
+                                isActive={isActive} 
+                                onClick={() => setSelectedLesson(isActive ? null : lesson)}
+                                isMobile={true}
+                            />
+                            <AnimatePresence>
+                                {isActive && (
+                                    <motion.div
+                                        initial={{ height: 0, opacity: 0 }}
+                                        animate={{ height: 'auto', opacity: 1 }}
+                                        exit={{ height: 0, opacity: 0 }}
+                                        transition={{ duration: 0.3, ease: "easeInOut" }}
+                                        className="overflow-hidden"
+                                    >
+                                        <div className="bg-white border-2 border-t-0 border-black rounded-b-xl p-5 shadow-[4px_4px_0px_0px_#ff69b4] mx-1 mb-2">
+                                            <LessonDetails lesson={lesson} />
+                                        </div>
+                                    </motion.div>
+                                )}
+                            </AnimatePresence>
+                        </div>
+                    );
+                })}
+            </div>
+
+            {/* --- Desktop Layout (Split View) --- */}
+            <div className="hidden md:grid lg:grid-cols-12 gap-8">
                 {/* Left: Grid of Pills */}
                 <div className="lg:col-span-7">
-                    <h3 className="font-heading text-2xl font-bold mb-6">12-Week Roadmap</h3>
                     <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                         {PYTHON_CURRICULUM.map((lesson) => (
-                            <button
+                            <LessonButton
                                 key={lesson.id}
+                                lesson={lesson}
+                                isActive={selectedLesson?.id === lesson.id}
                                 onClick={() => setSelectedLesson(lesson)}
-                                className={`
-                                    relative w-full text-left px-5 py-4 rounded-xl border-2 transition-all duration-200 flex items-center justify-between group overflow-hidden
-                                    ${selectedLesson?.id === lesson.id
-                                        ? 'bg-black border-black text-white shadow-[4px_4px_0px_0px_#ff69b4] -translate-y-1'
-                                        : 'bg-white border-gray-200 text-gray-600 hover:border-black hover:text-black hover:bg-gray-50'}
-                                `}
-                            >
-                                <div className="flex items-center gap-4 z-10">
-                                    <span className={`font-mono text-sm font-bold ${selectedLesson?.id === lesson.id ? 'text-hot-pink' : 'text-gray-300 group-hover:text-black'} transition-colors`}>
-                                        {String(lesson.id).padStart(2, '0')}
-                                    </span>
-                                    <span className={`font-heading font-bold text-lg ${selectedLesson?.id === lesson.id ? 'text-white' : 'text-gray-800'} transition-colors`}>
-                                        {lesson.title}
-                                    </span>
-                                </div>
-
-                                {/* Subtle arrow that appears on hover/active */}
-                                <div className={`transform transition-all duration-300 z-10 ${
-                                    selectedLesson?.id === lesson.id 
-                                        ? 'opacity-100 translate-x-0 text-hot-pink' 
-                                        : 'opacity-0 -translate-x-4 group-hover:opacity-100 group-hover:translate-x-0 text-black'
-                                }`}>
-                                    →
-                                </div>
-                            </button>
+                            />
                         ))}
                     </div>
                 </div>
@@ -114,28 +186,9 @@ const CourseRoadmap: React.FC = () => {
                                 animate={{ opacity: 1, x: 0 }}
                                 exit={{ opacity: 0, x: -20 }}
                                 transition={{ duration: 0.2 }}
-                                className="h-full flex flex-col"
+                                className="h-full"
                             >
-                                <div className="mb-auto">
-                                    <span className="inline-block bg-black text-white text-xs font-bold px-2 py-1 rounded mb-2">
-                                        WEEK {selectedLesson.id}
-                                    </span>
-                                    <h4 className="font-heading text-2xl font-bold mb-4">{selectedLesson.title}</h4>
-                                    <p className="text-gray-800 mb-6 text-lg leading-relaxed">
-                                        {selectedLesson.description}
-                                    </p>
-                                </div>
-                                
-                                {selectedLesson.codeSnippet && (
-                                    <div className="bg-[#1e1e1e] rounded-xl p-4 mt-4 overflow-x-auto border-2 border-[#2d2d2d] max-w-full min-h-[5rem]">
-                                        <pre className="font-mono text-xs md:text-sm text-[#d4d4d4] whitespace-pre-wrap leading-relaxed">
-                                            <code dangerouslySetInnerHTML={{ __html: highlightedCode }} />
-                                            {typedCode.length < (selectedLesson.codeSnippet?.length || 0) && (
-                                                <span className="inline-block w-2 h-4 bg-hot-pink animate-pulse ml-0.5 align-middle" />
-                                            )}
-                                        </pre>
-                                    </div>
-                                )}
+                                <LessonDetails lesson={selectedLesson} />
                             </motion.div>
                         ) : (
                             <motion.div
