@@ -103,7 +103,7 @@ def stream_rejection(session_id: str):
     email_block = "\n\n```\nebarneytutoring@gmail.com\n```"
     yield f"data: {json.dumps({'content': email_block})}\n\n"
     yield "data: [DONE]\n\n"
-    #log_message(session_id, "ai", REJECTION_TEXT)
+    log_message(session_id, "ai", REJECTION_TEXT)
 
 def stream_generator(messages: list, session_id: str):
     full_resp = ""
@@ -118,13 +118,13 @@ def stream_generator(messages: list, session_id: str):
             full_resp += content
             yield f"data: {json.dumps({'content': content})}\n\n"
     
-    #log_message(session_id, "ai", full_resp)
+    log_message(session_id, "ai", full_resp)
     yield "data: [DONE]\n\n"
 
 @app.post("/chat")
 def chat(payload: Chat):
     query = validate_input(payload.message)
-    #log_message(payload.session_id, "user", query)
+    log_message(payload.session_id, "user", query)
     
     is_trusted = get_user_status(payload.message)
     context = retrieve_context(query)
