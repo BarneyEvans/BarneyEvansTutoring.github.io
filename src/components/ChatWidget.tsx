@@ -82,6 +82,12 @@ const ChatWidget: React.FC = () => {
   };
 
   useEffect(() => {
+    const handleOpenChat = () => setIsOpen(true);
+    window.addEventListener('open-chat', handleOpenChat);
+    return () => window.removeEventListener('open-chat', handleOpenChat);
+  }, []);
+
+  useEffect(() => {
     if (!showInfo) {
       messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
     }

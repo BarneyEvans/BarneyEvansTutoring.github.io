@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { Menu, X, Mail, ExternalLink } from 'lucide-react';
+import { Menu, X, Mail, ExternalLink, MessageCircle } from 'lucide-react';
 import Button from './Button';
 import { CONTACT_EMAIL, GOOGLE_FORM_URL, LINKEDIN_URL } from '../constants';
 
@@ -95,7 +95,15 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
                 <div className="max-w-4xl mx-auto px-4 text-center">
                     <h2 className="font-heading text-4xl md:text-5xl font-bold mb-6">Ready to get started?</h2>
                     <p className="text-xl mb-12 max-w-2xl mx-auto text-gray-700">
-                        Book a free 20-minute discovery call to discuss your goals for private tutoring or the Python course.
+                        Book a free 20-minute discovery call to discuss your goals, or{' '}
+                        <button 
+                            onClick={() => window.dispatchEvent(new Event('open-chat'))}
+                            className="inline-flex items-center gap-1 text-black font-bold border-b-2 border-hot-pink hover:text-hot-pink transition-colors"
+                        >
+                            Ask AI-Barney
+                            <MessageCircle size={18} />
+                        </button>
+                        {' '}if you have any quick questions.
                     </p>
                     
                     <div className="flex flex-col md:flex-row justify-center gap-6">
