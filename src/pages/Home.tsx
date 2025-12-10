@@ -115,7 +115,7 @@ const Home: React.FC = () => {
                         "Enhanced DBS Checked",
                         "5★ Average Rating",
                         "AQA / OCR / Edexcel",
-                        "200+ Teaching Hours"
+                        "300+ Teaching Hours"
                     ].map((item, idx) => (
                         <div key={idx} className="flex flex-col items-center gap-2">
                             <CheckCircle className="text-hot-pink" size={24} />

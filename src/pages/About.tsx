@@ -95,7 +95,7 @@ const About: React.FC = () => {
                         {/* Spec 2: Hours */}
                         <div className="bg-white border-3 border-black rounded-xl p-4 flex flex-col items-center justify-center text-center shadow-sm hover:shadow-solid-hover transition-shadow">
                             <Clock className="mb-1 text-hot-pink" size={24} />
-                            <span className="font-heading font-bold text-xl">200+ Hours</span>
+                            <span className="font-heading font-bold text-xl">300+ Hours</span>
                             <span className="text-xs font-bold text-gray-500">Teaching Exp.</span>
                         </div>
 
