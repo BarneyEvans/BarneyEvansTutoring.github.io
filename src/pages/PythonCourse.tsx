@@ -4,6 +4,7 @@ import { Users, BookOpen, Clock, CheckCircle, ArrowRight } from 'lucide-react';
 import { motion } from 'framer-motion';
 import CourseRoadmap from '../components/CourseRoadmap';
 import CodeWindow from '../components/CodeWindow';
+import LessonTimeline from '../components/LessonTimeline';
 import { GOOGLE_FORM_URL } from '../constants';
 
 const PythonCourse: React.FC = () => {
@@ -120,30 +121,14 @@ const PythonCourse: React.FC = () => {
             <div className="bg-white rounded-[32px] border-4 border-black shadow-solid p-8 md:p-12 mb-20">
                 <h2 className="font-heading text-3xl md:text-4xl font-bold text-center mb-16">Typical 60-Minute Lesson</h2>
                 
-                <div className="relative">
-                    <div className="grid md:grid-cols-4 gap-8 md:gap-4">
-                        {lessonSteps.map((step, i) => (
-                            <motion.div
-                                key={i}
-                                initial={{ opacity: 0, y: 20 }}
-                                whileInView={{ opacity: 1, y: 0 }}
-                                viewport={{ once: true }}
-                                transition={{ duration: 0.3, delay: i * 0.1 }}
-                                className="relative z-10 flex flex-col md:items-center text-left md:text-center group"
-                            >
-                                {/* Time Pill */}
-                                <div className="mb-4 self-start md:self-center bg-hot-pink text-white border-2 border-black font-mono font-bold text-sm px-3 py-1 rounded-full shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] transition-transform">
-                                    {step.time}
-                                </div>
-
-                                {/* Content Box */}
-                                <div className="bg-white border-3 border-black rounded-xl p-5 w-full h-full shadow-solid transition-all duration-200">
-                                    <h4 className="font-heading font-bold text-lg mb-2">{step.title}</h4>
-                                    <p className="text-sm text-gray-600 leading-relaxed">{step.desc}</p>
-                                </div>
-                            </motion.div>
-                        ))}
-                    </div>
+                <div className="relative max-w-5xl mx-auto">
+                    <LessonTimeline 
+                        steps={lessonSteps.map(step => ({
+                            ...step,
+                            description: step.desc
+                        }))} 
+                        serviceId="cs" 
+                    />
                 </div>
             </div>
             
