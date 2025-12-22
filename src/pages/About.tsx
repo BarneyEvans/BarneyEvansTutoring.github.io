@@ -18,7 +18,7 @@ const About: React.FC = () => {
         },
         {
             text: "I can fully recommend Barney. He's making a huge difference to my son's confidence and ability in Maths in just a couple of months.",
-            author: "Victoria T., Parent"
+            author: "Parent"
         }
     ], []);
 
