@@ -42,7 +42,7 @@ const Home: React.FC = () => {
                                     <Star fill="currentColor" size={14} />
                                 </div>
                                 <span className="font-heading font-bold text-lg leading-none">
-                                    10+ Reviews
+                                    14 5★ Reviews
                                 </span>
                             </div>
 

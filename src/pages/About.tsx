@@ -15,6 +15,10 @@ const About: React.FC = () => {
         {
             text: "Really pleased with the work Barney is doing with my son for Computer Science GCSE, he is helping build his confidence and knowledge base after an extended time out of school.",
             author: "Suzanne, Parent from Hook"
+        },
+        {
+            text: "I can fully recommend Barney. He's making a huge difference to my son's confidence and ability in Maths in just a couple of months.",
+            author: "Victoria T., Parent"
         }
     ], []);
 

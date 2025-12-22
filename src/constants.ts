@@ -113,7 +113,7 @@ export const EXPERIENCE: ExperienceJob[] = [
         title: "Tutor",
         company: "MyTutor",
         period: "Dec 2023 - Present",
-        details: ["95+ lessons delivered", "5★ rating average", "Schools Programme approved"]
+        details: ["105+ lessons delivered", "5★ rating average", "Schools Programme approved"]
     },
     {
         title: "Engineering Tutor",
