@@ -4,21 +4,26 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { EXPERIENCE, MYTUTOR_URL } from '../constants';
 import { ExternalLink, GraduationCap, Star, Code, Quote, Clock, ShieldCheck, ChevronLeft, ChevronRight } from 'lucide-react';
 
+type Review = { text: string; author: string; verifyUrl?: string };
+
 const About: React.FC = () => {
     const [currentReviewIndex, setCurrentReviewIndex] = useState(0);
 
-    const reviews = useMemo(() => [
+    const reviews: Review[] = useMemo(() => [
         {
             text: "Barney has helped my daughter in her Computer Science GCSE making her much more confident within a few months.",
-            author: "Rahnuma, Parent from Norwich"
+            author: "Rahnuma, Parent from Norwich",
+            verifyUrl: MYTUTOR_URL
         },
         {
             text: "Really pleased with the work Barney is doing with my son for Computer Science GCSE, he is helping build his confidence and knowledge base after an extended time out of school.",
-            author: "Suzanne, Parent from Hook"
+            author: "Suzanne, Parent from Hook",
+            verifyUrl: MYTUTOR_URL
         },
         {
             text: "I can fully recommend Barney. He's making a huge difference to my son's confidence and ability in Maths in just a couple of months.",
-            author: "Parent"
+            author: "Parent",
+            verifyUrl: "https://www.facebook.com/groups/1630132867312401/permalink/4352626401729687"
         }
     ], []);
 
@@ -53,7 +58,7 @@ const About: React.FC = () => {
         return <Star size={20} />;
     };
 
-    const ReviewContent: React.FC<{ review: { text: string; author: string }; stretch?: boolean }> = ({ review, stretch }) => (
+    const ReviewContent: React.FC<{ review: Review; stretch?: boolean }> = ({ review, stretch }) => (
         <div className={`flex gap-3 items-start ${stretch ? 'h-full' : ''}`}>
             <Quote size={20} className="text-hot-pink flex-shrink-0 mt-1" />
             <div className={`flex-1 flex flex-col ${stretch ? 'h-full' : ''}`}>
@@ -262,7 +267,7 @@ const About: React.FC = () => {
                                                 <div className="px-4 py-3 flex items-center justify-between bg-white">
                                                     <span className="font-bold text-xs">- {reviews[currentReviewIndex].author}</span>
                                                     <a
-                                                        href={MYTUTOR_URL}
+                                                        href={reviews[currentReviewIndex].verifyUrl || MYTUTOR_URL}
                                                         target="_blank"
                                                         rel="noreferrer"
                                                         className="text-xs font-bold flex items-center gap-1 hover:text-hot-pink transition-colors"
